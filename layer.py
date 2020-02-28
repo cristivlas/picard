@@ -10,7 +10,6 @@ class Layer:
     Factory = { 'clone': lambda d: Layer.clone(d) }
     Units = dict([(x.name, x.value) for x in list(Units)])
 
-    @staticmethod
     class Register:
         def __init__(self, name, fun):
             Layer.Factory[name]=fun
