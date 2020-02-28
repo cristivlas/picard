@@ -38,22 +38,37 @@ class CacheImage(CacheFile):
             self.image = self.Cache[url]
         except KeyError:
             CacheFile.__init__(self, url)
+            self.load(url)
+
+    def load(self, url):
+        try:
             self.Cache[url] = self.image = Image.open(self.path)
+        except Exception as e:
+            self.image = e
 
 class CacheFont(CacheFile):
     Cache = {}
-    def __init__(self, url, size):
-        try:
-            self.font = self.Cache[(url, size)]
-        except KeyError:
-            CacheFile.__init__(self, url)
-            print 'Loading font:', self.path
-            if os.path.splitext(self.path)[1] in ['.zip' ]:
-                zip = zipfile.ZipFile(self.path)
-                fname = next((x for x in zip.namelist() if x.lower().endswith('.ttf')), None)
-                self.path = zip.extract(fname, os.path.split(self.path)[0])
-            self.font = ImageFont.truetype(self.path, size)
-            self.Cache[(url, size)] = self.font
+    def __init__(self, obj):
+        url, size = obj.font, obj.fontSize
+        if not url or not size:
+            try:
+                k = next(iter(self.Cache))
+                self.font = self.Cache[k]
+            except StopIteration:
+                self.font = ImageFont.load_default()
+        else:
+            size *= obj.dpi/300
+            try:
+                self.font = self.Cache[(url, size)]
+            except KeyError:
+                CacheFile.__init__(self, url)
+                print 'Loading font:', self.path
+                if os.path.splitext(self.path)[1] in ['.zip' ]:
+                    zip = zipfile.ZipFile(self.path)
+                    fname = next((x for x in zip.namelist() if x.lower().endswith('.ttf')), None)
+                    self.path = zip.extract(fname, os.path.split(self.path)[0])
+                self.font = ImageFont.truetype(self.path, size)
+                self.Cache[(url, size)] = self.font
 
     def resolvePath(self, url):
         if url.query and url.netloc=='dl.dafont.com':

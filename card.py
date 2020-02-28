@@ -7,12 +7,11 @@ import copy
 import json
 
 class Card:
-    def __init__(self, d, dpi):
+    def __init__(self, d, dpi, cleanup=True):
         self.dpi = dpi
         d.setdefault('bg', 'white')
         d.setdefault('orientation', 'portrait')
         d.setdefault('recipe', None)
-        self.recipe = None
         self.frontLayers = [Layer.fromDict(x) for x in d['front']]
         self.backLayers = [Layer.fromDict(x) for x in d['back']]
         self.bg = d['bg']
@@ -25,7 +24,17 @@ class Card:
             if not path.isabs(recipe):
                 recipe = path.join(cache.DataPath, recipe)
             f = open(recipe, 'r')
-            self.recipe = Card(json.load(f), dpi)
+            recipe = Card(json.load(f), dpi, cleanup=False)
+            self.frontLayers = self.merge(recipe, 'frontLayers')
+            self.backLayers = self.merge(recipe, 'backLayers')
+        if cleanup:
+            Layer.Dict = {}
+
+    def merge(self, recipe, which):
+        layers = getattr(recipe, which) + getattr(self, which)
+        for x in layers:
+            x.resolve()
+        return layers
 
     @staticmethod
     def load(data, dpi):
@@ -38,15 +47,9 @@ class Card:
     def blank(self):
         return Image.new('RGBA', self.size.convert(dpi=self.dpi).size(), self.bg)
 
-    def merge(self, which):
-        layers = getattr(self.recipe, which, []) + getattr(self, which)
-        for x in layers:
-            x.resolve()
-        return layers
-
     def front(self):
-        return Layer.applyGroup(self.blank(), self.merge('frontLayers'), dpi=self.dpi)
+        return Layer.applyGroup(self.blank(), self.frontLayers, dpi=self.dpi)
     
     def back(self):
-        return Layer.applyGroup(self.blank(), self.merge('backLayers'), dpi=self.dpi)
+        return Layer.applyGroup(self.blank(), self.backLayers, dpi=self.dpi)
 

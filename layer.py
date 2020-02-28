@@ -1,6 +1,7 @@
 from box import Box, Units
 from PIL import Image, ImageDraw
 from cache import CacheFont, CacheImage
+import exceptions
 import importlib
 import math
 import textwrap
@@ -18,7 +19,8 @@ class Layer:
         d.setdefault('id', None)
         self.d=d
         id=d['id']
-        if id and id not in Layer.Dict:
+        if id:
+            assert id not in Layer.Dict
             Layer.Dict[id] = self
         units = Units[d['units']] if 'units' in d else Units.PIXEL
         try:
@@ -81,17 +83,6 @@ class Group(Layer):
     def apply(self, image):
         return self.applyImage(image, Layer.applyGroup(None, self.group, self.dpi))
 
-class ImageLayer(Layer):
-    ___ = Layer.Register('image', lambda d: ImageLayer(d) )
-    def __init__(self, d):
-        Layer.__init__(self, d) 
-        self.image = CacheImage(d['image']).image
-        if self.box:
-            box = self.box.convert(self.image.size)
-            self.image = self.image.resize(box.size(), Image.LANCZOS)
-    def apply(self, image):
-        return self.applyImage(image, self.image)
-
 class Crop(Layer):
     ___ = Layer.Register('crop', lambda d: Crop(d) )
     def __init__(self, d):
@@ -140,6 +131,8 @@ def centerTextH(size, draw, xy, bbox, text, font, fill=(0,0,0), sp=0, wrap=True,
         return xy
     coords = [xy[0] + (bbox[0]-textsz[0])/2, xy[1]]
     drawText(draw, coords, text, fill, font)
+    if not hasattr(font, 'size'):
+        font.size = textsz[1]
     return [xy[0], xy[1]+font.size+sp]
 
 class TextLayer(Layer):
@@ -148,9 +141,11 @@ class TextLayer(Layer):
         Layer.__init__(self, d) 
         d.setdefault('outline', None)
         d.setdefault('color', 'black')
+        d.setdefault('font', None)
+        d.setdefault('font-size', None)
         self.text = d['text']
         self.font = d['font']
-        self.fontSize = d['fontSize']
+        self.fontSize = d['font-size']
         self.outline = d['outline']
         self.color = d['color']
         
@@ -158,14 +153,29 @@ class TextLayer(Layer):
         assert image
         if not self.box:
             self.box = Box([0,0]+list(image.size))
-        fontSize = self.fontSize * self.dpi/300
-        font = CacheFont(self.font, fontSize).font
+        font = CacheFont(self).font
         box = self.box.convert(image.size)
         xy = box.box[:2]
         bbox = box.size()
         draw = ImageDraw.Draw(image)
         centerTextH(image.size, draw, xy, bbox, self.text, font, self.color, out=self.outline)
         return image
+
+class ImageLayer(Layer):
+    ___ = Layer.Register('image', lambda d: ImageLayer(d) )
+    def __init__(self, d):
+        Layer.__init__(self, d) 
+        self.image = CacheImage(d['image']).image
+        if self.box:
+            box = self.box.convert(self.image.size)
+            self.image = self.image.resize(box.size(), Image.LANCZOS)
+    def apply(self, image):
+        if isinstance(self.image, exceptions.Exception):
+            im = Image.new('RGBA', [self.dpi, self.dpi])
+            d = {'text':str(self.image), 'color':'orange' }
+            text = TextLayer(d)
+            return text.apply(im)
+        return self.applyImage(image, self.image)
 
 class Modifier(Layer):
     ___ = Layer.Register('modify', lambda d: Modifier(d) )
