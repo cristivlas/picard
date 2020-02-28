@@ -1,0 +1,67 @@
+{
+	"size": "MINI",
+	"front": [
+		{ "layer.image": "template/background.png"},
+		{ "layer.group":
+			[
+				{ "layer.image":"https://i.imgur.com/hvnfEEV.png" },
+				{ "layer.scale": 0.65},
+				{ "image.rotate": 15 },
+				{ "image.halo":"teal"},
+				{ "layer.crop": "CENTER", "box": "MINI" }
+			],
+			"box":[0,2.5,100,102.5],
+			"units":"PERCENT"
+		},
+		{ "layer.image":"template/ranged.png"},
+		{ 
+			"id":"weapon-name",
+			"layer.text":"MARKZA SMG",
+			"font":"fonts/Zekton Condensed Heavy.zip",
+			"fontSize": 52,
+			"box": [15,4,85,15],
+			"units": "PERCENT",
+			"color": "lightblue"
+		},
+		{ 
+			"id": "range",
+			"layer.text":"0-1",
+			"font":"fonts/zektonbo.zip",
+			"fontSize": 30,
+			"box": [30,88,43.5,95],
+			"units": "PERCENT",
+			"color": "lightblue"
+		},
+		{ 
+			"id": "dice",
+			"layer.text":"3",
+			"font":"fonts/zektonbo.zip",
+			"fontSize": 30,
+			"box": [45,88,59,95],
+			"units": "PERCENT",
+			"color": "lightblue"
+		},
+		{
+			"id": "hit", 
+			"layer.text":"4",
+			"font":"fonts/zektonbo.zip",
+			"fontSize": 30,
+			"box": [61,88,74,95],
+			"units": "PERCENT",
+			"color": "lightblue"
+		},
+		{ 
+			"id": "damage", 
+			"layer.text":"1",
+			"font":"fonts/zektonbo.zip",
+			"fontSize": 30,
+			"box": [76.5,88,90,95],
+			"units": "PERCENT",
+			"color": "lightblue"
+		}
+	],
+	"back": 
+	[
+		{ "layer.image":"img/back.png"}
+	]
+}

@@ -1,0 +1,65 @@
+{
+  "size": "MINI",
+  "front": [
+    { "layer.image": "template/background.png"},
+    { "layer.group":
+      [
+        { "layer.image":"https://i.pinimg.com/originals/19/68/ba/1968ba0d3edbc6489f7bb1f102e3878c.jpg" },
+	{ "cut.auto-split":"image000" },
+	{ "image.mean-to-alpha":240},
+        { "layer.scale":0.4},
+	{ "image.flip":"H"},
+	{ "image.rotate":-5},
+	{ "image.halo":"teal"},
+        { "layer.crop": "CENTER", "box": "MINI" }
+      ],
+      "box":[0,2.5,100,102.5],
+      "units":"PERCENT"
+    },
+    { "layer.image":"template/ranged.png"},
+    { 
+      "layer.text":"RAPTURE",
+      "font":"fonts/Zekton Condensed Heavy.zip",
+      "fontSize": 52,
+      "box": [15,4,85,15],
+      "units": "PERCENT",
+      "color": "lightblue"
+    },
+    { 
+      "layer.text":"1-2",
+      "font":"fonts/zektonbo.zip",
+      "fontSize": 30,
+      "box": [30,88,43.5,95],
+      "units": "PERCENT",
+      "color": "lightblue"
+    },
+    { 
+      "layer.text":"3",
+      "font":"fonts/zektonbo.zip",
+      "fontSize": 30,
+      "box": [45,88,59,95],
+      "units": "PERCENT",
+      "color": "lightblue"
+    },
+    { 
+      "layer.text":"3",
+      "font":"fonts/zektonbo.zip",
+      "fontSize": 30,
+      "box": [61,88,74,95],
+      "units": "PERCENT",
+      "color": "lightblue"
+    },
+    { 
+      "layer.text":"1",
+      "font":"fonts/zektonbo.zip",
+      "fontSize": 30,
+      "box": [76.5,88,90,95],
+      "units": "PERCENT",
+      "color": "lightblue"
+    }
+  ],
+  "back": 
+  [
+    { "layer.image":"img/back.png"}
+  ]
+}
