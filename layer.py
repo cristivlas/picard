@@ -48,6 +48,16 @@ class Layer:
                 resolved.append(x.subst(d))
         return resolved
 
+    def errorImage(self, err):
+        im = Image.new('RGBA', [self.dpi, self.dpi], 'white')
+        draw = ImageDraw.Draw(im)
+        draw.line([0,0]+list(im.size), fill='red', width=2)
+        draw.line([0,im.size[1],im.size[0],0], fill='red', width=2)
+        d = {'text':str(err), 'color':'black'}
+        text = TextLayer(d)
+        text.dpi = self.dpi
+        return text.apply(im)
+
     @staticmethod
     def fromDict(d):
         for k in d:
@@ -138,7 +148,7 @@ class Crop(Layer):
         orig = Crop.GetOrigin[self.origin](image.size, box)
         box = [x+o for x,o in zip(box, orig+orig)]
         if self.verbose:
-            print '  Crop box:', self.box, box
+            print '  Crop box:', self.box, box, self.origin
         return image.crop(box)
 
 class Scale(Layer):
@@ -188,7 +198,7 @@ class TextLayer(Layer):
         assert image
         if not self.box:
             self.box = Box([0,0]+list(image.size))
-        font = CacheFont(self).font
+        font = CacheFont(self.font, self.fontSize, self.dpi).font
         box = self.box.convert(image.size)
         xy = box.box[:2]
         bbox = box.size()
@@ -206,15 +216,6 @@ class ImageLayer(Layer):
             self.image = self.image.resize(box.size(), Image.LANCZOS)
     def apply(self, image):
         if isinstance(self.image, exceptions.Exception):
-            return self.errorImage()
+            return self.errorImage(self.image)
         return self.applyImage(image, self.image)
-
-    def errorImage(self):
-        im = Image.new('RGBA', [self.dpi, self.dpi], 'white')
-        draw = ImageDraw.Draw(im)
-        draw.line([0,0]+list(im.size), fill='red', width=2)
-        draw.line([0,im.size[1],im.size[0],0], fill='red', width=2)
-        d = {'text':str(self.image), 'color':'black'}
-        text = TextLayer(d)
-        return text.apply(im)
 

@@ -57,12 +57,11 @@ class CacheImage(CacheFile):
 
 class CacheFont(CacheFile):
     Cache = {}
-    def __init__(self, obj):
-        url, size = obj.font, obj.fontSize
+    def __init__(self, url, size, dpi=300):
         if not url or not size:
             self.font = ImageFont.load_default()
         else:
-            size *= obj.dpi/300
+            size *= dpi/300
             try:
                 self.font = self.Cache[(url, size)]
             except KeyError:
@@ -70,7 +69,8 @@ class CacheFont(CacheFile):
                 print 'Loading font:', self.path
                 if os.path.splitext(self.path)[1] in ['.zip' ]:
                     zip = zipfile.ZipFile(self.path)
-                    fname = next((x for x in zip.namelist() if x.lower().endswith('.ttf')), None)
+                    match = lambda x: os.path.splitext(x.lower())[1] in ['.ttf', '.otf']
+                    fname = next((x for x in zip.namelist() if match(x)), None)
                     self.path = zip.extract(fname, os.path.split(self.path)[0])
                 self.font = ImageFont.truetype(self.path, size)
                 self.Cache[(url, size)] = self.font

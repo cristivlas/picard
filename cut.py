@@ -70,7 +70,11 @@ class AutoSplit(Layer):
                 print ' Cut', len(self.imgs), 'images'
         if self.verbose:
             print ' Selecting: ', self.i, 'out of', len(self.imgs)
-        return self.imgs[self.i]
+        try:
+            return self.imgs[self.i]
+        except KeyError as e:
+            print e
+            return self.errorImage(e)
 
 if __name__ == '__main__':
     if (len(sys.argv) != 2):

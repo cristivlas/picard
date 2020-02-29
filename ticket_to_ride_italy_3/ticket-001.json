@@ -3,7 +3,7 @@
   "front": [
       {
         "layer.group": [
-          { "layer.image":"https://cf.geekdo-images.com/imagepagezoom/img/K6HwiisHlMTC8zkXLyB1H4btTmg=/fit-in/1200x900/filters:no_upscale()/pic1642145.jpg" },
+          { "layer.image":"https://cf.geekdo-images.com/original/img/TUAcX_HMyQ5-yyIj3tTNFdL-FEA=/0x0/pic1642147.jpg" },
           { "cut.auto-split": "image000", "threshold": 180, "id":"front-image" },
           { "image.normalize-color":[0,255] }
         ]

@@ -123,12 +123,13 @@ class NormalizeColor(Layer):
     ___ = Layer.Register('normalize-color', lambda d: NormalizeColor(d) )
     def __init__(self, d):
         Layer.__init__(self, d)
+        self.r = d['normalize-color']
 
     def apply(self, image):
         a = np.array(image)
         a = a.T
         for i in xrange(3):
             r = [np.min(a[i]), np.max(a[i])]
-            a[i] = ((a[i]-r[0])*255.0/(r[1]-r[0])).astype(np.uint8)
+            a[i] = ((a[i]-r[0])*1.0*(self.r[1]-self.r[0])/(r[1]-r[0])+self.r[0]).astype(np.uint8)
         return Image.fromarray(a.T)
 

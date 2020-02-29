@@ -25,13 +25,18 @@ class Sheet:
         self.cards.append(card)
         return True
 
-    def render(self, flip=False):
+    def render(self, header=None, flip=False):
         card_size = [ bleed * s for s in cuts_size ]
         self.image = Image.new('RGB', self.size, 'white')
         size = [int(math.floor(wh*n)) for wh,n in zip(card_size, self.ncards[:2])]
         dim = [s/n for s, n in zip(size, self.ncards)]
         draw = ImageDraw.Draw(self.image)
-                
+        
+        if header:
+            xy = [self.dpi * .1, self.dpi * .1]
+            font = cache.CacheFont('https://dl.dafont.com/dl/?f=evogria', 40, self.dpi).font
+            draw.text(xy, header, font=font, fill=(0,0,0))
+
         # draw the cut marks
         def draw_line(xy):
             draw.line(xy, fill='black', width=2)
@@ -77,7 +82,7 @@ def finishSheet(sheets, s):
     sheets.append(s)
     return Sheet(s.paperSize, s.dpi)
 
-def makeSheets(cards, paperSize, dpi):
+def makeSheets(cards, paperSize, dpi, header):
     sheets = []
     front = Sheet(paperSize, dpi)
     back = Sheet(paperSize, dpi)
@@ -93,12 +98,16 @@ def makeSheets(cards, paperSize, dpi):
     finishSheet(sheets, back)
 
     for i, s in enumerate(sheets):
-        s.render(flip=i%2)
+        text = None
+        side=['A', 'B']
+        if header:
+            text = header + ' page ' + str(1+i/2) + side[i%2]
+        s.render(text, flip=i%2)
     return sheets
 
-def renderCards(cards, fname, paperSize, dpi):
+def renderCards(cards, fname, paperSize, dpi, hdr):
     print 'Rendering', len(cards), 'cards'
-    sheets = makeSheets(cards, paperSize, dpi)
+    sheets = makeSheets(cards, paperSize, dpi, hdr)
     numPages = len(sheets)
     print fname + ':', numPages, 'pages'
     if numPages:
@@ -113,6 +122,7 @@ def parseArgs():
     ap.add_argument('--dpi', default=300)
     ap.add_argument('--paper', choices=['letter', 'A4'], default='letter')
     ap.add_argument('-v', '--verbose', action='store_true')
+    ap.add_argument('--header')
     return ap.parse_args()
 
 if __name__ == '__main__':
@@ -136,5 +146,5 @@ if __name__ == '__main__':
         fname = args.pdf
         if not fname:
             fname = pathlib.Path(args.dir).name + '.pdf'
-        renderCards(cards, fname, paper_size[args.paper], dpi)
+        renderCards(cards, fname, paper_size[args.paper], dpi, args.header)
 
