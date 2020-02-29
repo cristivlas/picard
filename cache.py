@@ -1,4 +1,5 @@
 import os
+import re
 import urlparse
 import urllib
 import zipfile
@@ -7,7 +8,7 @@ from PIL import Image, ImageFont
 DataPath = ''
 
 class CacheFile:
-    Root = os.path.join(os.getcwd(), '.cache')
+    Root = os.path.join(os.path.splitdrive(os.getcwd())[1], '.cache')
     def __init__(self, url):
         parsedUrl = urlparse.urlparse(url)
         start = 1 if os.path.isabs(parsedUrl.path) else 0
@@ -18,9 +19,10 @@ class CacheFile:
             path = os.path.join(os.path.join(CacheImage.Root, parsedUrl.netloc), path)
         else:
             if not os.path.isabs(path):
-                abspath = os.path.normpath(os.path.join(DataPath, path))
-                url = os.path.splitdrive(abspath)[1]
+                url = os.path.normpath(os.path.join(DataPath, path))
             path = os.path.join(CacheImage.Root, path)
+
+        path = CacheFile.getValidPathName(path)
         try:
             os.makedirs(os.path.split(path)[0])
         except OSError as e:
@@ -30,6 +32,11 @@ class CacheFile:
             print 'Downloading', url, '...'
             urllib.urlretrieve(url, path)
         self.path = path
+
+    @staticmethod
+    def getValidPathName(s):
+        s = str(s).strip().replace(' ', '_')
+        return re.sub(r'(?u)[^-\w.\\]', '', s)
 
 class CacheImage(CacheFile):
     Cache = {}
@@ -45,17 +52,14 @@ class CacheImage(CacheFile):
             self.Cache[url] = self.image = Image.open(self.path)
         except Exception as e:
             self.image = e
+            print e
 
 class CacheFont(CacheFile):
     Cache = {}
     def __init__(self, obj):
         url, size = obj.font, obj.fontSize
         if not url or not size:
-            try:
-                k = next(iter(self.Cache))
-                self.font = self.Cache[k]
-            except StopIteration:
-                self.font = ImageFont.load_default()
+            self.font = ImageFont.load_default()
         else:
             size *= obj.dpi/300
             try:

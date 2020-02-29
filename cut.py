@@ -4,16 +4,14 @@ from PIL import Image
 from layer import Layer
 from os import path
 
-L = 200
-
-def cropbox(im):
+def cropbox(im, threshold):
     a = np.array(im)
     a = a.T
-    f = np.nonzero(np.mean(a,axis=0)<L)
+    f = np.nonzero(np.mean(a,axis=0)<threshold)
     return [min(f[0]), min(f[1]), max(f[0])+1, max(f[1])+1]
 
-def autocrop(im):
-    return im.crop(cropbox(im))
+def autocrop(im, threshold):
+    return im.crop(cropbox(im, threshold))
 
 class AutoSplit(Layer):
     ___ = Layer.Register('auto-split', lambda d: AutoSplit(d) )
@@ -21,41 +19,45 @@ class AutoSplit(Layer):
         self.name = name
         Layer.__init__(self, d)
         d.setdefault('auto-split', 0)
+        d.setdefault('threshold', 200)
         self.i = d['auto-split']
         self.imgs = {}
+        self.threshold = d['threshold']
 
-    def down(self, im):
+    def down(self, im, threshold):
         a = np.array(im)
         a = a.T
-        f = np.all(np.mean(a,axis=0)>=L, axis=0)
+        f = np.all(np.mean(a,axis=0)>=threshold, axis=0)
         y = min(np.nonzero(f))
         if len(y):
             y = min(y)
-            return [self.cut(im.crop((0, 0, im.size[0], y))),
-                    self.cut(im.crop((0, y, im.size[0], im.size[1])))]
+            return [self.cut(im.crop((0, 0, im.size[0], y)), threshold),
+                    self.cut(im.crop((0, y, im.size[0], im.size[1])), threshold)]
 
-    def across(self, im):
+    def across(self, im, threshold):
         a = np.array(im)
         a = a.T
-        f = np.all(np.mean(a,axis=0)>=L, axis=1)
+        f = np.all(np.mean(a,axis=0)>=threshold, axis=1)
         x = min(np.nonzero(f))
         if len(x):
             x = min(x)
-            return [self.cut(im.crop((0, 0, x, im.size[1]))),
-                    self.cut(im.crop((x, 0, im.size[0], im.size[1])))]
+            return [self.cut(im.crop((0, 0, x, im.size[1])), threshold),
+                    self.cut(im.crop((x, 0, im.size[0], im.size[1])), threshold)]
     @property
     def count(self):
         return len(self.imgs)
 
-    def cut(self, im):
-        im = autocrop(im)
-        if not self.down(im) and not self.across(im):
+    def cut(self, im, threshold):
+        im = autocrop(im, threshold)
+        if not self.down(im, threshold) and not self.across(im, threshold):
             name = path.splitext(self.name)[0] + str(self.count).zfill(3)
             self.imgs[name]=im
         return self.imgs
 
     def apply(self, image):
-        self.cut(image)
+        if len(self.imgs)==0:
+            self.cut(image, self.threshold)
+        #print self.imgs.keys()
         return self.imgs[self.i]
 
 
@@ -73,7 +75,7 @@ if __name__ == '__main__':
         im2.paste(im, (0,0), im)
         im = im2
 
-    imgs = AutoSplit(name=imageFile).cut(im)
+    imgs = AutoSplit(name=imageFile).cut(im, 150)
     for k in imgs:
         print k
         imgs[k].show()

@@ -120,7 +120,7 @@ def drawText(draw, xy, text, fill, font):
 def centerTextH(size, draw, xy, bbox, text, font, fill=(0,0,0), sp=0, wrap=True, out=None):
     if wrap and out:
         h = bbox[1] or size[1]-xy[1]
-        draw.rectangle([xy[0], xy[1], xy[0]+bbox[0]-2, xy[1]+h-1], outline=out)
+        draw.rectangle([xy[0], xy[1], xy[0]+bbox[0]-2, xy[1]+h-1], outline=out, width=3)
     textsz = draw.textsize(text, font, spacing=sp)
     if wrap and (textsz[0] >= bbox[0]):
         average_char_width = math.ceil(1.0 *textsz[0] / len(text))
@@ -171,11 +171,17 @@ class ImageLayer(Layer):
             self.image = self.image.resize(box.size(), Image.LANCZOS)
     def apply(self, image):
         if isinstance(self.image, exceptions.Exception):
-            im = Image.new('RGBA', [self.dpi, self.dpi])
-            d = {'text':str(self.image), 'color':'orange' }
-            text = TextLayer(d)
-            return text.apply(im)
+            return self.errorImage()
         return self.applyImage(image, self.image)
+
+    def errorImage(self):
+        im = Image.new('RGBA', [self.dpi, self.dpi], 'white')
+        draw = ImageDraw.Draw(im)
+        draw.line([0,0]+list(im.size), fill='red', width=2)
+        draw.line([0,im.size[1],im.size[0],0], fill='red', width=2)
+        d = {'text':str(self.image), 'color':'black'}
+        text = TextLayer(d)
+        return text.apply(im)
 
 class Modifier(Layer):
     ___ = Layer.Register('modify', lambda d: Modifier(d) )

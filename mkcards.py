@@ -89,7 +89,6 @@ def makeSheets(cards, paperSize, dpi):
             front.addCard(image)
         image = c.back()
         assert back.addCard(image)
-
     finishSheet(sheets, front)
     finishSheet(sheets, back)
 
@@ -98,19 +97,19 @@ def makeSheets(cards, paperSize, dpi):
     return sheets
 
 def renderCards(cards, fname, paperSize, dpi):
-    print 'Rendering ', len(cards), 'cards'
+    print 'Rendering', len(cards), 'cards'
     sheets = makeSheets(cards, paperSize, dpi)
     numPages = len(sheets)
-    print numPages, 'pages'
+    print fname + ':', numPages, 'pages'
     if numPages:
         images = [x.image for x in sheets]
         images[0].save(fname, save_all=True, append_images=images[1:], resolution=dpi)
 
 def parseArgs():
-    ap = ArgumentParser(description='Cards Maker')
+    ap = ArgumentParser(description='Render game cards as PDF pages')
     ap.add_argument('dir', help="input directory of JSON files")
     ap.add_argument('--pdf', help="filename of PDF output")
-    ap.add_argument('--bleed', default=1.035)
+    ap.add_argument('--bleed', default=1.035, help="scale factor for bleed area")
     ap.add_argument('--dpi', default=300)
     ap.add_argument('--paper', choices=['letter', 'A4'], default='letter')
     return ap.parse_args()
@@ -127,16 +126,14 @@ if __name__ == '__main__':
     cards = []
     for i in pathlib.Path(args.dir).iterdir():
         if i.suffix == '.json':
-            with open(str(i), 'r') as f:
-                c = Card.load(f, dpi)
-                cards.append(c)
-                card_size = c.size.convert(dpi=dpi).box[2:]
-                assert cuts_size is None or cuts_size==card_size
-                cuts_size = card_size
+            c = Card.load(str(i), dpi)
+            cards.append(c)
+            card_size = c.size.convert(dpi=dpi).box[2:]
+            assert cuts_size is None or cuts_size==card_size
+            cuts_size = card_size
     if len(cards):
         fname = args.pdf
         if not fname:
             fname = pathlib.Path(args.dir).name + '.pdf'
         renderCards(cards, fname, paper_size[args.paper], dpi)
-        print fname
 
