@@ -8,7 +8,7 @@ import textwrap
 
 class Layer:
     Dict = { }
-    Factory = { 'clone': lambda d: Layer.clone(d) }
+    Factory = { }
     Units = dict([(x.name, x.value) for x in list(Units)])
 
     class Register:
@@ -18,27 +18,20 @@ class Layer:
     def __init__(self, d):
         d.setdefault('id', None)
         self.d=d
-        id=d['id']
-        if id:
-            assert id not in Layer.Dict
-            Layer.Dict[id] = self
+        unique_id=d['id']
+        if unique_id:
+            assert unique_id not in Layer.Dict
+            Layer.Dict[unique_id] = self
         units = Units[d['units']] if 'units' in d else Units.PIXEL
         try:
             box = d['box']
             self.box = Box(box, units)
         except KeyError:
             self.box = None
-           
-    @staticmethod
-    def clone(d):
-        id=d['clone']
-        layer=Layer.Dict[id]
-        for k in layer.d:
-            if k != 'id':
-                d.setdefault(k, layer.d[k])
-        newLayer = layer.__class__(d)
-        return newLayer
-   
+
+    def clone(self, d):
+        return self.__class__(d)
+
     @staticmethod
     def fromDict(d):
         for k in d:
@@ -52,16 +45,19 @@ class Layer:
         raise RuntimeError('Layer not recognized: '+str(d))
 
     @staticmethod
-    def applyGroup(image, layers, dpi):
+    def applyGroup(image, layers, dpi, verbose):
         assert dpi is not None
         for x in layers:
             x.dpi = dpi
+            x.verbose = verbose
+            if verbose:
+                print ' Applying:', x
             image = x.apply(image)
         return image
 
     def applyImage(self, image1, image2):
-        if image1 and image2:
-            image1 = image1.convert('RGBA')
+        if image1:
+            assert image1.mode=='RGBA'
             image2 = image2.convert('RGBA')
             if self.box:
                 box = self.box.convert(image1.size)
@@ -69,11 +65,12 @@ class Layer:
                 image1.paste(image2, box.box, image2)
             else:
                 image2 = image2.resize(image1.size, Image.LANCZOS)
-                return Image.alpha_composite(image1, image2)
-        return image1 or image2
+                image1 = Image.alpha_composite(image1, image2)
+            return image1
+        return image2
     
     def resolve(self):
-        pass
+        return (self, self)
 
 class Group(Layer):
     ___ = Layer.Register('group', lambda d: Group(d) )
@@ -81,30 +78,27 @@ class Group(Layer):
         Layer.__init__(self, d) 
         self.group = [Layer.fromDict(x) for x in d['group']]
     def apply(self, image):
-        return self.applyImage(image, Layer.applyGroup(None, self.group, self.dpi))
+        return self.applyImage(image, Layer.applyGroup(None, self.group, self.dpi, self.verbose))
 
 class Crop(Layer):
+    GetOrigin = {
+        'CENTER': lambda s,b: [(x-y)/2 for x,y in zip(s, b[2:])],
+        'NW': lambda s,b: [0,0],
+        'NE': lambda s,b: [s[0]-b[2], 0],
+        'SW': lambda s,b: [0, s[1]],
+        'SE': lambda s,b: [(x-y) for x, y in zip(s, b[2:])],
+    }
     ___ = Layer.Register('crop', lambda d: Crop(d) )
     def __init__(self, d):
         Layer.__init__(self, d)
-        self.anchor = d['crop']
+        self.origin = d['crop']
     def apply(self, image):
-        x = image.size
-        b = self.box.convert(x).size()
-        if self.anchor=='CENTER':
-            b = [(x[0]-b[0])/2, (x[1]-b[1])/2, (x[0]+b[0])/2, (x[1]+b[1])/2]
-        elif self.anchor=='NW':
-            b = [0,0]+b
-        elif self.anchor=='NE':
-            b = [x[0]-b[0],0,x[0],b[1]]
-        elif self.anchor=='SW':
-            b = [0,x[1]-b[1],b[0],x[1]]
-        elif self.anchor=='SE':
-            b = [x[0]-b[0],x[1]-b[1],x[0],x[1]]
-        else:
-            raise ValueError(self.anchor)
-        image = image.crop(b) 
-        return image
+        box = self.box.convert(image.size).box
+        orig = Crop.GetOrigin[self.origin](image.size, box)
+        box = [x+o for x,o in zip(box, orig+orig)]
+        if self.verbose:
+            print "Crop box:", self.box, box
+        return image.crop(box)
 
 class Scale(Layer):
     ___ = Layer.Register('scale', lambda d: Scale(d) )
@@ -191,12 +185,14 @@ class Modifier(Layer):
         self.target = d['modify']
 
     def apply(self, image):
-        return image
+        assert False
 
     def resolve(self):
         target = Layer.Dict[self.target]
+        d = dict(target.d)
+        del d['id']
         for k in self.d:
-            if k in target.d:
-                target.d[k] = self.d[k]
-        target.__init__(target.d)
+            if k in d:
+                d[k] = self.d[k]
+        return (target, target.clone(d))
 

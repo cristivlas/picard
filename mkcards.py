@@ -82,12 +82,12 @@ def makeSheets(cards, paperSize, dpi):
     front = Sheet(paperSize, dpi)
     back = Sheet(paperSize, dpi)
     for c in cards:
-        image = c.front()
+        image = c.front(args.verbose)
         if not front.addCard(image):
             front = finishSheet(sheets, front)
             back = finishSheet(sheets, back)
             front.addCard(image)
-        image = c.back()
+        image = c.back(args.verbose)
         assert back.addCard(image)
     finishSheet(sheets, front)
     finishSheet(sheets, back)
@@ -112,6 +112,7 @@ def parseArgs():
     ap.add_argument('--bleed', default=1.035, help="scale factor for bleed area")
     ap.add_argument('--dpi', default=300)
     ap.add_argument('--paper', choices=['letter', 'A4'], default='letter')
+    ap.add_argument('-v', '--verbose', action='store_true')
     return ap.parse_args()
 
 if __name__ == '__main__':

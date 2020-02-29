@@ -49,7 +49,8 @@ class CacheImage(CacheFile):
 
     def load(self, url):
         try:
-            self.Cache[url] = self.image = Image.open(self.path)
+            self.image = Image.open(self.path)
+            self.Cache[url] = self.image
         except Exception as e:
             self.image = e
             print e

@@ -19,10 +19,16 @@ class AutoSplit(Layer):
         self.name = name
         Layer.__init__(self, d)
         d.setdefault('auto-split', 0)
-        d.setdefault('threshold', 200)
         self.i = d['auto-split']
-        self.imgs = {}
+        d.setdefault('threshold', 200)
         self.threshold = d['threshold']
+        self.imgs = {}
+        self.mod = None
+
+    def clone(self, d):
+        obj = Layer.clone(self, d)
+        obj.imgs = self.imgs
+        return obj
 
     def down(self, im, threshold):
         a = np.array(im)
@@ -55,11 +61,16 @@ class AutoSplit(Layer):
         return self.imgs
 
     def apply(self, image):
+        if self.mod:
+            self.mod.verbose = self.verbose
+            return self.mod.apply(image)
         if len(self.imgs)==0:
             self.cut(image, self.threshold)
-        #print self.imgs.keys()
+            if self.verbose:
+                print ' Cut', len(self.imgs), 'images'
+        if self.verbose:
+            print ' Selecting: ', self.i, 'out of', len(self.imgs)
         return self.imgs[self.i]
-
 
 if __name__ == '__main__':
     if (len(sys.argv) != 2):
