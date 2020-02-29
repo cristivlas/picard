@@ -32,6 +32,22 @@ class Layer:
     def clone(self, d):
         return self.__class__(d)
 
+    def subst(self, d):
+        return d[self] if self in d else self
+
+    @staticmethod
+    def resolveModifiers(layers):
+        d = dict((x, x) for x in layers)
+        for x in layers:
+            if isinstance(x, Modifier):
+                orig, mod = x.modify()
+                d[orig] = mod
+        resolved = []
+        for x in layers:
+            if not isinstance(x, Modifier):
+                resolved.append(x.subst(d))
+        return resolved
+
     @staticmethod
     def fromDict(d):
         for k in d:
@@ -56,9 +72,10 @@ class Layer:
         return image
 
     def applyImage(self, image1, image2):
+        assert image2
+        image2 = image2.convert('RGBA')
         if image1:
             assert image1.mode=='RGBA'
-            image2 = image2.convert('RGBA')
             if self.box:
                 box = self.box.convert(image1.size)
                 image2 = image2.resize(box.size(), Image.LANCZOS)
@@ -69,16 +86,40 @@ class Layer:
             return image1
         return image2
     
-    def resolve(self):
-        return (self, self)
-
 class Group(Layer):
     ___ = Layer.Register('group', lambda d: Group(d) )
     def __init__(self, d):
         Layer.__init__(self, d) 
         self.group = [Layer.fromDict(x) for x in d['group']]
     def apply(self, image):
-        return self.applyImage(image, Layer.applyGroup(None, self.group, self.dpi, self.verbose))
+        image2 = Layer.applyGroup(None, self.group, self.dpi, self.verbose)
+        return self.applyImage(image, image2)
+    def subst(self, d):
+        group = [x.subst(d) for x in self.group]
+        if group==self.group:
+            return self
+        other = Group({'group':[]})
+        other.group = group
+        return other
+
+class Modifier(Layer):
+    ___ = Layer.Register('modify', lambda d: Modifier(d) )
+    def __init__(self, d):
+        Layer.__init__(self, d)
+        d.setdefault('modify', None)
+        self.target = d['modify']
+
+    def apply(self, image):
+        assert False
+
+    def modify(self):
+        target = Layer.Dict[self.target]
+        d = dict(target.d)
+        del d['id']
+        for k in self.d:
+            if k in d:
+                d[k] = self.d[k]
+        return (target, target.clone(d))
 
 class Crop(Layer):
     GetOrigin = {
@@ -97,7 +138,7 @@ class Crop(Layer):
         orig = Crop.GetOrigin[self.origin](image.size, box)
         box = [x+o for x,o in zip(box, orig+orig)]
         if self.verbose:
-            print "Crop box:", self.box, box
+            print '  Crop box:', self.box, box
         return image.crop(box)
 
 class Scale(Layer):
@@ -176,23 +217,4 @@ class ImageLayer(Layer):
         d = {'text':str(self.image), 'color':'black'}
         text = TextLayer(d)
         return text.apply(im)
-
-class Modifier(Layer):
-    ___ = Layer.Register('modify', lambda d: Modifier(d) )
-    def __init__(self, d):
-        Layer.__init__(self, d)
-        d.setdefault('modify', None)
-        self.target = d['modify']
-
-    def apply(self, image):
-        assert False
-
-    def resolve(self):
-        target = Layer.Dict[self.target]
-        d = dict(target.d)
-        del d['id']
-        for k in self.d:
-            if k in d:
-                d[k] = self.d[k]
-        return (target, target.clone(d))
 

@@ -119,3 +119,16 @@ class Rotate(Layer):
     def apply(self, image):
         return image.rotate(self.angle, expand=True)
 
+class NormalizeColor(Layer):
+    ___ = Layer.Register('normalize-color', lambda d: NormalizeColor(d) )
+    def __init__(self, d):
+        Layer.__init__(self, d)
+
+    def apply(self, image):
+        a = np.array(image)
+        a = a.T
+        for i in xrange(3):
+            r = [np.min(a[i]), np.max(a[i])]
+            a[i] = ((a[i]-r[0])*255.0/(r[1]-r[0])).astype(np.uint8)
+        return Image.fromarray(a.T)
+
