@@ -1,21 +1,17 @@
 {
   "size": "MINI",
   "front": [
-    { "layer.image": "template/background.png"},
+    { "layer.image": "template/background.png", "fill": true},
     { "layer.group":
       [
         { "layer.image":"https://encrypted-tbn0.gstatic.com/images?q=tbn%3AANd9GcTj31fXR3ZkxtrnJ330QX335YQRPKizPceWQ0E1A4_Sgg1QnYYl"},
 	{ "image.mean-to-alpha":240},
 	{ "image.flip":"H" },
-	{ "image.rotate":30},
-        { "layer.scale":1.5},
-	{ "image.halo":"teal"},
-        { "layer.crop": "CENTER", "box": "MINI" }
-      ],
-      "box":[0,2.5,100,102.5],
-      "units":"PERCENT"
+	{ "image.rotate":20},
+	{ "image.halo":"teal"}
+      ]
     },
-    { "layer.image":"template/melee.png"},
+    { "layer.image":"template/melee.png", "fill": true},
     { 
       "layer.text":"RELIC SWORD",
       "font":"fonts/Zekton Condensed Heavy.zip",
@@ -59,6 +55,6 @@
   ],
   "back": 
   [
-    { "layer.image":"img/back.png"}
+    { "layer.image":"img/back.png", "fill": true}
   ]
 }

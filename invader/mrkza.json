@@ -1,19 +1,15 @@
 {
   "size": "MINI",
   "front": [
-    { "layer.image": "template/background.png"},
+    { "layer.image": "template/background.png", "fill": true },
     { "layer.group":
       [
         { "layer.image":"https://i.imgur.com/hvnfEEV.png" },
-        { "layer.scale": 0.65},
         { "image.rotate": 15 },
-        { "image.halo":"teal"},
-        { "layer.crop": "CENTER", "box": "MINI" }
-      ],
-      "box":[0,2.5,100,102.5],
-      "units":"PERCENT"
+        { "image.halo":"teal"}
+      ]
     },
-    { "layer.image":"template/ranged.png"},
+    { "layer.image":"template/ranged.png", "fill": true },
     { 
       "id":"weapon-name",
       "layer.text":"MARKZA SMG",
@@ -62,6 +58,6 @@
   ],
   "back": 
   [
-    { "layer.image":"img/back.png"}
+    { "layer.image":"img/back.png", "fill": true}
   ]
 }

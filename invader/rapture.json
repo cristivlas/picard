@@ -1,22 +1,18 @@
 {
   "size": "MINI",
   "front": [
-    { "layer.image": "template/background.png"},
+    { "layer.image": "template/background.png", "fill": true},
     { "layer.group":
       [
         { "layer.image":"https://i.pinimg.com/originals/19/68/ba/1968ba0d3edbc6489f7bb1f102e3878c.jpg" },
         { "cut.auto-split":"image000" },
         { "image.mean-to-alpha":240},
-        { "layer.scale":0.4},
         { "image.flip":"H"},
-        { "image.rotate":-5},
-        { "image.halo":"teal"},
-        { "layer.crop": "CENTER", "box": "MINI" }
-      ],
-      "box":[0,2.5,100,102.5],
-      "units":"PERCENT"
+        { "image.rotate":10},
+        { "image.halo":"teal"}
+      ]
     },
-    { "layer.image":"template/ranged.png"},
+    { "layer.image":"template/ranged.png", "fill": true},
     { 
       "layer.text":"RAPTURE",
       "font":"fonts/Zekton Condensed Heavy.zip",
@@ -60,6 +56,6 @@
   ],
   "back": 
   [
-    { "layer.image":"img/back.png"}
+    { "layer.image":"img/back.png", "fill": true}
   ]
 }

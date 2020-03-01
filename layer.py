@@ -16,8 +16,10 @@ class Layer:
             Layer.Factory[name]=fun
    
     def __init__(self, d):
-        d.setdefault('id', None)
         self.d=d
+        d.setdefault('fill', False)
+        self.fill = d['fill']
+        d.setdefault('id', None)
         unique_id=d['id']
         if unique_id:
             assert unique_id not in Layer.Dict
@@ -83,17 +85,17 @@ class Layer:
 
     def applyImage(self, image1, image2):
         assert image2
-        image2 = image2.convert('RGBA')
+        assert image2.mode == 'RGBA'
         if image1:
             assert image1.mode=='RGBA'
-            if self.box:
-                box = self.box.convert(image1.size)
-                image2 = image2.resize(box.size(), Image.LANCZOS)
-                image1.paste(image2, box.box, image2)
-            else:
+            if image2.size==image1.size:
+                if self.verbose:
+                    print ' Awesome. The glove fits.'
+            elif self.fill:
                 image2 = image2.resize(image1.size, Image.LANCZOS)
-                image1 = Image.alpha_composite(image1, image2)
-            return image1
+            else:
+                image2 = scaleToFit(image2, image1.size, self.verbose)
+            return Image.alpha_composite(image1, image2)
         return image2
     
 class Group(Layer):
@@ -108,7 +110,9 @@ class Group(Layer):
         group = [x.subst(d) for x in self.group]
         if group==self.group:
             return self
-        other = Group({'group':[]})
+        d = dict(self.d)
+        d['group'] = []
+        other = Group(d)
         other.group = group
         return other
 
@@ -151,13 +155,23 @@ class Crop(Layer):
             print '  Crop box:', self.box, box, self.origin
         return image.crop(box)
 
-class Scale(Layer):
-    ___ = Layer.Register('scale', lambda d: Scale(d) )
-    def __init__(self, d):
-        Layer.__init__(self, d)
-        self.factor = float(d['scale'])
-    def apply(self, image):
-        return image.resize([int(self.factor*x) for x in image.size], Image.LANCZOS)
+def scaleToFit(image, size, verbose):
+    w, h = (float(x) for x in image.size)
+    aspect =  w / h
+    if size[1] * aspect <= size[0]:
+        scale = size[1] / h
+        if verbose:
+            print ' Keep height, scale:', scale
+    elif size[0] / aspect <= size[1]:
+        scale = size[0] / w
+        if verbose:
+            print ' Keep width, scale:', scale
+    else:
+        assert False
+    image = image.resize([int(scale * x) for x in image.size], Image.LANCZOS)
+    image2 = Image.new('RGBA', size, None)
+    image2.paste(image, [(x-y)/2 for x,y in zip(size, image.size)], image)
+    return image2
 
 def drawText(draw, xy, text, fill, font):
     draw.text(xy, text, fill, font)
@@ -211,9 +225,7 @@ class ImageLayer(Layer):
     def __init__(self, d):
         Layer.__init__(self, d) 
         self.image = CacheImage(d['image']).image
-        if self.box:
-            box = self.box.convert(self.image.size)
-            self.image = self.image.resize(box.size(), Image.LANCZOS)
+
     def apply(self, image):
         if isinstance(self.image, exceptions.Exception):
             return self.errorImage(self.image)

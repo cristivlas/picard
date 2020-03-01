@@ -49,7 +49,7 @@ class CacheImage(CacheFile):
 
     def load(self, url):
         try:
-            self.image = Image.open(self.path)
+            self.image = Image.open(self.path).convert('RGBA')
             self.Cache[url] = self.image
         except Exception as e:
             self.image = e

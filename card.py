@@ -40,6 +40,7 @@ class Card:
         if fname in Card.Dict:
             return Card.Dict[fname]
         with open(fname, 'r') as f:
+            print 'Loading:', fname
             d = json.load(f)
         card = Card(d, fname, dpi)
         Card.Dict[fname] = card

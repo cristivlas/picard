@@ -1,21 +1,18 @@
 {
   "size": "MINI",
   "front": [
-    { "layer.image": "template/background.png"},
+    { "layer.image": "template/background.png", "fill": true},
     { "layer.group":
       [
         { "layer.image":"https://i.pinimg.com/originals/85/4c/a0/854ca04fd6b497407af0f1e175d5da0a.jpg" },
 	{ "cut.auto-split":"image000"},
-        { "layer.scale":0.4},
 	{ "image.mean-to-alpha":240},
 	{ "image.flip":"HORIZONTAL"},
-	{ "image.halo":"teal"},
-        { "layer.crop": "CENTER", "box": "MINI" }
-      ],
-      "box":[0,2.5,100,102.5],
-      "units":"PERCENT"
+	{ "image.crop":"CENTER", "box":[0, -10, 110, 110], "units":"PERCENT" },
+	{ "image.halo":"white" }
+      ]
     },
-    { "layer.image":"template/ranged.png"},
+    { "layer.image":"template/ranged.png", "fill": true},
     { 
       "layer.text":"BFG",
       "font":"fonts/Zekton Condensed Heavy.zip",
@@ -59,6 +56,6 @@
   ],
   "back": 
   [
-    { "layer.image":"img/back.png"}
+    { "layer.image":"img/back.png", "fill": true}
   ]
 }
