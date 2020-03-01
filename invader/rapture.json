@@ -5,7 +5,7 @@
     { "layer.group":
       [
         { "layer.image":"https://i.pinimg.com/originals/19/68/ba/1968ba0d3edbc6489f7bb1f102e3878c.jpg" },
-        { "cut.auto-split":"image000" },
+        { "cut.auto-crop":"image000" },
         { "image.mean-to-alpha":240},
         { "image.flip":"H"},
         { "image.rotate":10},
@@ -13,7 +13,7 @@
       ]
     },
     { "layer.image":"template/ranged.png", "fill": true},
-    { 
+    {
       "layer.text":"RAPTURE",
       "font":"fonts/Zekton Condensed Heavy.zip",
       "font-size": 52,
@@ -21,7 +21,7 @@
       "units": "PERCENT",
       "color": "lightblue"
     },
-    { 
+    {
       "layer.text":"1-2",
       "font":"fonts/zektonbo.zip",
       "font-size": 30,
@@ -29,7 +29,7 @@
       "units": "PERCENT",
       "color": "lightblue"
     },
-    { 
+    {
       "layer.text":"3",
       "font":"fonts/zektonbo.zip",
       "font-size": 30,
@@ -37,7 +37,7 @@
       "units": "PERCENT",
       "color": "lightblue"
     },
-    { 
+    {
       "layer.text":"3",
       "font":"fonts/zektonbo.zip",
       "font-size": 30,
@@ -45,7 +45,7 @@
       "units": "PERCENT",
       "color": "lightblue"
     },
-    { 
+    {
       "layer.text":"1",
       "font":"fonts/zektonbo.zip",
       "font-size": 30,
@@ -54,7 +54,7 @@
       "color": "lightblue"
     }
   ],
-  "back": 
+  "back":
   [
     { "layer.image":"img/back.png", "fill": true}
   ]

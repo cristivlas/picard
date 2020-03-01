@@ -135,26 +135,6 @@ class Modifier(Layer):
                 d[k] = self.d[k]
         return (target, target.clone(d))
 
-class Crop(Layer):
-    GetOrigin = {
-        'CENTER': lambda s,b: [(x-y)/2 for x,y in zip(s, b[2:])],
-        'NW': lambda s,b: [0,0],
-        'NE': lambda s,b: [s[0]-b[2], 0],
-        'SW': lambda s,b: [0, s[1]],
-        'SE': lambda s,b: [(x-y) for x, y in zip(s, b[2:])],
-    }
-    ___ = Layer.Register('crop', lambda d: Crop(d) )
-    def __init__(self, d):
-        Layer.__init__(self, d)
-        self.origin = d['crop']
-    def apply(self, image):
-        box = self.box.convert(image.size).box
-        orig = Crop.GetOrigin[self.origin](image.size, box)
-        box = [x+o for x,o in zip(box, orig+orig)]
-        if self.verbose:
-            print '  Crop box:', self.box, box, self.origin
-        return image.crop(box)
-
 def scaleToFit(image, size, verbose):
     w, h = (float(x) for x in image.size)
     aspect =  w / h

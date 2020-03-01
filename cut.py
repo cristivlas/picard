@@ -13,13 +13,13 @@ def cropbox(im, threshold):
 def autocrop(im, threshold):
     return im.crop(cropbox(im, threshold))
 
-class AutoSplit(Layer):
-    ___ = Layer.Register('auto-split', lambda d: AutoSplit(d) )
+class AutoCrop(Layer):
+    ___ = Layer.Register('auto-crop', lambda d: AutoCrop(d) )
     def __init__(self, d={}, name='image'):
         self.name = name
         Layer.__init__(self, d)
-        d.setdefault('auto-split', 0)
-        self.i = d['auto-split']
+        d.setdefault('auto-crop', 0)
+        self.i = d['auto-crop']
         d.setdefault('threshold', 200)
         self.threshold = d['threshold']
         self.imgs = {}
@@ -76,6 +76,26 @@ class AutoSplit(Layer):
             print e
             return self.errorImage(e)
 
+class Crop(Layer):
+    GetOrigin = {
+        'CENTER': lambda s,b: [(x-y)/2 for x,y in zip(s, b[2:])],
+        'NW': lambda s,b: [0,0],
+        'NE': lambda s,b: [s[0]-b[2], 0],
+        'SW': lambda s,b: [0, s[1]],
+        'SE': lambda s,b: [(x-y) for x, y in zip(s, b[2:])],
+    }
+    ___ = Layer.Register('crop', lambda d: Crop(d) )
+    def __init__(self, d):
+        Layer.__init__(self, d)
+        self.origin = d['crop']
+    def apply(self, image):
+        box = self.box.convert(image.size).box
+        orig = Crop.GetOrigin[self.origin](image.size, box)
+        box = [x+o for x,o in zip(box, orig+orig)]
+        if self.verbose:
+            print '  Crop box:', self.box, box, self.origin
+        return image.crop(box)
+
 if __name__ == '__main__':
     if (len(sys.argv) != 2):
         print("\nUsage: python {} input_file\n".format(sys.argv[0]))
@@ -90,8 +110,7 @@ if __name__ == '__main__':
         im2.paste(im, (0,0), im)
         im = im2
 
-    imgs = AutoSplit(name=imageFile).cut(im, 150)
+    imgs = AutoCrop(name=imageFile).cut(im, 150)
     for k in imgs:
         print k
         imgs[k].show()
-

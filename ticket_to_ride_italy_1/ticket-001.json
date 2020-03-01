@@ -4,7 +4,7 @@
       {
         "layer.group": [
           { "layer.image":"https://cf.geekdo-images.com/imagepagezoom/img/K6HwiisHlMTC8zkXLyB1H4btTmg=/fit-in/1200x900/filters:no_upscale()/pic1642145.jpg" },
-          { "cut.auto-split": "image000", "threshold": 150, "id":"front-image" },
+          { "cut.auto-crop": "image000", "threshold": 150, "id":"front-image" },
           { "image.normalize-color":[0,255] }
         ],
         "fill": true
@@ -14,7 +14,7 @@
     {
       "layer.group": [
         { "layer.image":"https://cf.geekdo-images.com/imagepagezoom/img/n9gCHAGboZuqddnUXXTyBIu4AZ0=/fit-in/1200x900/filters:no_upscale()/pic3456625.jpg" },
-        { "image.crop":"NW", "box":[0.5,0,33.33,33.33], "units":"PERCENT" }
+        { "cut.crop":"NW", "box":[0.5,0,33.33,33.33], "units":"PERCENT" }
       ], "fill": true
     }
   ]

@@ -1,7 +1,7 @@
 {
   "recipe": "ticket-001.json",
   "front": [
-    { "layer.modify": "front-image", "auto-split": "image006" } 
+    { "layer.modify": "front-image", "auto-crop": "image006" }
   ],
   "back": [
   ]
