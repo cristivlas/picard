@@ -1,1 +1,1 @@
-find . -name "*.py" -or -name "*.json" -exec sed --in-place=".bak" 's/[ \t]*$//' {} \;
+find . -name "*.py" -or -name "*.json" -exec sed --in-place=".bak" -e 's/[ 	]*$//g' {} \;

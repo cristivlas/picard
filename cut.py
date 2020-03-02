@@ -15,9 +15,9 @@ def autocrop(im, threshold):
 
 class AutoCrop(Layer):
     ___ = Layer.Register('auto-crop', lambda d: AutoCrop(d) )
-    def __init__(self, d={}, name='image'):
+    def __init__(self, d={}, name='image', verbose=False):
         self.name = name
-        Layer.__init__(self, d)
+        Layer.__init__(self, d, verbose)
         d.setdefault('auto-crop', 0)
         self.i = d['auto-crop']
         d.setdefault('threshold', 200)
@@ -85,8 +85,8 @@ class Crop(Layer):
         'SE': lambda s,b: [(x-y) for x, y in zip(s, b[2:])],
     }
     ___ = Layer.Register('crop', lambda d: Crop(d) )
-    def __init__(self, d):
-        Layer.__init__(self, d)
+    def __init__(self, d, verbose=False):
+        Layer.__init__(self, d, verbose)
         self.origin = d['crop']
     def apply(self, image):
         box = self.box.convert(image.size).box

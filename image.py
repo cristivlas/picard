@@ -4,8 +4,8 @@ import numpy as np
 
 class MeanToAlpha(Layer):
     ___ = Layer.Register('mean-to-alpha', lambda d: MeanToAlpha(d) )
-    def __init__(self, d):
-        Layer.__init__(self, d) 
+    def __init__(self, d, verbose=False):
+        Layer.__init__(self, d, verbose) 
         self.level=int(d['mean-to-alpha'])
         
     def apply(self, image):
@@ -21,11 +21,13 @@ class MeanToAlpha(Layer):
 
 class Opacity(Layer):
     ___ = Layer.Register('opacity', lambda d: Opacity(d) )
-    def __init__(self, d):
-        Layer.__init__(self, d)
+    def __init__(self, d, verbose=False):
+        Layer.__init__(self, d, verbose)
         self.opacity=min(d['opacity'], 100.0)/100.0
 
     def apply(self, image):
+        if self.verbose:
+            print ' Opacity: ', self.opacity, '%'
         a = np.array(image)
         a = a.T
         a[3] = (a[3] * self.opacity).astype(np.uint8)
@@ -33,8 +35,8 @@ class Opacity(Layer):
 
 class Mask(Layer):
     ___ = Layer.Register('mask', lambda d: Mask(d) )
-    def __init__(self, d):
-        Layer.__init__(self, d) 
+    def __init__(self, d, verbose=False):
+        Layer.__init__(self, d, verbose) 
         self.color = d['mask']
         
     def apply(self, image):
@@ -81,8 +83,8 @@ class Flip(Layer):
         'V': ImageOps.flip
     }
     ___ = Layer.Register('flip', lambda d: Flip(d) )
-    def __init__(self, d):
-        Layer.__init__(self, d) 
+    def __init__(self, d, verbose=False):
+        Layer.__init__(self, d, verbose) 
         self.mode = d['flip']
         
     def apply(self, image):
@@ -90,9 +92,9 @@ class Flip(Layer):
 
 class Halo(Layer):
     ___ = Layer.Register('halo', lambda d: Halo(d) )
-    def __init__(self, d):
-        Layer.__init__(self, d) 
-        d.setdefault('radius', 5)
+    def __init__(self, d, verbose=False):
+        Layer.__init__(self, d, verbose) 
+        d.setdefault('radius', 2)
         self.color = d['halo']
         self.radius = d['radius']
         
@@ -102,13 +104,12 @@ class Halo(Layer):
         im = im.filter(ImageFilter.GaussianBlur(self.radius))
         im = Image.composite(im, image, ImageChops.invert(im))
         bloom = [ 0.003, 0.053, 0.003, 0.053, 1.124, 0.053, 0.003, 0.053, 0.003 ]
-        im = im.filter(ImageFilter.Kernel((3, 3), bloom, 1, 0))
-        return im
+        return im.filter(ImageFilter.Kernel((3, 3), bloom, 1, 0))
 
 class Rotate(Layer):
     ___ = Layer.Register('rotate', lambda d: Rotate(d) )
-    def __init__(self, d):
-        Layer.__init__(self, d) 
+    def __init__(self, d, verbose=False):
+        Layer.__init__(self, d, verbose) 
         self.angle = float(d['rotate'])
         
     def apply(self, image):
@@ -116,8 +117,8 @@ class Rotate(Layer):
 
 class NormalizeColor(Layer):
     ___ = Layer.Register('normalize-color', lambda d: NormalizeColor(d) )
-    def __init__(self, d):
-        Layer.__init__(self, d)
+    def __init__(self, d, verbose=False):
+        Layer.__init__(self, d, verbose)
         self.r = d['normalize-color']
 
     def apply(self, image):

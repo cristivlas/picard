@@ -5,10 +5,10 @@
     { "layer.group":
       [
         { "layer.image":"https://i.imgur.com/hvnfEEV.png" },
-        { "image.rotate": 15 },
-        { "image.halo":"teal"}
+        { "image.rotate": 15 }
       ]
     },
+    { "image.halo":"teal"},
     { "layer.image":"template/ranged.png", "fill": true },
     {
       "id":"weapon-name",

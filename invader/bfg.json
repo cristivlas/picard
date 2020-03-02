@@ -2,16 +2,17 @@
   "size": "MINI",
   "front": [
     { "layer.image": "template/background.png", "fill": true},
+    { "draw.rectangle": "darkslategray", "box": [3, 30, 97, 70 ], "units": "PERCENT", "corner-radius": 40, "line-width":5, "fill-color": "teal", "opacity":30 },
     { "layer.group":
       [
         { "layer.image":"https://i.pinimg.com/originals/85/4c/a0/854ca04fd6b497407af0f1e175d5da0a.jpg" },
-	{ "cut.auto-crop":"image000"},
-	{ "image.mean-to-alpha":240},
-	{ "image.flip":"HORIZONTAL"},
-	{ "image.crop":"CENTER", "box":[0, -10, 110, 110], "units":"PERCENT" },
-	{ "image.halo":"white" }
+        { "cut.auto-crop":"image000"},
+        { "image.mean-to-alpha":240},
+        { "image.flip":"HORIZONTAL"},
+        { "image.crop":"CENTER", "box":[0, -10, 110, 110], "units":"PERCENT" }
       ]
     },
+    { "image.halo":"teal" },
     { "layer.image":"template/ranged.png", "fill": true},
     {
       "layer.text":"BFG",

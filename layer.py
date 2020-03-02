@@ -15,8 +15,9 @@ class Layer:
         def __init__(self, name, fun):
             Layer.Factory[name]=fun
    
-    def __init__(self, d):
+    def __init__(self, d, verbose):
         self.d=d
+        self.verbose=verbose
         d.setdefault('fill', False)
         self.fill = d['fill']
         d.setdefault('id', None)
@@ -100,8 +101,8 @@ class Layer:
     
 class Group(Layer):
     ___ = Layer.Register('group', lambda d: Group(d) )
-    def __init__(self, d):
-        Layer.__init__(self, d) 
+    def __init__(self, d, verbose=False):
+        Layer.__init__(self, d, verbose) 
         self.group = [Layer.fromDict(x) for x in d['group']]
     def apply(self, image):
         image2 = Layer.applyGroup(None, self.group, self.dpi, self.verbose)
@@ -118,8 +119,9 @@ class Group(Layer):
 
 class Modifier(Layer):
     ___ = Layer.Register('modify', lambda d: Modifier(d) )
-    def __init__(self, d):
-        Layer.__init__(self, d)
+    def __init__(self, d, verbose=False):
+        assert 'id' not in d
+        Layer.__init__(self, d, verbose)
         d.setdefault('modify', None)
         self.target = d['modify']
 
@@ -176,8 +178,8 @@ def centerTextH(size, draw, xy, bbox, text, font, fill=(0,0,0), sp=0, wrap=True,
 
 class TextLayer(Layer):
     ___ = Layer.Register('text', lambda d: TextLayer(d) )
-    def __init__(self, d):
-        Layer.__init__(self, d) 
+    def __init__(self, d, verbose=False):
+        Layer.__init__(self, d, verbose) 
         d.setdefault('outline', None)
         d.setdefault('color', 'black')
         d.setdefault('font', None)
@@ -202,8 +204,8 @@ class TextLayer(Layer):
 
 class ImageLayer(Layer):
     ___ = Layer.Register('image', lambda d: ImageLayer(d) )
-    def __init__(self, d):
-        Layer.__init__(self, d) 
+    def __init__(self, d, verbose=False):
+        Layer.__init__(self, d, verbose) 
         self.image = CacheImage(d['image']).image
 
     def apply(self, image):
