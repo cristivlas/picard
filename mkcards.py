@@ -64,7 +64,10 @@ class Sheet:
         count = 0
         for card in self.cards:
             if flip:
-                card = ImageOps.mirror(card)
+                if card.flip:
+                    card = ImageOps.flip(card)
+                else:
+                    card = ImageOps.mirror(card)
             card = card.resize([int(i) for i in card_size], Image.LANCZOS)
             image.paste(card, [int(x),int(y)], card)
             x += dim[0]
@@ -82,17 +85,18 @@ def finishSheet(sheets, s):
     sheets.append(s)
     return Sheet(s.paperSize, s.dpi)
 
-def makeSheets(cards, paperSize, dpi, header):
+def makeSheets(cards, paperSize, dpi, args):
     sheets = []
     front = Sheet(paperSize, dpi)
     back = Sheet(paperSize, dpi)
     for c in cards:
-        image = c.front(args.verbose)
+        image = c.front(args)
         if not front.addCard(image):
             front = finishSheet(sheets, front)
             back = finishSheet(sheets, back)
             front.addCard(image)
-        image = c.back(args.verbose)
+        image = c.back(args)
+        image.flip = c.rotate
         assert back.addCard(image)
     finishSheet(sheets, front)
     finishSheet(sheets, back)
@@ -100,14 +104,14 @@ def makeSheets(cards, paperSize, dpi, header):
     for i, s in enumerate(sheets):
         text = None
         side=['A', 'B']
-        if header:
-            text = header + ' page ' + str(1+i/2) + side[i%2]
+        if args.header:
+            text = args.header + ' page ' + str(1+i/2) + side[i%2]
         s.render(text, flip=i%2)
     return sheets
 
-def renderCards(cards, fname, paperSize, dpi, hdr):
+def renderCards(cards, fname, paperSize, dpi, args):
     print 'Rendering', len(cards), 'cards'
-    sheets = makeSheets(cards, paperSize, dpi, hdr)
+    sheets = makeSheets(cards, paperSize, dpi, args)
     numPages = len(sheets)
     print fname + ':', numPages, 'pages'
     if numPages:
@@ -123,6 +127,7 @@ def parseArgs():
     ap.add_argument('--paper', choices=['letter', 'A4'], default='letter')
     ap.add_argument('-v', '--verbose', action='store_true')
     ap.add_argument('--header')
+    ap.add_argument('--orient', choices=['portrait', 'landscape'], default='portrait')
     return ap.parse_args()
 
 if __name__ == '__main__':
@@ -139,12 +144,18 @@ if __name__ == '__main__':
         if i.suffix == '.json':
             c = Card.load(str(i), dpi)
             cards.append(c)
+            c.rotate = False
+            if args.orient and args.orient != c.size.orientation():
+                c.size.rotate() 
+                c.rotate = True
             card_size = c.size.convert(dpi=dpi).box[2:]
             assert cuts_size is None or cuts_size==card_size
             cuts_size = card_size
+            if c.rotate:
+                c.size.rotate() 
     if len(cards):
         fname = args.pdf
         if not fname:
             fname = pathlib.Path(args.dir).name + '.pdf'
-        renderCards(cards, fname, paper_size[args.paper], dpi, args.header)
+        renderCards(cards, fname, paper_size[args.paper], dpi, args)
 

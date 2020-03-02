@@ -49,13 +49,21 @@ class Card:
     def blank(self):
         return Image.new('RGBA', self.size.convert(dpi=self.dpi).size(), self.bg)
 
-    def front(self, verbose):
-        if verbose:
+    def front(self, args):
+        if args.verbose:
             print 'Front:', self.fname
-        return Layer.applyGroup(self.blank(), self.frontLayers, dpi=self.dpi, verbose=verbose)
-    
-    def back(self, verbose):
-        if verbose:
+        im = Layer.applyGroup(self.blank(), self.frontLayers, dpi=self.dpi, verbose=args.verbose)
+        return self.finish(im, args)
+ 
+    def back(self, args):
+        if args.verbose:
             print 'Back:', self.fname
-        return Layer.applyGroup(self.blank(), self.backLayers, dpi=self.dpi, verbose=verbose)
+        im = Layer.applyGroup(self.blank(), self.backLayers, dpi=self.dpi, verbose=args.verbose)
+        return self.finish(im, args)
+
+    @staticmethod
+    def finish(im, args):
+        if args.orient=='landscape' and im.size[0]<im.size[1]:
+            im = im.rotate(90, expand=True)
+        return im
 

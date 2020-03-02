@@ -2,7 +2,7 @@
   "size": "MINI",
   "front": [
     { "layer.image": "template/background.png", "fill": true},
-    { "draw.rectangle": "darkslategray", "box": [3, 30, 97, 70 ], "units": "PERCENT", "corner-radius": 40, "line-width":5, "fill-color": "teal", "opacity":30 },
+    { "draw.rectangle": "red", "box": [3, 30, 97, 70 ], "units": "PERCENT", "corner-radius": 40, "line-width":5, "fill-color": "coral", "opacity":60 },
     { "layer.group":
       [
         { "layer.image":"https://i.pinimg.com/originals/85/4c/a0/854ca04fd6b497407af0f1e175d5da0a.jpg" },
