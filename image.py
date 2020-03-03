@@ -7,7 +7,7 @@ class MeanToAlpha(Layer):
     ___ = Layer.Register('mean-to-alpha', lambda d: MeanToAlpha(d) )
     def __init__(self, d, verbose=False):
         Layer.__init__(self, d, verbose) 
-        self.level=int(d['mean-to-alpha'])
+        self.level=int(Layer.arg(d))
         
     def apply(self, image):
         image = image.convert('RGBA')
@@ -24,7 +24,7 @@ class Opacity(Layer):
     ___ = Layer.Register('opacity', lambda d: Opacity(d) )
     def __init__(self, d, verbose=False):
         Layer.__init__(self, d, verbose)
-        self.opacity=min(d['opacity'], 100.0)/100.0
+        self.opacity=min(Layer.arg(d), 100.0)/100.0
 
     def apply(self, image):
         if self.verbose:
@@ -38,7 +38,7 @@ class Mask(Layer):
     ___ = Layer.Register('mask', lambda d: Mask(d) )
     def __init__(self, d, verbose=False):
         Layer.__init__(self, d, verbose) 
-        self.color = d['mask']
+        self.color = Layer.arg(d)
         
     def apply(self, image):
         image = image.convert('RGBA')
@@ -51,7 +51,7 @@ class Brighten(Layer):
     ___ = Layer.Register('brighten', lambda d: Brighten(d) )
     def __init__(self, d, verbose=False):
         Layer.__init__(self, d, verbose) 
-        self.amount = float(d['brighten'])
+        self.amount = Layer.arg(d)
         
     def apply(self, image):
         return ImageEnhance.Brightness(image).enhance(self.amount)
@@ -60,7 +60,7 @@ class Contrast(Layer):
     ___ = Layer.Register('contrast', lambda d: Contrast(d) )
     def __init__(self, d, verbose=False):
         Layer.__init__(self, d, verbose) 
-        self.amount = float(d['contrast'])
+        self.amount = Layer.arg(d)
         
     def apply(self, image):
         return ImageEnhance.Contrast(image).enhance(self.amount)
@@ -70,7 +70,7 @@ class Sharpen(Layer):
     ___ = Layer.Register('sharpen', lambda d: Sharpen(d) )
     def __init__(self, d, verbose=False):
         Layer.__init__(self, d, verbose) 
-        self.amount = float(d['sharpen'])
+        self.amount = Layer.arg(d)
         
     def apply(self, image):
         return ImageEnhance.Sharpness(image).enhance(self.amount)
@@ -90,7 +90,7 @@ class Filter(Layer):
     ___ = Layer.Register('filter', lambda d: Filter(d) )
     def __init__(self, d, verbose=False):
         Layer.__init__(self, d, verbose) 
-        self.filter = d['filter']
+        self.filter = Layer.arg(d)
         
     def apply(self, image):
         return image.filter(Filter.Names[self.filter])
@@ -105,7 +105,7 @@ class Flip(Layer):
     ___ = Layer.Register('flip', lambda d: Flip(d) )
     def __init__(self, d, verbose=False):
         Layer.__init__(self, d, verbose) 
-        self.mode = d['flip']
+        self.mode = Layer.arg(d)
         
     def apply(self, image):
         return Flip.Func[self.mode](image)
@@ -114,11 +114,11 @@ class Halo(Layer):
     ___ = Layer.Register('halo', lambda d: Halo(d) )
     def __init__(self, d, verbose=False):
         Layer.__init__(self, d, verbose) 
-        self.color = d['halo']
+        self.color = Layer.arg(d)
         self.radius = d.setdefault('gauss-blur-radius', 2)
         
     def apply(self, image):
-        mask = Mask({'mask':self.color})
+        mask = Mask({'mask':self.color, 'ctor':'mask'})
         im = mask.apply(image)
         im = im.filter(ImageFilter.GaussianBlur(self.radius))
         im = Image.composite(im, image, ImageChops.invert(im))
@@ -129,7 +129,7 @@ class Rotate(Layer):
     ___ = Layer.Register('rotate', lambda d: Rotate(d) )
     def __init__(self, d, verbose=False):
         Layer.__init__(self, d, verbose) 
-        self.angle = float(d['rotate'])
+        self.angle = float(Layer.arg(d))
         
     def apply(self, image):
         return image.rotate(self.angle, expand=True)
@@ -138,7 +138,7 @@ class NormalizeColor(Layer):
     ___ = Layer.Register('normalize-color', lambda d: NormalizeColor(d) )
     def __init__(self, d, verbose=False):
         Layer.__init__(self, d, verbose)
-        self.r = d['normalize-color']
+        self.r = Layer.arg(d)
 
     def apply(self, image):
         a = np.array(image)

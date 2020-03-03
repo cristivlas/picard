@@ -4,17 +4,21 @@ from cache import CacheFont, CacheImage
 from os import path
 import exceptions
 import importlib
+import inspect
 import math
 import textwrap
 
 class Layer:
-    Dict = { }
-    Factory = { }
+    Dict = {}
+    Factory = {}
     Units = dict([(x.name, x.value) for x in list(Units)])
 
     class Register:
         def __init__(self, name, fun):
-            Layer.Factory[name]=fun
+            fullname = inspect.getmodule(fun).__name__ + '.' + name
+            Layer.Factory[fullname]=fun
+            print 'Registered:', fullname
+
     @staticmethod
     def id(scope, id):
         return id if (id is None or ':' in id) else (path.splitext(scope)[0] + ':' + id)
@@ -59,8 +63,7 @@ class Layer:
         draw = ImageDraw.Draw(im)
         draw.line([0,0]+list(im.size), fill='red', width=2)
         draw.line([0,im.size[1],im.size[0],0], fill='red', width=2)
-        d = {'text':str(err), 'color':'black'}
-        text = TextLayer(d)
+        text = TextLayer(dict(ctor='text', text=str(err), color='black'))
         text.dpi = self.dpi
         return text.apply(im)
 
@@ -71,10 +74,16 @@ class Layer:
             assert len(t) <= 2
             if len(t) > 1:
                 importlib.import_module(t[0])
-                d[t[1]] = d[k]
-                k = t[1]
+                d['ctor'] = k
                 return Layer.Factory[k](d)
         raise RuntimeError('Layer not recognized: '+str(d))
+
+    @staticmethod
+    def arg(d, replace=None):
+        k = d['ctor']
+        if replace is not None:
+            d[k] = replace
+        return d[k]
 
     @staticmethod
     def applyGroup(image, layers, dpi, verbose):
@@ -106,16 +115,19 @@ class Group(Layer):
     ___ = Layer.Register('group', lambda d: Group(d) )
     def __init__(self, d, verbose=False):
         Layer.__init__(self, d, verbose) 
-        self.group = [Layer.fromDict(dict(x, scope=d['scope'])) for x in d['group']]
+        self.group = [Layer.fromDict(dict(x, scope=d['scope'])) for x in Layer.arg(d)]
+
     def apply(self, image):
         image2 = Layer.applyGroup(None, self.group, self.dpi, self.verbose)
         return Layer.applyImage(image, image2, self.box, self.fill, self.verbose)
+
     def subst(self, d):
         group = [x.subst(d) for x in self.group]
         if group==self.group:
             return self
         d = dict(self.d)
-        d['group'] = []
+        Layer.arg(d, [])
+        assert len(Layer.arg(d))==0
         other = Group(d)
         other.group = group
         return other
@@ -125,7 +137,7 @@ class Modifier(Layer):
     def __init__(self, d, verbose=False):
         assert 'id' not in d
         Layer.__init__(self, d, verbose)
-        self.target = d.setdefault('modify', None)
+        self.target = Layer.arg(d)
 
     def apply(self, image):
         assert False
@@ -136,12 +148,24 @@ class Modifier(Layer):
         del d['id']
         for k in self.d:
             if k in d:
-                if d[k]==self.d[k]:
+                if k in ['ctor', 'scope']:
                     continue
                 if args.verbose:
                     print ' Modify:', self.target, k, d[k], '<--', self.d[k] 
                 d[k] = self.d[k]
+
         return (target, target.clone(d))
+
+class Reference(Layer):
+    ___ = Layer.Register('ref', lambda d: Reference(d) )
+    def __init__(self, d, verbose=False):
+        Layer.__init__(self, d, verbose)
+        self.ref = Layer.arg(d)
+
+    def apply(self, image):
+        ref = Layer.Dict[Layer.id(self.d['scope'], self.ref)]
+        ref.dpi = self.dpi
+        return ref.apply(image)
 
 def scaleToFit(image, size, verbose):
     w, h = (float(x) for x in image.size)
@@ -190,7 +214,7 @@ class TextLayer(Layer):
         self.color = d.setdefault('color', 'black')
         self.font = d.setdefault('font', None)
         self.fontSize = d.setdefault('font-size', None)
-        self.text = d['text']
+        self.text = Layer.arg(d)
         
     def apply(self, image):
         assert image
@@ -208,7 +232,7 @@ class ImageLayer(Layer):
     ___ = Layer.Register('image', lambda d: ImageLayer(d) )
     def __init__(self, d, verbose=False):
         Layer.__init__(self, d, verbose) 
-        self.image = CacheImage(d['image']).image
+        self.image = CacheImage(Layer.arg(d)).image
 
     def apply(self, image):
         if isinstance(self.image, exceptions.Exception):

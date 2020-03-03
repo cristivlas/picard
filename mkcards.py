@@ -4,6 +4,7 @@ from PIL import Image, ImageOps, ImageDraw
 import math
 import cache
 import pathlib
+from os import mkdir
 
 cuts_size = None
 bleed = 1
@@ -132,6 +133,8 @@ def parseArgs():
     ap.add_argument('-v', '--verbose', action='store_true')
     ap.add_argument('--header')
     ap.add_argument('--orient', choices=['portrait', 'landscape'], default='portrait')
+    ap.add_argument('--format', action='store_true', help='pretty format input JSON to formatted/ directory')
+
     return ap.parse_args()
 
 if __name__ == '__main__':
@@ -157,7 +160,22 @@ if __name__ == '__main__':
             cuts_size = card_size
             if c.rotate:
                 c.size.rotate()
-    if cards:
+
+    if args.format:
+        for c in cards:
+            p = pathlib.Path(c.fname)
+            fname = pathlib.Path(p.parent).joinpath('formatted')
+            try:
+                mkdir(str(fname))
+            except OSError as e:
+                if not 'already exists' in str(e):
+                    raise e
+            fname = pathlib.Path(fname).joinpath(p.name)
+            print 'Writing:', fname
+            with open(str(fname), 'w+') as f:
+                f.write(c.toJSON())
+    elif cards:
         fname = args.pdf or pathlib.Path(args.dir).name + '.pdf'
         saveSheetsAsPDF(renderCards(cards, paper_size[args.paper], dpi, args), fname)
+
 

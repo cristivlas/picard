@@ -6,9 +6,16 @@ import cache
 import copy
 import json
 
+class Encoder(json.JSONEncoder):
+    def default(self, obj):
+        if isinstance(obj, box.Box):
+            return obj.box
+        return json.JSONEncoder.default(self, obj)
+
 class Card:
     Dict = {}
     def __init__(self, d, fname, dpi, args):
+        self.d = d
         self.fname = fname
         self.dpi = dpi
         self.bg = d.setdefault('bg', None)
@@ -46,6 +53,11 @@ class Card:
         card = Card(d, fname, dpi, args)
         Card.Dict[fname] = card
         return card
+
+    def toJSON(self):
+        d = {k: v for k, v in self.d.items() if v}
+        return json.dumps(d, cls=Encoder, sort_keys=True, indent=2, separators=(',', ': '))
+
 
     def blank(self):
         return Image.new('RGBA', self.size.convert(dpi=self.dpi).size(), self.bg)
