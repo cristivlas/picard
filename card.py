@@ -6,12 +6,6 @@ import cache
 import copy
 import json
 
-class Encoder(json.JSONEncoder):
-    def default(self, obj):
-        if isinstance(obj, box.Box):
-            return obj.box
-        return json.JSONEncoder.default(self, obj)
-
 class Card:
     Dict = {}
     def __init__(self, d, fname, dpi, args):
@@ -19,12 +13,11 @@ class Card:
         self.fname = fname
         self.dpi = dpi
         self.bg = d.setdefault('bg', None)
-        self.count = d.setdefault('count', 1)
-        orient = d.setdefault('orientation', 'portrait')
-        recipe = d.setdefault('recipe', None)
+        self.count = d.get('count', 1)
         d.setdefault('back', [])
         self.frontLayers = [Layer.fromDict(dict(x, scope=fname)) for x in d['front']]
         self.backLayers = [Layer.fromDict(dict(x, scope=fname)) for x in d['back']]
+        recipe = d.setdefault('recipe', None)
         if recipe:
             if not path.isabs(recipe):
                 recipe = path.join(cache.DataPath, recipe)
@@ -36,6 +29,8 @@ class Card:
                 self.bg = recipe.bg
         else:
             self.size = box.getsize(d['size'])
+            
+        orient = d.get('orientation', 'portrait')
         if orient != self.size.orientation():
             self.size.rotate()
 
@@ -56,7 +51,7 @@ class Card:
 
     def toJSON(self):
         d = {k: v for k, v in self.d.items() if v}
-        return json.dumps(d, cls=Encoder, sort_keys=True, indent=2, separators=(',', ': '))
+        return json.dumps(d, indent=2, separators=(',', ': '))
 
 
     def blank(self):

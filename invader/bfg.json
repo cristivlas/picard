@@ -10,7 +10,7 @@
         { "cut.auto-crop":"image000"},
         { "image.mean-to-alpha":240},
         { "image.flip":"HORIZONTAL"},
-        { "image.crop":"CENTER", "box":[0, -10, 110, 110], "units":"PERCENT" }
+        { "cut.crop":"CENTER", "box":[0, -10, 110, 110], "units":"PERCENT" }
       ]
     },
     { "image.halo":"teal" },
