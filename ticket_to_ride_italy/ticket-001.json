@@ -1,5 +1,6 @@
 {
-  "size": "MINI", "bg":"white",
+  "size":"MINI",
+  "bg": "white",
   "front": [
       { "draw.rectangle":"silver", "box":[0,0,100,100], "units":"PERCENT" },
       {

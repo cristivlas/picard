@@ -20,7 +20,7 @@ class Sheet:
 
     def addCard(self, card):
         if len(self.cards) >= self.ncards[2]:
-            print 'Sheet full:', self.ncards[2], 'cards'
+            #print 'Sheet full:', self.ncards[2], 'cards'
             return False;
         self.cards.append(card)
         return True
@@ -87,8 +87,8 @@ def finishSheet(sheets, s):
 
 def appendImageToSheet(sheets, currentSheet, image):
     if not currentSheet.addCard(image):
-        currentSheet = finishSheets(sheets, currentSheet)
-        currentsheet.addCard(image)
+        currentSheet = finishSheet(sheets, currentSheet)
+        currentSheet.addCard(image)
     return currentSheet
 
 def makeSheets(cards, paperSize, dpi, args):
