@@ -1,0 +1,8 @@
+{
+  "recipe": "ticket-201.json",
+  "front": [
+    { "layer.modify": "front-image", "auto-crop": "image009" }
+  ],
+  "back": [
+  ]
+}

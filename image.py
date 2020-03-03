@@ -1,5 +1,6 @@
 from layer import Layer
 from PIL import Image, ImageChops, ImageEnhance, ImageFilter, ImageOps
+import matplotlib
 import numpy as np
 
 class MeanToAlpha(Layer):
@@ -46,10 +47,29 @@ class Mask(Layer):
         mask.paste(solid, (0,0), image)
         return mask
 
+class Brighten(Layer):
+    ___ = Layer.Register('brighten', lambda d: Brighten(d) )
+    def __init__(self, d, verbose=False):
+        Layer.__init__(self, d, verbose) 
+        self.amount = float(d['brighten'])
+        
+    def apply(self, image):
+        return ImageEnhance.Brightness(image).enhance(self.amount)
+
+class Contrast(Layer):
+    ___ = Layer.Register('contrast', lambda d: Contrast(d) )
+    def __init__(self, d, verbose=False):
+        Layer.__init__(self, d, verbose) 
+        self.amount = float(d['contrast'])
+        
+    def apply(self, image):
+        return ImageEnhance.Contrast(image).enhance(self.amount)
+        return ImageEnhance.Color(image).enhance(self.amount)
+
 class Sharpen(Layer):
     ___ = Layer.Register('sharpen', lambda d: Sharpen(d) )
-    def __init__(self, d):
-        Layer.__init__(self, d) 
+    def __init__(self, d, verbose=False):
+        Layer.__init__(self, d, verbose) 
         self.amount = float(d['sharpen'])
         
     def apply(self, image):
@@ -68,8 +88,8 @@ class Filter(Layer):
         'SMOOTH_MORE': ImageFilter.SMOOTH_MORE
     }
     ___ = Layer.Register('filter', lambda d: Filter(d) )
-    def __init__(self, d):
-        Layer.__init__(self, d) 
+    def __init__(self, d, verbose=False):
+        Layer.__init__(self, d, verbose) 
         self.filter = d['filter']
         
     def apply(self, image):
@@ -94,9 +114,8 @@ class Halo(Layer):
     ___ = Layer.Register('halo', lambda d: Halo(d) )
     def __init__(self, d, verbose=False):
         Layer.__init__(self, d, verbose) 
-        d.setdefault('radius', 2)
         self.color = d['halo']
-        self.radius = d['radius']
+        self.radius = d.setdefault('gauss-blur-radius', 2)
         
     def apply(self, image):
         mask = Mask({'mask':self.color})
@@ -126,6 +145,7 @@ class NormalizeColor(Layer):
         a = a.T
         for i in xrange(3):
             r = [np.min(a[i]), np.max(a[i])]
-            a[i] = ((a[i]-r[0])*1.0*(self.r[1]-self.r[0])/(r[1]-r[0])+self.r[0]).astype(np.uint8)
+            q = self.r[i]
+            a[i] = ((a[i]-r[0])*1.0*(q[1]-q[0])/(r[1]-r[0])+q[0]).astype(np.uint8)
         return Image.fromarray(a.T)
 

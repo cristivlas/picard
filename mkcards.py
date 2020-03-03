@@ -85,22 +85,25 @@ def finishSheet(sheets, s):
     sheets.append(s)
     return Sheet(s.paperSize, s.dpi)
 
+def appendImageToSheet(sheets, currentSheet, image):
+    if not currentSheet.addCard(image):
+        currentSheet = finishSheets(sheets, currentSheet)
+        currentsheet.addCard(image)
+    return currentSheet
+
 def makeSheets(cards, paperSize, dpi, args):
     sheets = []
     front = Sheet(paperSize, dpi)
     back = Sheet(paperSize, dpi)
     for c in cards:
-        image = c.front(args)
-        if not front.addCard(image):
-            front = finishSheet(sheets, front)
-            back = finishSheet(sheets, back)
-            front.addCard(image)
-        image = c.back(args)
-        image.flip = c.rotate
-        assert back.addCard(image)
+        for i in xrange(c.count):
+            front = appendImageToSheet(sheets, front, c.front(args))
+            back = appendImageToSheet(sheets, back, c.back(args, flip=c.rotate))
     finishSheet(sheets, front)
     finishSheet(sheets, back)
+    return sheets
 
+def renderSheets(sheets):
     for i, s in enumerate(sheets):
         text = None
         side=['A', 'B']
@@ -109,14 +112,15 @@ def makeSheets(cards, paperSize, dpi, args):
         s.render(text, flip=i%2)
     return sheets
 
-def renderCards(cards, fname, paperSize, dpi, args):
-    print 'Rendering', len(cards), 'cards'
+def saveSheetsAsPDF(sheets, fname):
+    print fname + ':', len(sheets), 'pages'
+    images = [x.image for x in sheets]
+    images[0].save(fname, save_all=True, append_images=images[1:], resolution=dpi)
+
+def renderCards(cards, paperSize, dpi, args):
     sheets = makeSheets(cards, paperSize, dpi, args)
-    numPages = len(sheets)
-    print fname + ':', numPages, 'pages'
-    if numPages:
-        images = [x.image for x in sheets]
-        images[0].save(fname, save_all=True, append_images=images[1:], resolution=dpi)
+    print 'Rendering', len(cards), 'card definition' + ('s' if len(cards)>1 else '')
+    return renderSheets(sheets)
 
 def parseArgs():
     ap = ArgumentParser(description='Render game cards as PDF pages')
@@ -142,20 +146,18 @@ if __name__ == '__main__':
     cards = []
     for i in pathlib.Path(args.dir).iterdir():
         if i.suffix == '.json':
-            c = Card.load(str(i), dpi)
+            c = Card.load(str(i), dpi, args)
             cards.append(c)
             c.rotate = False
             if args.orient and args.orient != c.size.orientation():
                 c.size.rotate() 
                 c.rotate = True
             card_size = c.size.convert(dpi=dpi).box[2:]
-            assert cuts_size is None or cuts_size==card_size
+            assert not cuts_size or cuts_size==card_size
             cuts_size = card_size
             if c.rotate:
-                c.size.rotate() 
-    if len(cards):
-        fname = args.pdf
-        if not fname:
-            fname = pathlib.Path(args.dir).name + '.pdf'
-        renderCards(cards, fname, paper_size[args.paper], dpi, args)
+                c.size.rotate()
+    if cards:
+        fname = args.pdf or pathlib.Path(args.dir).name + '.pdf'
+        saveSheetsAsPDF(renderCards(cards, paper_size[args.paper], dpi, args), fname)
 

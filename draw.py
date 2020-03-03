@@ -17,12 +17,9 @@ class Rectangle(Layer):
         Layer.__init__(self, d, verbose)
         assert self.box
         self.outline = d['rectangle']
-        d.setdefault('corner-radius', 0)
-        self.radius = d['corner-radius']
-        d.setdefault('line-width', 1)
-        self.width = d['line-width']
-        d.setdefault('fill-color', None)
-        self.fillColor = d['fill-color']
+        self.radius = d.setdefault('corner-radius', 0)
+        self.width = d.setdefault('line-width', 1)
+        self.fillColor = d.setdefault('fill-color', None)
 
     def apply(self, image):
         box = self.box.convert(image.size)
@@ -45,4 +42,4 @@ class Rectangle(Layer):
             from image import Opacity
             im2 = Opacity(self.d, self.verbose).apply(im2)
 
-        return self.applyImage(image, im2)
+        return self.applyImage(image, im2, verbose=self.verbose)

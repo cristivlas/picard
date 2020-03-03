@@ -1,6 +1,7 @@
 from box import Box, Units
 from PIL import Image, ImageDraw
 from cache import CacheFont, CacheImage
+from os import path
 import exceptions
 import importlib
 import math
@@ -14,15 +15,17 @@ class Layer:
     class Register:
         def __init__(self, name, fun):
             Layer.Factory[name]=fun
-   
+    @staticmethod
+    def id(scope, id):
+        return id if (id is None or ':' in id) else (path.splitext(scope)[0] + ':' + id)
+
     def __init__(self, d, verbose):
         self.d=d
         self.verbose=verbose
-        d.setdefault('fill', False)
-        self.fill = d['fill']
-        d.setdefault('id', None)
-        unique_id=d['id']
+        self.fill = d.setdefault('fill', False)
+        unique_id = d.setdefault('id', None)
         if unique_id:
+            unique_id = Layer.id(d['scope'], unique_id)
             assert unique_id not in Layer.Dict
             Layer.Dict[unique_id] = self
         units = Units[d['units']] if 'units' in d else Units.PIXEL
@@ -39,11 +42,11 @@ class Layer:
         return d[self] if self in d else self
 
     @staticmethod
-    def resolveModifiers(layers):
+    def resolveModifiers(layers, recipe, args):
         d = dict((x, x) for x in layers)
         for x in layers:
             if isinstance(x, Modifier):
-                orig, mod = x.modify()
+                orig, mod = x.modify(recipe, args)
                 d[orig] = mod
         resolved = []
         for x in layers:
@@ -84,29 +87,29 @@ class Layer:
             image = x.apply(image)
         return image
 
-    def applyImage(self, image1, image2):
+    @staticmethod
+    def applyImage(image1, image2, box=None, fill=True, verbose=False):
         assert image2
         assert image2.mode == 'RGBA'
         if image1:
             assert image1.mode=='RGBA'
-            if image2.size==image1.size:
-                if self.verbose:
-                    print ' Awesome. The glove fits.'
-            elif self.fill:
-                image2 = image2.resize(image1.size, Image.LANCZOS)
+            box = box.convert(image1.size) if box else Box(image1.size)
+            if fill:
+                image2 = image2.resize(box.size(), Image.LANCZOS)
             else:
-                image2 = scaleToFit(image2, image1.size, self.verbose)
-            return Image.alpha_composite(image1, image2)
+                image2 = scaleToFit(image2, box.size(), verbose)
+            image1.paste(image2, box.box, image2)
+            return image1
         return image2
     
 class Group(Layer):
     ___ = Layer.Register('group', lambda d: Group(d) )
     def __init__(self, d, verbose=False):
         Layer.__init__(self, d, verbose) 
-        self.group = [Layer.fromDict(x) for x in d['group']]
+        self.group = [Layer.fromDict(dict(x, scope=d['scope'])) for x in d['group']]
     def apply(self, image):
         image2 = Layer.applyGroup(None, self.group, self.dpi, self.verbose)
-        return self.applyImage(image, image2)
+        return Layer.applyImage(image, image2, self.box, self.fill, self.verbose)
     def subst(self, d):
         group = [x.subst(d) for x in self.group]
         if group==self.group:
@@ -122,34 +125,37 @@ class Modifier(Layer):
     def __init__(self, d, verbose=False):
         assert 'id' not in d
         Layer.__init__(self, d, verbose)
-        d.setdefault('modify', None)
-        self.target = d['modify']
+        self.target = d.setdefault('modify', None)
 
     def apply(self, image):
         assert False
 
-    def modify(self):
-        target = Layer.Dict[self.target]
+    def modify(self, recipe, args):
+        target = Layer.Dict[Layer.id(recipe.fname, self.target)]
         d = dict(target.d)
         del d['id']
         for k in self.d:
             if k in d:
+                if d[k]==self.d[k]:
+                    continue
+                if args.verbose:
+                    print ' Modify:', self.target, k, d[k], '<--', self.d[k] 
                 d[k] = self.d[k]
         return (target, target.clone(d))
 
 def scaleToFit(image, size, verbose):
     w, h = (float(x) for x in image.size)
     aspect =  w / h
+    keep='height'
     if size[1] * aspect <= size[0]:
         scale = size[1] / h
-        if verbose:
-            print ' Keep height, scale:', scale
     elif size[0] / aspect <= size[1]:
         scale = size[0] / w
-        if verbose:
-            print ' Keep width, scale:', scale
+        keep ='width'
     else:
         assert False
+    if verbose:
+        print ' scale-to-fit: keeping same %s, scale=%3.2f' % (keep, scale)
     image = image.resize([int(scale * x) for x in image.size], Image.LANCZOS)
     image2 = Image.new('RGBA', size, None)
     image2.paste(image, [(x-y)/2 for x,y in zip(size, image.size)], image)
@@ -180,15 +186,11 @@ class TextLayer(Layer):
     ___ = Layer.Register('text', lambda d: TextLayer(d) )
     def __init__(self, d, verbose=False):
         Layer.__init__(self, d, verbose) 
-        d.setdefault('outline', None)
-        d.setdefault('color', 'black')
-        d.setdefault('font', None)
-        d.setdefault('font-size', None)
+        self.outline = d.setdefault('outline', None)
+        self.color = d.setdefault('color', 'black')
+        self.font = d.setdefault('font', None)
+        self.fontSize = d.setdefault('font-size', None)
         self.text = d['text']
-        self.font = d['font']
-        self.fontSize = d['font-size']
-        self.outline = d['outline']
-        self.color = d['color']
         
     def apply(self, image):
         assert image
@@ -211,5 +213,5 @@ class ImageLayer(Layer):
     def apply(self, image):
         if isinstance(self.image, exceptions.Exception):
             return self.errorImage(self.image)
-        return self.applyImage(image, self.image)
+        return self.applyImage(image, self.image, self.box, self.fill, self.verbose)
 

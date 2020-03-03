@@ -1,5 +1,5 @@
 from enum import Enum
-import warnings
+#import warnings
 
 class Units(Enum):
     PERCENT = 0
@@ -12,8 +12,8 @@ class Box:
         if box.__class__==Box:
             self.box = box.box
             self.units = box.units
-        elif type(box)==list:
-            self.box = box
+        elif type(box) in [list, tuple]:
+            self.box = list(box)
             self.units = units
             if len(self.box)==2:
                 self.box = [0,0] + self.box
@@ -26,14 +26,14 @@ class Box:
     def __repr__(self):
         return (self.box, self.units.name).__repr__()
 
-    def convert(self, other=None, dpi=300):
+    def convert(self, size=None, dpi=300):
         assert self.box
-        assert type(self.box) is list
+        assert isinstance(self.box, list)
         assert len(self.box)==4
         if self.units == Units.PERCENT:
-            if len(other)==2:
-                other += other
-            return Box([int(x*y/100.0) for x,y in zip(self.box, other)])
+            if len(size)==2:
+                size += size
+            return Box([int(x*y/100.0) for x,y in zip(self.box, size)])
         elif self.units == Units.PIXEL:
             return self
         elif self.units == Units.INCH:
@@ -63,7 +63,7 @@ Sizes = dict([(x.name, x.value) for x in list(Size)])
 
 def getsize(size):
     if size.__class__ != Box:
-        if type(size) is list:
+        if type(size) in [list, tuple]:
             size = Box(size, Units.INCH)
         else:
             size = Sizes[size]

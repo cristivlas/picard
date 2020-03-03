@@ -18,10 +18,8 @@ class AutoCrop(Layer):
     def __init__(self, d={}, name='image', verbose=False):
         self.name = name
         Layer.__init__(self, d, verbose)
-        d.setdefault('auto-crop', 0)
-        self.i = d['auto-crop']
-        d.setdefault('threshold', 200)
-        self.threshold = d['threshold']
+        self.i = d.setdefault('auto-crop', 0)
+        self.threshold = d.setdefault('threshold', 200)
         self.imgs = {}
         self.mod = None
 
@@ -67,9 +65,9 @@ class AutoCrop(Layer):
         if len(self.imgs)==0:
             self.cut(image, self.threshold)
             if self.verbose:
-                print ' Cut', len(self.imgs), 'images'
+                print '  Cropped:', len(self.imgs), 'images'
         if self.verbose:
-            print ' Selecting: ', self.i, 'out of', len(self.imgs)
+            print ' Indexing:', self.i, '/', len(self.imgs)
         try:
             return self.imgs[self.i]
         except KeyError as e:
@@ -93,7 +91,7 @@ class Crop(Layer):
         orig = Crop.GetOrigin[self.origin](image.size, box)
         box = [x+o for x,o in zip(box, orig+orig)]
         if self.verbose:
-            print '  Crop box:', self.box, box, self.origin
+            print '  Cropbox:', self.box, box, 'alignment=' + self.origin
         return image.crop(box)
 
 if __name__ == '__main__':
