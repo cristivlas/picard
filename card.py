@@ -53,7 +53,6 @@ class Card:
         d = {k: v for k, v in self.d.items() if v}
         return json.dumps(d, indent=2, separators=(',', ': '))
 
-
     def blank(self):
         return Image.new('RGBA', self.size.convert(dpi=self.dpi).size(), self.bg)
 
@@ -67,8 +66,9 @@ class Card:
         if args.verbose:
             print 'Back:', self.fname
         im = Layer.applyGroup(self.blank(), self.backLayers, dpi=self.dpi, verbose=args.verbose)
+        im = self.applyOrientation(im, args)
         im.flip = flip
-        return self.applyOrientation(im, args)
+        return im
 
     @staticmethod
     def applyOrientation(im, args):

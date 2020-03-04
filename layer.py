@@ -26,8 +26,8 @@ class Layer:
     def __init__(self, d, verbose):
         self.d=d
         self.verbose=verbose
-        self.fill = d.setdefault('fill', False)
-        unique_id = d.setdefault('id', None)
+        self.fill = d.get('fill', False)
+        unique_id = d.get('id', None)
         if unique_id:
             unique_id = Layer.id(d['scope'], unique_id)
             assert unique_id not in Layer.Dict
@@ -125,10 +125,9 @@ class Group(Layer):
         group = [x.subst(d) for x in self.group]
         if group==self.group:
             return self
-        d = dict(self.d)
-        Layer.arg(d, [])
-        assert len(Layer.arg(d))==0
-        other = Group(d)
+        g = dict(self.d)
+        Layer.arg(g, [])
+        other = Group(g)
         other.group = group
         return other
 
@@ -142,18 +141,25 @@ class Modifier(Layer):
     def apply(self, image):
         assert False
 
+    def change(self, d, k1, k2, args):
+        if args.verbose:
+            print ' Modify:', self.target, k1, d[k1], '<--', self.d[k2]
+        d[k1] = self.d[k2]
+
     def modify(self, recipe, args):
         target = Layer.Dict[Layer.id(recipe.fname, self.target)]
         d = dict(target.d)
-        del d['id']
+        c = d['ctor']
         for k in self.d:
-            if k in d:
-                if k in ['ctor', 'scope']:
-                    continue
-                if args.verbose:
-                    print ' Modify:', self.target, k, d[k], '<--', self.d[k] 
-                d[k] = self.d[k]
-
+            if k in ['ctor', 'id', 'scope']:
+                continue
+            if not k in d:
+                if k==c.split('.')[1]:
+                    self.change(d, c, k, args)
+                continue
+            self.change(d, k, k, args)
+        assert d != target.d
+        del d['id']
         return (target, target.clone(d))
 
 class Reference(Layer):

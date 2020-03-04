@@ -6,7 +6,7 @@
       {
 	"layer.group": [
 	  { "layer.image":"https://cf.geekdo-images.com/imagepagezoom/img/K6HwiisHlMTC8zkXLyB1H4btTmg=/fit-in/1200x900/filters:no_upscale()/pic1642145.jpg" },
-	  { "cut.auto-crop": "image007", "threshold": 150, "id":"front-image" },
+	  { "cut.auto-crop": "image006", "threshold": 150, "id":"front-image" },
 	  { "image.normalize-color":[[0,255],[0,255],[0,235]] },
 	  { "image.brighten": 0.90 },
 	  { "image.contrast": 1.45 }

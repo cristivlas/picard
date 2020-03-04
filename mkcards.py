@@ -126,15 +126,15 @@ def renderCards(cards, paperSize, dpi, args):
 
 def parseArgs():
     ap = ArgumentParser(description='Render game cards as PDF pages')
-    ap.add_argument('dir', help="input directory of JSON files")
-    ap.add_argument('--pdf', help="filename of PDF output")
-    ap.add_argument('--bleed', default=1.035, help="scale factor for bleed area")
+    ap.add_argument('dir', help='input directory of JSON files')
+    ap.add_argument('--pdf', help='filename of PDF output')
+    ap.add_argument('--bleed', default=1.035, help='scale factor for bleed area')
     ap.add_argument('--dpi', default=300)
     ap.add_argument('--paper', choices=['letter', 'A4'], default='letter')
     ap.add_argument('-v', '--verbose', action='store_true')
     ap.add_argument('--header')
     ap.add_argument('--orient', choices=['portrait', 'landscape'], default='portrait')
-    ap.add_argument('--format', action='store_true', help='pretty format input JSON to formatted/ directory')
+    ap.add_argument('--format', action='store_true', help='pretty format the JSON files')
     return ap.parse_args()
 
 def backup(path):
