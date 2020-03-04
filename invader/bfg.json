@@ -1,63 +1,127 @@
 {
-  "size": "MINI",
   "count": 3,
   "front": [
-    { "layer.image": "template/background.png", "fill": true},
-    { "draw.rectangle": "red", "box": [3, 30, 97, 70 ], "units": "PERCENT", "corner-radius": 40, "line-width":5, "fill-color": "coral" },
-    { "layer.group":
-      [
-        { "layer.image":"https://i.pinimg.com/originals/85/4c/a0/854ca04fd6b497407af0f1e175d5da0a.jpg" },
-        { "cut.auto-crop":"image000"},
-        { "image.mean-to-alpha":240},
-        { "image.flip":"HORIZONTAL"},
-        { "cut.crop":"CENTER", "box":[0, -10, 110, 110], "units":"PERCENT" }
+    {
+      "layer.image": "template/background.png",
+      "fill": true
+    },
+    {
+      "box": [
+        3,
+        30,
+        97,
+        70
+      ],
+      "corner-radius": 40,
+      "fill-color": "coral",
+      "draw.rectangle": "red",
+      "units": "PERCENT",
+      "line-width": 5
+    },
+    {
+      "layer.group": [
+        {
+          "layer.image": "https://i.pinimg.com/originals/85/4c/a0/854ca04fd6b497407af0f1e175d5da0a.jpg"
+        },
+        {
+          "cut.auto-crop": "image000"
+        },
+        {
+          "image.mean-to-alpha": 240
+        },
+        {
+          "image.flip": "HORIZONTAL"
+        },
+        {
+          "box": [
+            0,
+            -10,
+            110,
+            110
+          ],
+          "units": "PERCENT",
+          "cut.crop": "CENTER"
+        }
       ]
     },
-    { "image.halo":"teal" },
-    { "layer.image":"template/ranged.png", "fill": true},
     {
-      "layer.text":"BFG",
-      "font":"fonts/Zekton Condensed Heavy.zip",
+      "image.halo": "teal"
+    },
+    {
+      "layer.image": "template/ranged.png",
+      "fill": true
+    },
+    {
+      "box": [
+        15,
+        4,
+        85,
+        15
+      ],
       "font-size": 52,
-      "box": [15,4,85,15],
+      "color": "lightblue",
+      "layer.text": "BFG",
       "units": "PERCENT",
-      "color": "lightblue"
+      "font": "fonts/Zekton Condensed Heavy.zip"
     },
     {
-      "layer.text":"1-2",
-      "font":"fonts/zektonbo.zip",
+      "box": [
+        30,
+        88,
+        43.5,
+        95
+      ],
       "font-size": 30,
-      "box": [30,88,43.5,95],
+      "color": "lightblue",
+      "layer.text": "1-2",
       "units": "PERCENT",
-      "color": "lightblue"
+      "font": "fonts/zektonbo.zip"
     },
     {
-      "layer.text":"3",
-      "font":"fonts/zektonbo.zip",
+      "box": [
+        45,
+        88,
+        59,
+        95
+      ],
       "font-size": 30,
-      "box": [45,88,59,95],
+      "color": "lightblue",
+      "layer.text": "3",
       "units": "PERCENT",
-      "color": "lightblue"
+      "font": "fonts/zektonbo.zip"
     },
     {
-      "layer.text":"3",
-      "font":"fonts/zektonbo.zip",
+      "box": [
+        61,
+        88,
+        74,
+        95
+      ],
       "font-size": 30,
-      "box": [61,88,74,95],
+      "color": "lightblue",
+      "layer.text": "3",
       "units": "PERCENT",
-      "color": "lightblue"
+      "font": "fonts/zektonbo.zip"
     },
     {
-      "layer.text":"2",
-      "font":"fonts/zektonbo.zip",
+      "box": [
+        76.5,
+        88,
+        90,
+        95
+      ],
       "font-size": 30,
-      "box": [76.5,88,90,95],
+      "color": "lightblue",
+      "layer.text": "2",
       "units": "PERCENT",
-      "color": "lightblue"
+      "font": "fonts/zektonbo.zip"
     }
   ],
-  "back":
-  [
-    { "layer.image":"img/back.png", "fill": true}
-  ]
+  "back": [
+    {
+      "layer.image": "img/back.png",
+      "fill": true
+    }
+  ],
+  "size": "MINI"
 }

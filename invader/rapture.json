@@ -1,61 +1,106 @@
 {
-  "size": "MINI",
   "front": [
-    { "layer.image": "template/background.png", "fill": true},
-    { "layer.group":
-      [
-        { "layer.image":"https://i.pinimg.com/originals/19/68/ba/1968ba0d3edbc6489f7bb1f102e3878c.jpg" },
-        { "cut.auto-crop":"image000" },
-        { "image.mean-to-alpha":240 },
-        { "image.flip":"H" },
-        { "image.rotate":10 }
+    {
+      "layer.image": "template/background.png",
+      "fill": true
+    },
+    {
+      "layer.group": [
+        {
+          "layer.image": "https://i.pinimg.com/originals/19/68/ba/1968ba0d3edbc6489f7bb1f102e3878c.jpg"
+        },
+        {
+          "cut.auto-crop": "image000"
+        },
+        {
+          "image.mean-to-alpha": 240
+        },
+        {
+          "image.flip": "H"
+        },
+        {
+          "image.rotate": 10
+        }
       ]
     },
-    { "image.halo":"teal" },
-    { "layer.image":"template/ranged.png", "fill": true},
     {
-      "layer.text":"RAPTURE",
-      "font":"fonts/Zekton Condensed Heavy.zip",
+      "image.halo": "teal"
+    },
+    {
+      "layer.image": "template/ranged.png",
+      "fill": true
+    },
+    {
+      "box": [
+        15,
+        4,
+        85,
+        15
+      ],
       "font-size": 52,
-      "box": [15,4,85,15],
+      "color": "lightblue",
+      "layer.text": "RAPTURE",
       "units": "PERCENT",
-      "color": "lightblue"
+      "font": "fonts/Zekton Condensed Heavy.zip"
     },
     {
-      "layer.text":"1-2",
-      "font":"fonts/zektonbo.zip",
+      "box": [
+        30,
+        88,
+        43.5,
+        95
+      ],
       "font-size": 30,
-      "box": [30,88,43.5,95],
+      "color": "lightblue",
+      "layer.text": "1-2",
       "units": "PERCENT",
-      "color": "lightblue"
+      "font": "fonts/zektonbo.zip"
     },
     {
-      "layer.text":"3",
-      "font":"fonts/zektonbo.zip",
+      "box": [
+        45,
+        88,
+        59,
+        95
+      ],
       "font-size": 30,
-      "box": [45,88,59,95],
+      "color": "lightblue",
+      "layer.text": "3",
       "units": "PERCENT",
-      "color": "lightblue"
+      "font": "fonts/zektonbo.zip"
     },
     {
-      "layer.text":"3",
-      "font":"fonts/zektonbo.zip",
+      "box": [
+        61,
+        88,
+        74,
+        95
+      ],
       "font-size": 30,
-      "box": [61,88,74,95],
+      "color": "lightblue",
+      "layer.text": "3",
       "units": "PERCENT",
-      "color": "lightblue"
+      "font": "fonts/zektonbo.zip"
     },
     {
-      "layer.text":"1",
-      "font":"fonts/zektonbo.zip",
+      "box": [
+        76.5,
+        88,
+        90,
+        95
+      ],
       "font-size": 30,
-      "box": [76.5,88,90,95],
+      "color": "lightblue",
+      "layer.text": "1",
       "units": "PERCENT",
-      "color": "lightblue"
+      "font": "fonts/zektonbo.zip"
     }
   ],
-  "back":
-  [
-    { "layer.image":"img/back.png", "fill": true}
-  ]
+  "back": [
+    {
+      "layer.image": "img/back.png",
+      "fill": true
+    }
+  ],
+  "size": "MINI"
 }

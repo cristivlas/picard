@@ -1,60 +1,103 @@
 {
-  "size": "MINI",
   "front": [
-    { "layer.image": "template/background.png", "fill": true},
-    { "layer.group":
-      [
-        { "layer.image":"https://encrypted-tbn0.gstatic.com/images?q=tbn%3AANd9GcTj31fXR3ZkxtrnJ330QX335YQRPKizPceWQ0E1A4_Sgg1QnYYl"},
-	{ "image.mean-to-alpha":240},
-	{ "image.flip":"H" },
-	{ "image.rotate":20}
+    {
+      "layer.image": "template/background.png",
+      "fill": true
+    },
+    {
+      "layer.group": [
+        {
+          "layer.image": "https://encrypted-tbn0.gstatic.com/images?q=tbn%3AANd9GcTj31fXR3ZkxtrnJ330QX335YQRPKizPceWQ0E1A4_Sgg1QnYYl"
+        },
+        {
+          "image.mean-to-alpha": 240
+        },
+        {
+          "image.flip": "H"
+        },
+        {
+          "image.rotate": 20
+        }
       ]
     },
-    { "image.halo":"teal" },
-    { "layer.image":"template/melee.png", "fill": true},
     {
-      "layer.text":"RELIC SWORD",
-      "font":"fonts/Zekton Condensed Heavy.zip",
+      "image.halo": "teal"
+    },
+    {
+      "layer.image": "template/melee.png",
+      "fill": true
+    },
+    {
+      "box": [
+        15,
+        4,
+        85,
+        15
+      ],
       "font-size": 52,
-      "box": [15,4,85,15],
+      "color": "lightblue",
+      "layer.text": "RELIC SWORD",
       "units": "PERCENT",
-      "color": "lightblue"
+      "font": "fonts/Zekton Condensed Heavy.zip"
     },
     {
-      "layer.text":"0",
-      "font":"fonts/zektonbo.zip",
+      "box": [
+        30,
+        88,
+        43.5,
+        95
+      ],
       "font-size": 30,
-      "box": [30,88,43.5,95],
+      "color": "lightblue",
+      "layer.text": "0",
       "units": "PERCENT",
-      "color": "lightblue"
+      "font": "fonts/zektonbo.zip"
     },
     {
-      "layer.text":"3",
-      "font":"fonts/zektonbo.zip",
+      "box": [
+        45,
+        88,
+        59,
+        95
+      ],
       "font-size": 30,
-      "box": [45,88,59,95],
+      "color": "lightblue",
+      "layer.text": "3",
       "units": "PERCENT",
-      "color": "lightblue"
+      "font": "fonts/zektonbo.zip"
     },
     {
-      "layer.text":"3",
-      "font":"fonts/zektonbo.zip",
+      "box": [
+        61,
+        88,
+        74,
+        95
+      ],
       "font-size": 30,
-      "box": [61,88,74,95],
+      "color": "lightblue",
+      "layer.text": "3",
       "units": "PERCENT",
-      "color": "lightblue"
+      "font": "fonts/zektonbo.zip"
     },
     {
-      "layer.text":"1",
-      "font":"fonts/zektonbo.zip",
+      "box": [
+        76.5,
+        88,
+        90,
+        95
+      ],
       "font-size": 30,
-      "box": [76.5,88,90,95],
+      "color": "lightblue",
+      "layer.text": "1",
       "units": "PERCENT",
-      "color": "lightblue"
+      "font": "fonts/zektonbo.zip"
     }
   ],
-  "back":
-  [
-    { "layer.image":"img/back.png", "fill": true}
-  ]
+  "back": [
+    {
+      "layer.image": "img/back.png",
+      "fill": true
+    }
+  ],
+  "size": "MINI"
 }

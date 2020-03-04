@@ -1,10 +1,14 @@
 {
-  "size": "MINI",
-  "recipe": "mrkza.json",
   "front": [
-    { "layer.modify":"weapon-name", "text":"MRKZA MODIFIED" },
-    { "layer.modify":"damage", "text": "2" }
+    {
+      "layer.modify": "weapon-name",
+      "text": "MRKZA MODIFIED"
+    },
+    {
+      "layer.modify": "damage",
+      "text": "2"
+    }
   ],
-  "back": [
-  ]
+  "recipe": "mrkza.json",
+  "size": "MINI"
 }

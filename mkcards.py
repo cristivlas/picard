@@ -1,10 +1,11 @@
 from argparse import ArgumentParser
 from card import Card
+from os import rename
 from PIL import Image, ImageOps, ImageDraw
+from itertools import count
 import math
 import cache
 import pathlib
-from os import mkdir
 
 cuts_size = None
 bleed = 1
@@ -22,7 +23,7 @@ class Sheet:
     def addCard(self, card):
         if len(self.cards) >= self.ncards[2]:
             #print 'Sheet full:', self.ncards[2], 'cards'
-            return False;
+            return False
         self.cards.append(card)
         return True
 
@@ -97,7 +98,7 @@ def makeSheets(cards, paperSize, dpi, args):
     front = Sheet(paperSize, dpi)
     back = Sheet(paperSize, dpi)
     for c in cards:
-        for i in xrange(c.count):
+        for _ in xrange(c.count):
             front = appendImageToSheet(sheets, front, c.front(args))
             back = appendImageToSheet(sheets, back, c.back(args, flip=c.rotate))
     finishSheet(sheets, front)
@@ -134,8 +135,14 @@ def parseArgs():
     ap.add_argument('--header')
     ap.add_argument('--orient', choices=['portrait', 'landscape'], default='portrait')
     ap.add_argument('--format', action='store_true', help='pretty format input JSON to formatted/ directory')
-
     return ap.parse_args()
+
+def backup(path):
+    for i in count():
+        backup = path + '.' + str(i+1) + '~'
+        if not pathlib.Path(backup).exists():
+            rename(path, backup)
+            break
 
 if __name__ == '__main__':
     args = parseArgs()
@@ -163,17 +170,10 @@ if __name__ == '__main__':
 
     if args.format:
         for c in cards:
-            p = pathlib.Path(c.fname)
-            fname = pathlib.Path(p.parent).joinpath('formatted')
-            try:
-                mkdir(str(fname))
-            except OSError as e:
-                if not 'already exists' in str(e):
-                    raise e
-            fname = pathlib.Path(fname).joinpath(p.name)
-            print 'Writing:', fname
-            with open(str(fname), 'w+') as f:
+            backup(c.fname)
+            with open(str(c.fname), 'w+') as f:
                 f.write(c.toJSON())
+            print c.fname
     elif cards:
         fname = args.pdf or pathlib.Path(args.dir).name + '.pdf'
         saveSheetsAsPDF(renderCards(cards, paper_size[args.paper], dpi, args), fname)

@@ -1,63 +1,102 @@
 {
-  "size": "MINI",
   "front": [
-    { "layer.image": "template/background.png", "fill": true },
-    { "layer.group":
-      [
-        { "layer.image":"https://i.imgur.com/hvnfEEV.png" },
-        { "image.rotate": 15 }
+    {
+      "layer.image": "template/background.png",
+      "fill": true
+    },
+    {
+      "layer.group": [
+        {
+          "layer.image": "https://i.imgur.com/hvnfEEV.png"
+        },
+        {
+          "image.rotate": 15
+        }
       ]
     },
-    { "image.halo":"teal"},
-    { "layer.image":"template/ranged.png", "fill": true },
     {
-      "id":"weapon-name",
-      "layer.text":"MARKZA SMG",
-      "font":"fonts/Zekton Condensed Heavy.zip",
+      "image.halo": "teal"
+    },
+    {
+      "layer.image": "template/ranged.png",
+      "fill": true
+    },
+    {
+      "box": [
+        15,
+        4,
+        85,
+        15
+      ],
       "font-size": 52,
-      "box": [15,4,85,15],
+      "color": "lightblue",
+      "layer.text": "MARKZA SMG",
       "units": "PERCENT",
-      "color": "lightblue"
+      "font": "fonts/Zekton Condensed Heavy.zip",
+      "id": "weapon-name"
     },
     {
-      "id": "range",
-      "layer.text":"0-1",
-      "font":"fonts/zektonbo.zip",
+      "box": [
+        30,
+        88,
+        43.5,
+        95
+      ],
       "font-size": 30,
-      "box": [30,88,43.5,95],
+      "color": "lightblue",
+      "layer.text": "0-1",
       "units": "PERCENT",
-      "color": "lightblue"
+      "font": "fonts/zektonbo.zip",
+      "id": "range"
     },
     {
-      "id": "dice",
-      "layer.text":"3",
-      "font":"fonts/zektonbo.zip",
+      "box": [
+        45,
+        88,
+        59,
+        95
+      ],
       "font-size": 30,
-      "box": [45,88,59,95],
+      "color": "lightblue",
+      "layer.text": "3",
       "units": "PERCENT",
-      "color": "lightblue"
+      "font": "fonts/zektonbo.zip",
+      "id": "dice"
     },
     {
-      "id": "hit",
-      "layer.text":"4",
-      "font":"fonts/zektonbo.zip",
+      "box": [
+        61,
+        88,
+        74,
+        95
+      ],
       "font-size": 30,
-      "box": [61,88,74,95],
+      "color": "lightblue",
+      "layer.text": "4",
       "units": "PERCENT",
-      "color": "lightblue"
+      "font": "fonts/zektonbo.zip",
+      "id": "hit"
     },
     {
-      "id": "damage",
-      "layer.text":"1",
-      "font":"fonts/zektonbo.zip",
+      "box": [
+        76.5,
+        88,
+        90,
+        95
+      ],
       "font-size": 30,
-      "box": [76.5,88,90,95],
+      "color": "lightblue",
+      "layer.text": "1",
       "units": "PERCENT",
-      "color": "lightblue"
+      "font": "fonts/zektonbo.zip",
+      "id": "damage"
     }
   ],
-  "back":
-  [
-    { "layer.image":"img/back.png", "fill": true}
-  ]
+  "back": [
+    {
+      "layer.image": "img/back.png",
+      "fill": true
+    }
+  ],
+  "size": "MINI"
 }
