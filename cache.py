@@ -13,8 +13,8 @@ class CacheFile:
         parsedUrl = urlparse.urlparse(url)
         start = 1 if os.path.isabs(parsedUrl.path) else 0
         path = str(os.path.sep).join(parsedUrl.path.split('/')[start:])
-        if path.endswith(os.path.sep):
-            path = self.resolvePath(parsedUrl)
+        if not os.path.splitext(path)[1]:
+            path = self.resolvePath(parsedUrl, path)
         if len(parsedUrl.netloc):
             path = os.path.join(os.path.join(CacheImage.Root, parsedUrl.netloc), path)
         else:
@@ -41,6 +41,7 @@ class CacheFile:
 class CacheImage(CacheFile):
     Cache = {}
     def __init__(self, url):
+        assert url
         try:
             self.image = self.Cache[url]
         except KeyError:
@@ -54,6 +55,9 @@ class CacheImage(CacheFile):
         except Exception as e:
             self.image = e
             print e
+
+    def resolvePath(self, url, path):
+        return os.path.join(path, 'image.jpg')
 
 class CacheFont(CacheFile):
     Cache = {}
@@ -75,7 +79,7 @@ class CacheFont(CacheFile):
                 self.font = ImageFont.truetype(self.path, size)
                 self.Cache[(url, size)] = self.font
 
-    def resolvePath(self, url):
+    def resolvePath(self, url, path):
         if url.query and url.netloc=='dl.dafont.com':
             return url.query.split('=')[1] + '.zip'
-        return 'font.zip'
+        return os.path.join(path, 'font.zip')

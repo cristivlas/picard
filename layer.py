@@ -42,6 +42,9 @@ class Layer:
     def clone(self, d):
         return self.__class__(d)
 
+    def data(self):
+        return self.d
+
     def subst(self, d):
         return d[self] if self in d else self
 
@@ -113,12 +116,14 @@ class Layer:
     
 class Group(Layer):
     ___ = Layer.Register('group', lambda d: Group(d) )
-    def __init__(self, d, verbose=False):
+    def __init__(self, d, verbose=False, group=None):
         Layer.__init__(self, d, verbose) 
-        self.group = [Layer.fromDict(dict(x, scope=d['scope'])) for x in Layer.arg(d)]
+        self.newImage = d.get('new-image', False)
+        self.group = group if group else [Layer.fromDict(dict(x, scope=d['scope'])) for x in Layer.arg(d) if x]
 
     def apply(self, image):
-        image2 = Layer.applyGroup(None, self.group, self.dpi, self.verbose)
+        image1 = Image.new('RGBA', image.size) if self.newImage else None
+        image2 = Layer.applyGroup(image1, self.group, self.dpi, self.verbose)
         return Layer.applyImage(image, image2, self.box, self.fill, self.verbose)
 
     def subst(self, d):
@@ -127,9 +132,7 @@ class Group(Layer):
             return self
         g = dict(self.d)
         Layer.arg(g, [])
-        other = Group(g)
-        other.group = group
-        return other
+        return Group(g, group=group)
 
 class Modifier(Layer):
     ___ = Layer.Register('modify', lambda d: Modifier(d) )
@@ -143,35 +146,47 @@ class Modifier(Layer):
 
     def change(self, d, k1, k2, args):
         if args.verbose:
-            print ' Modify:', self.target, k1, d[k1], '<--', self.d[k2]
+            print ' Modify:', self.target, k1, d.get(k1), '<--', self.d[k2]
         d[k1] = self.d[k2]
 
-    def modify(self, recipe, args):
-        target = Layer.Dict[Layer.id(recipe.fname, self.target)]
-        d = dict(target.d)
+    def specialAttrs(self):
+        return ['ctor', 'id', 'scope'] + [self.d['ctor']]
+
+    def modify(self, target, args):
+        target = Layer.Dict[Layer.id(target.fname, self.target)]
+        d = dict(target.data())
         c = d['ctor']
         for k in self.d:
-            if k in ['ctor', 'id', 'scope']:
+            if k in self.specialAttrs():
                 continue
             if not k in d:
                 if k==c.split('.')[1]:
                     self.change(d, c, k, args)
-                continue
+                    continue
             self.change(d, k, k, args)
         assert d != target.d
         del d['id']
         return (target, target.clone(d))
 
-class Reference(Layer):
-    ___ = Layer.Register('ref', lambda d: Reference(d) )
+class Copy(Layer):
+    ___ = Layer.Register('copy', lambda d: Copy(d) )
     def __init__(self, d, verbose=False):
         Layer.__init__(self, d, verbose)
-        self.ref = Layer.arg(d)
+        self.ref_id = Layer.arg(d)
+
+    def ref(self):
+        return Layer.Dict[Layer.id(self.d['scope'], self.ref_id)]
 
     def apply(self, image):
-        ref = Layer.Dict[Layer.id(self.d['scope'], self.ref)]
+        ref = self.ref()
         ref.dpi = self.dpi
         return ref.apply(image)
+   
+    def data(self):
+        return self.ref().data()
+
+    def clone(self, d):
+        return self.ref().clone(d)
 
 def scaleToFit(image, size, verbose):
     w, h = (float(x) for x in image.size)

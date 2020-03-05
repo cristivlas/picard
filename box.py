@@ -1,5 +1,5 @@
 from enum import Enum
-#import warnings
+import warnings
 
 class Units(Enum):
     PERCENT = 0
@@ -8,6 +8,7 @@ class Units(Enum):
     MILIMETER = 3
 
 class Box:
+    Verbose = False
     def __init__(self, box, units = Units.PIXEL):
         if box.__class__==Box:
             self.box = box.box
@@ -21,7 +22,8 @@ class Box:
             b = getsize(box)
             self.box = b.box
             self.units = b.units
-            #warnings.warn('Ignored ' + str(units))
+            if Box.Verbose:
+                warnings.warn('Ignored ' + str(units))
 
     def __repr__(self):
         return (self.box, self.units.name).__repr__()
@@ -35,6 +37,10 @@ class Box:
                 size += size
             return Box([int(x*y/100.0) for x,y in zip(self.box, size)])
         elif self.units == Units.PIXEL:
+            if Box.Verbose and size:
+                pc = [float('{0:0.2f}'.format(x*100.0/y)) for x,y in zip(self.box, size+size)]
+                print self, '===', pc, 'PERCENT'
+
             return self
         elif self.units == Units.INCH:
             return Box([int(x*dpi) for x in self.box])

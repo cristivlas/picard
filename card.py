@@ -15,8 +15,8 @@ class Card:
         self.bg = d.setdefault('bg', None)
         self.count = d.get('count', 1)
         d.setdefault('back', [])
-        self.frontLayers = [Layer.fromDict(dict(x, scope=fname)) for x in d['front']]
-        self.backLayers = [Layer.fromDict(dict(x, scope=fname)) for x in d['back']]
+        self.frontLayers = [Layer.fromDict(dict(x, scope=fname)) for x in d['front'] if x] 
+        self.backLayers = [Layer.fromDict(dict(x, scope=fname)) for x in d['back'] if x]
         recipe = d.setdefault('recipe', None)
         if recipe:
             if not path.isabs(recipe):
@@ -29,6 +29,8 @@ class Card:
                 self.bg = recipe.bg
         else:
             self.size = box.getsize(d['size'])
+            self.frontLayers = Layer.resolveModifiers(self.frontLayers, self, args)
+            self.backLayers = Layer.resolveModifiers(self.backLayers, self, args)
             
         orient = d.get('orientation', 'portrait')
         if orient != self.size.orientation():
@@ -62,17 +64,16 @@ class Card:
         im = Layer.applyGroup(self.blank(), self.frontLayers, dpi=self.dpi, verbose=args.verbose)
         return self.applyOrientation(im, args)
  
-    def back(self, args, flip):
+    def back(self, args):
         if args.verbose:
             print 'Back:', self.fname
         im = Layer.applyGroup(self.blank(), self.backLayers, dpi=self.dpi, verbose=args.verbose)
-        im = self.applyOrientation(im, args)
-        im.flip = flip
-        return im
+        return self.applyOrientation(im, args)
 
-    @staticmethod
-    def applyOrientation(im, args):
-        if args.orient=='landscape' and im.size[0]<im.size[1]:
+    def applyOrientation(self, im, args):
+        im.rotated = False
+        if args.orientation and args.orientation != self.size.orientation():
             im = im.rotate(90, expand=True)
+            im.rotated = True
         return im
 
