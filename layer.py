@@ -25,19 +25,24 @@ class Layer:
 
     def __init__(self, d, verbose):
         self.d=d
+        self.used=set()
         self.verbose=verbose
-        self.fill = d.get('fill', False)
-        unique_id = d.get('id', None)
+        self.fill = self.attr('fill', False)
+        unique_id = self.attr('id', None)
         if unique_id:
             unique_id = Layer.id(d['scope'], unique_id)
             assert unique_id not in Layer.Dict
             Layer.Dict[unique_id] = self
-        units = Units[d['units']] if 'units' in d else Units.PIXEL
-        try:
-            box = d['box']
-            self.box = Box(box, units)
-        except KeyError:
-            self.box = None
+        units = Units[d.get('units', 'PIXEL')]
+        box = d.get('box', None)
+        self.box = Box(box, units) if box else None
+
+    def __del__(self):
+        for k in self.d:
+            if k in self.specialAttrs():
+                continue
+            if not k in self.used:
+                print self, ' Unused attribute:', str(k)
 
     def clone(self, d):
         return self.__class__(d)
@@ -45,8 +50,11 @@ class Layer:
     def data(self):
         return self.d
 
+    def specialAttrs(self):
+        return ['ctor', 'id', 'scope'] + [self.d['ctor']]
+
     def subst(self, d):
-        return d[self] if self in d else self
+        return d.get(self, self)
 
     @staticmethod
     def resolveModifiers(layers, recipe, args):
@@ -113,12 +121,41 @@ class Layer:
             image1.paste(image2, box.box, image2)
             return image1
         return image2
+
+    def attr(self, a, default=None):
+        val = self.d.get(a, default)
+        self.used.add(a)
+        return val
     
+    def __change(self, d, k1, k2, args):
+        if args.verbose:
+            print ' Modify:', self.target, k1, d.get(k1), '<--', self.d[k2]
+        d[k1] = self.attr(k2)
+
+    def modify(self, target, args):
+        if not isinstance(target, Layer):
+            target = Layer.Dict[Layer.id(target.fname, self.target)]
+        d = dict(target.data())
+        c = d['ctor']
+        for k in self.d:
+            if k in self.specialAttrs():
+                continue
+            if not k in d:
+                if k==c.split('.')[1]:
+                    self.__change(d, c, k, args)
+                    continue
+            self.__change(d, k, k, args)
+        assert d != target.d
+        del d['id']
+        return (target, target.clone(d))
+
 class Group(Layer):
     ___ = Layer.Register('group', lambda d: Group(d) )
     def __init__(self, d, verbose=False, group=None):
-        Layer.__init__(self, d, verbose) 
-        self.newImage = d.get('new-image', False)
+        Layer.__init__(self, d, verbose)
+        self.attr('box')
+        self.attr('units')
+        self.newImage = self.attr('new-image', False)
         self.group = group if group else [Layer.fromDict(dict(x, scope=d['scope'])) for x in Layer.arg(d) if x]
 
     def apply(self, image):
@@ -144,44 +181,26 @@ class Modifier(Layer):
     def apply(self, image):
         assert False
 
-    def change(self, d, k1, k2, args):
-        if args.verbose:
-            print ' Modify:', self.target, k1, d.get(k1), '<--', self.d[k2]
-        d[k1] = self.d[k2]
-
-    def specialAttrs(self):
-        return ['ctor', 'id', 'scope'] + [self.d['ctor']]
-
-    def modify(self, target, args):
-        target = Layer.Dict[Layer.id(target.fname, self.target)]
-        d = dict(target.data())
-        c = d['ctor']
-        for k in self.d:
-            if k in self.specialAttrs():
-                continue
-            if not k in d:
-                if k==c.split('.')[1]:
-                    self.change(d, c, k, args)
-                    continue
-            self.change(d, k, k, args)
-        assert d != target.d
-        del d['id']
-        return (target, target.clone(d))
-
 class Copy(Layer):
     ___ = Layer.Register('copy', lambda d: Copy(d) )
     def __init__(self, d, verbose=False):
         Layer.__init__(self, d, verbose)
         self.ref_id = Layer.arg(d)
 
+    def specialAttrs(self):
+        return Layer.specialAttrs(self) + ['reflect']
+
     def ref(self):
         return Layer.Dict[Layer.id(self.d['scope'], self.ref_id)]
 
     def apply(self, image):
         ref = self.ref()
+        if ref.box:
+            ref.box.reflect(self.attr('reflect'), self.d)
+            (ref, ref) = self.modify(ref, self)
         ref.dpi = self.dpi
         return ref.apply(image)
-   
+  
     def data(self):
         return self.ref().data()
 
@@ -231,10 +250,12 @@ class TextLayer(Layer):
     ___ = Layer.Register('text', lambda d: TextLayer(d) )
     def __init__(self, d, verbose=False):
         Layer.__init__(self, d, verbose) 
-        self.outline = d.setdefault('outline', None)
-        self.color = d.setdefault('color', 'black')
-        self.font = d.setdefault('font', None)
-        self.fontSize = d.setdefault('font-size', None)
+        self.attr('box')
+        self.attr('units')
+        self.outline = self.attr('outline', None)
+        self.color = self.attr('color', 'black')
+        self.font = self.attr('font', None)
+        self.fontSize = self.attr('font-size', None)
         self.text = Layer.arg(d)
         
     def apply(self, image):
@@ -253,6 +274,7 @@ class ImageLayer(Layer):
     ___ = Layer.Register('image', lambda d: ImageLayer(d) )
     def __init__(self, d, verbose=False):
         Layer.__init__(self, d, verbose) 
+        box = self.attr('box', None)
         self.image = CacheImage(Layer.arg(d)).image
 
     def apply(self, image):

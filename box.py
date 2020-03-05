@@ -37,9 +37,9 @@ class Box:
                 size += size
             return Box([int(x*y/100.0) for x,y in zip(self.box, size)])
         elif self.units == Units.PIXEL:
-            if Box.Verbose and size:
+            if size:
                 pc = [float('{0:0.2f}'.format(x*100.0/y)) for x,y in zip(self.box, size+size)]
-                print self, '===', pc, 'PERCENT'
+                print 'Consider relative coordinates:', pc, '("units": "PERCENT") instead of', self
 
             return self
         elif self.units == Units.INCH:
@@ -58,6 +58,17 @@ class Box:
     def rotate(self):
         assert self.box[0] == 0 and self.box[1] == 0
         self.box = [0, 0, self.box[3], self.box[2]]
+
+    def reflect(self, axis, d):
+        if axis:
+            assert self.units == Units.PERCENT
+            if axis=='HORIZONTAL':
+                box = [100-self.box[2], self.box[1], 100-self.box[0], self.box[3]]
+            else:
+                assert axis=='VERTICAL'
+                box = [self.box[0], 100-self.box[3], self.box[2], 100-self.box[1]]
+            d['box'] = box
+            d['units'] = 'PERCENT'
 
 class Size(Enum):
     BRIDGE = Box([2.25, 3.5], Units.INCH)

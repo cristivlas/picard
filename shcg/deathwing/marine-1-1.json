@@ -15,9 +15,8 @@
             "id": "text-front",
             "font": "http://www.fontsner.com/download/66401-c40c7541781d3539d2b683b40290bc98.ttf",
             "font-size": 26,
-            "box": [65.7, 34, 94.3, 78.8],
-            "units": "PERCENT",
-            "outline": "green"
+            "box": [65, 38, 94.25, 85],
+            "units": "PERCENT", "outline": "green"
         },
         {}
     ],
@@ -30,8 +29,7 @@
           "box": [38.1, 0.0, 95.62, 88.15], "units": "PERCENT", "fill": true
         },
         { "layer.image": "artwork/right_template.png", "fill": true },
-        { "layer.copy": "text-front", "id": "text-back" },
-        { "layer.modify": "text-back", "box": [60,230,360, 532], "units": "PIXEL" },
+        { "layer.copy": "text-front", "reflect":"HORIZONTAL" },
         {}
     ]
 

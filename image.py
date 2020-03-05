@@ -115,7 +115,7 @@ class Halo(Layer):
     def __init__(self, d, verbose=False):
         Layer.__init__(self, d, verbose) 
         self.color = Layer.arg(d)
-        self.radius = d.setdefault('gauss-blur-radius', 2)
+        self.radius = self.attr('gauss-blur-radius', 2)
         
     def apply(self, image):
         mask = Mask({'mask':self.color, 'ctor':'mask'})

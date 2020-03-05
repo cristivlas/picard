@@ -1,6 +1,7 @@
 from argparse import ArgumentParser
 from box import Box
 from card import Card
+from layer import Layer
 from os import rename
 from PIL import Image, ImageOps, ImageDraw
 from itertools import count
@@ -177,7 +178,6 @@ if __name__ == '__main__':
             assert not Sheet.CutSize or Sheet.CutSize==size
             Sheet.CutSize = size
 
-
     if args.format:
         for c in cards:
             backup(c.fname)
@@ -188,4 +188,6 @@ if __name__ == '__main__':
         fname = args.pdf or pathlib.Path(args.dir).name + '.pdf'
         saveSheetsAsPDF(renderCards(cards, paper_size[args.paper], dpi, args), fname)
 
+    Card.Dict = None
+    Layer.Dict = None
 

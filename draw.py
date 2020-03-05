@@ -15,11 +15,12 @@ class Rectangle(Layer):
     ___ = Layer.Register('rectangle', lambda x: Rectangle(x))
     def __init__(self, d, verbose=False):
         Layer.__init__(self, d, verbose)
-        assert self.box
+        assert self.attr('box')
+        self.attr('units')
         self.outline = Layer.arg(d)
-        self.radius = d.setdefault('corner-radius', 0)
-        self.width = d.setdefault('line-width', 1)
-        self.fillColor = d.setdefault('fill-color', None)
+        self.radius = self.attr('corner-radius', 0)
+        self.width = self.attr('line-width', 1)
+        self.fillColor = self.attr('fill-color', None)
 
     def apply(self, image):
         box = self.box.convert(image.size)
