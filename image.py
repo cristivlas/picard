@@ -1,24 +1,76 @@
 from layer import Layer
-from PIL import Image, ImageChops, ImageEnhance, ImageFilter, ImageOps
-import matplotlib
+from PIL import Image, ImageChops, ImageColor, ImageEnhance, ImageFilter, ImageOps
+from scipy import ndimage as ndi
+from skimage import filters, morphology
+from matplotlib import colors
+import colorsys
 import numpy as np
+
+bloomKernel = [
+    0.003, 0.053, 0.003,
+    0.053, 1.124, 0.053,
+    0.003, 0.053, 0.003 ]
+
+def mean_to_alpha_threshold(im, level):
+    a = np.array(im)
+    a = a.T
+    w = (np.mean(a,axis=0)>=level)
+    np.place(a[3], w, 0)
+    return Image.fromarray(a.T)
+
+def background_mask(im, fuzzy=True):
+    im = np.array(im.convert('L'))
+    light_spots = np.array((im > 245).nonzero()).T
+    dark_spots = np.array((im < 3).nonzero()).T
+    bool_mask = np.zeros(im.shape, dtype=np.bool)
+    bool_mask[tuple(light_spots.T)] = True
+    bool_mask[tuple(dark_spots.T)] = True
+    seed_mask, num_seeds = ndi.label(bool_mask)
+    im = filters.sobel(im)
+    im = filters.gaussian(im, sigma=2.0)
+    im = morphology.watershed(im, seed_mask)
+    im = Image.fromarray(im).convert('LA')
+    if fuzzy:
+        im = np.array(im).T
+        im[1]=255-im[0]
+        im = Image.fromarray(im.T)
+        return im.convert('RGBA')
+    im = mean_to_alpha_threshold(im.convert('RGBA'), 100)
+    return im
+
+def change_hue(im, color, range=None):
+    assert im.mode=='RGBA'
+    (r,g,b) = ImageColor.getrgb(color)
+    (h,s,v) = colorsys.rgb_to_hsv(r,g,b)
+    a = np.array(im)
+    a = a.reshape(a.size/4,4)
+    alpha = a[:,3:]
+    a = a[:,:3]
+    a = colors.rgb_to_hsv(a/255.)
+    a = a.T
+   
+    if range:
+        np.place(a[0], np.logical_and(a[0]<range[1], a[0]>range[0]), h)
+    else: 
+        a[0] = h
+
+    # back to RGBA
+    a = a.T
+    a = colors.hsv_to_rgb(a)*255.5
+    a = a.astype(np.uint8)
+    a = np.concatenate((a,alpha), axis=1)
+    a = a.reshape((im.size[1], im.size[0], 4))
+    return Image.fromarray(a)
+    
 
 class MeanToAlpha(Layer):
     ___ = Layer.Register('mean-to-alpha', lambda d: MeanToAlpha(d) )
     def __init__(self, d, verbose=False):
         Layer.__init__(self, d, verbose) 
         self.level=int(Layer.arg(d))
-        
-    def apply(self, image):
-        image = image.convert('RGBA')
-        L = self.level
-        a = np.array(image)
-        if np.mean(a[0,0])<L:
-            return image
-        a = a.T
-        w = (np.mean(a,axis=0)>=L)
-        np.place(a[3], w, 0)
-        return Image.fromarray(a.T)
+
+    def apply(self, ctxt, image):
+        return mean_to_alpha_threshold(image, self.level)
 
 class Opacity(Layer):
     ___ = Layer.Register('opacity', lambda d: Opacity(d) )
@@ -26,12 +78,12 @@ class Opacity(Layer):
         Layer.__init__(self, d, verbose)
         self.opacity=min(Layer.arg(d), 100.0)/100.0
 
-    def apply(self, image):
+    def apply(self, ctxt, image):
         if self.verbose:
             print ' Opacity: ', self.opacity, '%'
         a = np.array(image)
         a = a.T
-        a[3] = (a[3] * self.opacity).astype(np.uint8)
+        a[3] = (a[3] * self.opacity)
         return Image.fromarray(a.T)
 
 class Mask(Layer):
@@ -40,7 +92,7 @@ class Mask(Layer):
         Layer.__init__(self, d, verbose) 
         self.color = Layer.arg(d)
         
-    def apply(self, image):
+    def apply(self, ctxt, image):
         image = image.convert('RGBA')
         solid = Image.new('RGBA', image.size, self.color)
         mask = Image.new('RGBA', image.size, None)
@@ -53,7 +105,7 @@ class Brighten(Layer):
         Layer.__init__(self, d, verbose) 
         self.amount = Layer.arg(d)
         
-    def apply(self, image):
+    def apply(self, ctxt, image):
         return ImageEnhance.Brightness(image).enhance(self.amount)
 
 class Contrast(Layer):
@@ -62,7 +114,7 @@ class Contrast(Layer):
         Layer.__init__(self, d, verbose) 
         self.amount = Layer.arg(d)
         
-    def apply(self, image):
+    def apply(self, ctxt, image):
         return ImageEnhance.Contrast(image).enhance(self.amount)
         return ImageEnhance.Color(image).enhance(self.amount)
 
@@ -72,7 +124,7 @@ class Sharpen(Layer):
         Layer.__init__(self, d, verbose) 
         self.amount = Layer.arg(d)
         
-    def apply(self, image):
+    def apply(self, ctxt, image):
         return ImageEnhance.Sharpness(image).enhance(self.amount)
 
 class Filter(Layer):
@@ -92,7 +144,7 @@ class Filter(Layer):
         Layer.__init__(self, d, verbose) 
         self.filter = Layer.arg(d)
         
-    def apply(self, image):
+    def apply(self, ctxt, image):
         return image.filter(Filter.Names[self.filter])
 
 class Flip(Layer):
@@ -107,7 +159,7 @@ class Flip(Layer):
         Layer.__init__(self, d, verbose) 
         self.mode = Layer.arg(d)
         
-    def apply(self, image):
+    def apply(self, ctxt, image):
         return Flip.Func[self.mode](image)
 
 class Halo(Layer):
@@ -117,22 +169,53 @@ class Halo(Layer):
         self.color = Layer.arg(d)
         self.radius = self.attr('gauss-blur-radius', 2)
         
-    def apply(self, image):
+    def apply(self, ctxt, image):
         mask = Mask({'mask':self.color, 'ctor':'mask'})
-        im = mask.apply(image)
+        im = mask.apply(ctxt, image)
         im = im.filter(ImageFilter.GaussianBlur(self.radius))
         im = Image.composite(im, image, ImageChops.invert(im))
-        bloom = [ 0.003, 0.053, 0.003, 0.053, 1.124, 0.053, 0.003, 0.053, 0.003 ]
-        return im.filter(ImageFilter.Kernel((3, 3), bloom, 1, 0))
+        return im.filter(ImageFilter.Kernel((3, 3), bloomKernel, 1, 0))
 
 class Rotate(Layer):
     ___ = Layer.Register('rotate', lambda d: Rotate(d) )
     def __init__(self, d, verbose=False):
         Layer.__init__(self, d, verbose) 
         self.angle = float(Layer.arg(d))
-        
-    def apply(self, image):
+    def apply(self, ctxt, image):
         return image.rotate(self.angle, expand=True)
+
+class BackGlow(Layer):
+    ___ = Layer.Register('backglow', lambda d: BackGlow(d) )
+    def __init__(self, d, verbose=False):
+        Layer.__init__(self, d, verbose) 
+        self.color = Layer.arg(d)
+        self.radius = self.attr('gauss-blur-radius', 40.0)
+        self.brighten = self.attr('brighten', 10.0)
+        self.blendRatio = self.attr('blend-ratio', 0.35, [0.0, 1.0])
+    def apply(self, ctxt, image):
+        mask = background_mask(image)
+        inverted_mask = ImageChops.invert(mask)
+        front = Image.new('RGBA', image.size)
+        back = front.copy()
+        back.paste(image, (0,0), mask)
+        back = ImageEnhance.Brightness(back).enhance(self.brighten)
+        back = back.filter(ImageFilter.GaussianBlur(self.radius))
+        back = change_hue(back, self.color)
+        front.paste(image, (0,0), inverted_mask)
+        im = Image.alpha_composite(back, front)
+        im = Image.blend(image, im, self.blendRatio)
+        im = im.filter(ImageFilter.Kernel((3, 3), bloomKernel, 1, 0))
+        return im
+
+class ChangeHue(Layer):
+    ___ = Layer.Register('hue', lambda d: ChangeHue(d) )
+    def __init__(self, d, verbose=False):
+        Layer.__init__(self, d, verbose)
+        self.color = Layer.arg(d)
+        self.range = self.attr('range', [.18, 5])
+
+    def apply(self, ctxt, image):
+        return change_hue(image, self.color, self.range)
 
 class NormalizeColor(Layer):
     ___ = Layer.Register('normalize-color', lambda d: NormalizeColor(d) )
@@ -140,7 +223,7 @@ class NormalizeColor(Layer):
         Layer.__init__(self, d, verbose)
         self.r = Layer.arg(d)
 
-    def apply(self, image):
+    def apply(self, ctxt, image):
         a = np.array(image)
         a = a.T
         for i in xrange(3):

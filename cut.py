@@ -58,7 +58,7 @@ class AutoCrop(Layer):
             self.imgs[name]=im
         return self.imgs
 
-    def apply(self, image):
+    def apply(self, ctxt, image):
         if self.mod:
             self.mod.verbose = self.verbose
             return self.mod.apply(image)
@@ -88,7 +88,8 @@ class Crop(Layer):
         self.origin = Layer.arg(d)
         assert self.attr('box')
         self.attr('units')
-    def apply(self, image):
+
+    def apply(self, ctxt, image):
         box = self.box.convert(image.size).box
         orig = Crop.GetOrigin[self.origin](image.size, box)
         box = [x+o for x,o in zip(box, orig+orig)]

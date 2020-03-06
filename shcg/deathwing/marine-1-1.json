@@ -4,33 +4,60 @@
     "front": [
         { "layer.group":
             [
-                { "layer.image": "artwork/chaplain2.png" },
+                { "layer.image": "artwork/chaplain2.png", "id":"image-front" },
                 { "image.flip": "HORIZONTAL" },
-                {}
+                { "image.backglow": "darkviolet" }
             ],
           "box": [2, 2.96, 57.5, 88.15], "units": "PERCENT", "fill": true
         },
-        { "layer.image": "artwork/left_template.png", "fill": true },
-        { "layer.text": "Interrogator-Chaplain Uriel is unyielding in his faith. The fires of his devotion help fuel the courage of his battle-brothers",
-            "id": "text-front",
-            "font": "http://www.fontsner.com/download/66401-c40c7541781d3539d2b683b40290bc98.ttf",
-            "font-size": 26,
-            "box": [65, 38, 94.25, 85],
-            "units": "PERCENT", "outline": "green"
+        { "layer.text": "Interrogator-Chaplain Uriel",
+            "id": "name-front",
+            "font": "https://dl.dafont.com/dl/?f=windlass",
+            "font-size": 34,
+            "box": [67, 18, 94.25, 28],
+            "units": "PERCENT",
+            "outline": null
         },
-        {}
+        { "layer.text": "Range 1 Attack",
+            "id": "range-front",
+            "font": "fonts/Optima-Medium.zip",
+            "font-size": 34,
+            "box": [67, 38, 94.25, 50],
+            "units": "PERCENT",
+            "outline": null
+        },
+        { "layer.text": "Interrogator-Chaplain Uriel is unyielding in his faith. The fires of his devotion help fuel the courage of his battle-brothers.",
+            "id": "description-front",
+            "font": "http://www.fontsner.com/download/66401-c40c7541781d3539d2b683b40290bc98.ttf",
+            "font-size": 28,
+            "box": [67, 50, 94.25, 85],
+            "units": "PERCENT",
+            "outline": null
+        },
+        { "layer.group":
+            [
+                { "layer.image": "artwork/left_template.png", "fill": true },
+                { "image.hue": "darkviolet" }
+            ]
+        }
     ],
 
     "back": [
         { "layer.group":
             [
-                { "layer.image": "artwork/chaplain1.png" }
+                { "layer.image": "artwork/chaplain1.png",  "id":"image-back" },
+                { "image.backglow": "darkviolet" }
             ],
-          "box": [38.1, 0.0, 95.62, 88.15], "units": "PERCENT", "fill": true
+          "box": [38.1, 0.0, 96, 88.15], "units": "PERCENT", "fill": true
         },
-        { "layer.image": "artwork/right_template.png", "fill": true },
-        { "layer.copy": "text-front", "reflect":"HORIZONTAL" },
-        {}
+        { "layer.group":
+            [
+                { "layer.image": "artwork/right_template.png", "fill": true },
+                { "image.hue": "darkviolet" }
+            ]
+        },
+        { "layer.copy": "range-front", "reflect":"HORIZONTAL" },
+        { "layer.copy": "description-front", "reflect":"HORIZONTAL" },
+        { "layer.copy": "name-front", "reflect":"HORIZONTAL" }
     ]
-
 }

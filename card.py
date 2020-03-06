@@ -27,18 +27,18 @@ class Card:
             self.size = recipe.size
             if not self.bg:
                 self.bg = recipe.bg
+            assert not d.get('orientation')
         else:
             self.size = box.getsize(d['size'])
-            self.frontLayers = Layer.resolveModifiers(self.frontLayers, self, args)
-            self.backLayers = Layer.resolveModifiers(self.backLayers, self, args)
-            
-        orient = d.get('orientation', 'portrait')
-        if orient != self.size.orientation():
-            self.size.rotate()
+            self.frontLayers = Layer.resolveModifiers(self, self.frontLayers, self, args)
+            self.backLayers = Layer.resolveModifiers(self, self.backLayers, self, args)
+            orient = d.get('orientation', 'portrait')
+            if orient != self.size.orientation():
+                self.size.rotate()
 
     def concat(self, recipe, whichLayers, args):
         layers = getattr(recipe, whichLayers, []) + getattr(self, whichLayers)
-        return Layer.resolveModifiers(layers, recipe, args)
+        return Layer.resolveModifiers(self, layers, recipe, args)
 
     @staticmethod
     def load(fname, dpi, args):
@@ -61,13 +61,13 @@ class Card:
     def front(self, args):
         if args.verbose:
             print 'Front:', self.fname
-        im = Layer.applyGroup(self.blank(), self.frontLayers, dpi=self.dpi, verbose=args.verbose)
+        im = Layer.applyGroup(self, self.blank(), self.frontLayers, dpi=self.dpi, verbose=args.verbose)
         return self.applyOrientation(im, args)
  
     def back(self, args):
         if args.verbose:
             print 'Back:', self.fname
-        im = Layer.applyGroup(self.blank(), self.backLayers, dpi=self.dpi, verbose=args.verbose)
+        im = Layer.applyGroup(self, self.blank(), self.backLayers, dpi=self.dpi, verbose=args.verbose)
         return self.applyOrientation(im, args)
 
     def applyOrientation(self, im, args):

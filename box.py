@@ -18,6 +18,10 @@ class Box:
             self.units = units
             if len(self.box)==2:
                 self.box = [0,0] + self.box
+            else:
+                assert len(box)==4
+                assert box[2] > box[0]
+                assert box[3] > box[1]
         else:
             b = getsize(box)
             self.box = b.box

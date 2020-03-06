@@ -21,8 +21,9 @@ class Rectangle(Layer):
         self.radius = self.attr('corner-radius', 0)
         self.width = self.attr('line-width', 1)
         self.fillColor = self.attr('fill-color', None)
+        assert self.radius==0 or self.width < self.radius
 
-    def apply(self, image):
+    def apply(self, ctxt, image):
         box = self.box.convert(image.size)
         r = self.radius or min(box.size())/2
         size = [r,r]
@@ -39,8 +40,8 @@ class Rectangle(Layer):
         im = makeShape(box.size()+[4], im)
         im2 = Image.new('RGBA', image.size)
         im2.paste(im, box.box, im)
-        if 'opacity' in self.d:
+        opacity = self.attr('opacity')
+        if opacity:
             from image import Opacity
-            im2 = Opacity(self.d, self.verbose).apply(im2)
-
+            im2 = Opacity({'opacity': opacity, 'ctor': 'opacity'}, self.verbose).apply(ctxt, im2)
         return self.applyImage(image, im2, verbose=self.verbose)

@@ -26,13 +26,9 @@ class Layer:
     def __init__(self, d, verbose):
         self.d=d
         self.used=set()
+        self.__toDict()
         self.verbose=verbose
         self.fill = self.attr('fill', False)
-        unique_id = self.attr('id', None)
-        if unique_id:
-            unique_id = Layer.id(d['scope'], unique_id)
-            assert unique_id not in Layer.Dict
-            Layer.Dict[unique_id] = self
         units = Units[d.get('units', 'PIXEL')]
         box = d.get('box', None)
         self.box = Box(box, units) if box else None
@@ -42,7 +38,17 @@ class Layer:
             if k in self.specialAttrs():
                 continue
             if not k in self.used:
-                print self, ' Unused attribute:', str(k)
+                print self, ' Unexpected attribute:', str(k)
+
+    def unique_id(self):
+        scope = self.d.get('scope')
+        return Layer.id(scope, self.attr('id'))
+
+    def __toDict(self):
+        unique_id = self.unique_id()
+        if unique_id:
+            assert unique_id not in Layer.Dict, unique_id
+            Layer.Dict[unique_id] = self
 
     def clone(self, d):
         return self.__class__(d)
@@ -55,28 +61,33 @@ class Layer:
 
     def subst(self, d):
         return d.get(self, self)
-
+        
     @staticmethod
-    def resolveModifiers(layers, recipe, args):
+    def resolveModifiers(ctxt, layers, recipe, args):
         d = dict((x, x) for x in layers)
         for x in layers:
             if isinstance(x, Modifier):
                 orig, mod = x.modify(recipe, args)
+                assert mod is not orig
                 d[orig] = mod
+                    
+                mod.d['id'] = orig.d['id']
+                mod.d['scope'] = ctxt.fname
+                mod.__toDict()
         resolved = []
         for x in layers:
             if not isinstance(x, Modifier):
                 resolved.append(x.subst(d))
         return resolved
 
-    def errorImage(self, err):
+    def errorImage(self, ctxt, err):
         im = Image.new('RGBA', [self.dpi, self.dpi], 'white')
         draw = ImageDraw.Draw(im)
         draw.line([0,0]+list(im.size), fill='red', width=2)
         draw.line([0,im.size[1],im.size[0],0], fill='red', width=2)
         text = TextLayer(dict(ctor='text', text=str(err), color='black'))
         text.dpi = self.dpi
-        return text.apply(im)
+        return text.apply(ctxt, im)
 
     @staticmethod
     def fromDict(d):
@@ -97,14 +108,14 @@ class Layer:
         return d[k]
 
     @staticmethod
-    def applyGroup(image, layers, dpi, verbose):
+    def applyGroup(ctxt, image, layers, dpi, verbose):
         assert dpi is not None
         for x in layers:
             x.dpi = dpi
             x.verbose = verbose
             if verbose:
                 print ' Applying:', x
-            image = x.apply(image)
+            image = x.apply(ctxt, image)
         return image
 
     @staticmethod
@@ -122,19 +133,23 @@ class Layer:
             return image1
         return image2
 
-    def attr(self, a, default=None):
+    def attr(self, a, default=None, domain=None):
         val = self.d.get(a, default)
+        if domain and (val < domain[0] or val > domain[1]):
+            raise ValueError(val, domain)
         self.used.add(a)
         return val
     
     def __change(self, d, k1, k2, args):
         if args.verbose:
-            print ' Modify:', self.target, k1, d.get(k1), '<--', self.d[k2]
+            print ' Modify:', k1, d.get(k1), '<--', self.d[k2]
         d[k1] = self.attr(k2)
 
     def modify(self, target, args):
         if not isinstance(target, Layer):
+            assert str(target.__class__) == 'card.Card'
             target = Layer.Dict[Layer.id(target.fname, self.target)]
+            self.target = target
         d = dict(target.data())
         c = d['ctor']
         for k in self.d:
@@ -158,9 +173,9 @@ class Group(Layer):
         self.newImage = self.attr('new-image', False)
         self.group = group if group else [Layer.fromDict(dict(x, scope=d['scope'])) for x in Layer.arg(d) if x]
 
-    def apply(self, image):
+    def apply(self, ctxt, image):
         image1 = Image.new('RGBA', image.size) if self.newImage else None
-        image2 = Layer.applyGroup(image1, self.group, self.dpi, self.verbose)
+        image2 = Layer.applyGroup(ctxt, image1, self.group, self.dpi, self.verbose)
         return Layer.applyImage(image, image2, self.box, self.fill, self.verbose)
 
     def subst(self, d):
@@ -174,11 +189,10 @@ class Group(Layer):
 class Modifier(Layer):
     ___ = Layer.Register('modify', lambda d: Modifier(d) )
     def __init__(self, d, verbose=False):
-        assert 'id' not in d
         Layer.__init__(self, d, verbose)
         self.target = Layer.arg(d)
 
-    def apply(self, image):
+    def apply(self, ctxt, image):
         assert False
 
 class Copy(Layer):
@@ -190,16 +204,24 @@ class Copy(Layer):
     def specialAttrs(self):
         return Layer.specialAttrs(self) + ['reflect']
 
-    def ref(self):
-        return Layer.Dict[Layer.id(self.d['scope'], self.ref_id)]
+    def ref(self, ctxt):
+        try:
+            return Layer.Dict[Layer.id(ctxt.fname, self.ref_id)]
+        except KeyError:
+            scope = self.d.get('scope')
+            assert scope
+            return Layer.Dict[Layer.id(scope, self.ref_id)]
 
-    def apply(self, image):
-        ref = self.ref()
-        if ref.box:
-            ref.box.reflect(self.attr('reflect'), self.d)
+
+    def apply(self, ctxt, image):
+        ref = self.ref(ctxt)
+        reflect = self.attr('reflect')
+        if reflect:
+            assert ref.box
+            ref.box.reflect(reflect, self.d)
             (ref, ref) = self.modify(ref, self)
         ref.dpi = self.dpi
-        return ref.apply(image)
+        return ref.apply(ctxt, image)
   
     def data(self):
         return self.ref().data()
@@ -258,10 +280,10 @@ class TextLayer(Layer):
         self.fontSize = self.attr('font-size', None)
         self.text = Layer.arg(d)
         
-    def apply(self, image):
+    def apply(self, ctxt, image):
         assert image
         if not self.box:
-            self.box = Box([0,0]+list(image.size))
+            self.box = Box([0,0, 100, 100], Units.PERCENT)
         font = CacheFont(self.font, self.fontSize, self.dpi).font
         box = self.box.convert(image.size)
         xy = box.box[:2]
@@ -277,8 +299,8 @@ class ImageLayer(Layer):
         box = self.attr('box', None)
         self.image = CacheImage(Layer.arg(d)).image
 
-    def apply(self, image):
+    def apply(self, ctxt, image):
         if isinstance(self.image, exceptions.Exception):
-            return self.errorImage(self.image)
+            return self.errorImage(ctxt, self.image)
         return self.applyImage(image, self.image, self.box, self.fill, self.verbose)
 
