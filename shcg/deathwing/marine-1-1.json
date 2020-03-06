@@ -4,14 +4,14 @@
     "front": [
         { "layer.group":
             [
-                { "layer.image": "artwork/chaplain2.png", "id":"image-front" },
+                { "layer.image": "artwork/chaplain2.png", "id":"image-A" },
                 { "image.flip": "HORIZONTAL" },
-                { "image.backglow": "darkviolet" }
+                { "image.backglow": "darkviolet", "id":"effect" }
             ],
           "box": [2, 2.96, 57.5, 88.15], "units": "PERCENT", "fill": true
         },
         { "layer.text": "Interrogator-Chaplain Uriel",
-            "id": "name-front",
+            "id": "name",
             "font": "https://dl.dafont.com/dl/?f=windlass",
             "font-size": 34,
             "box": [67, 18, 94.25, 28],
@@ -19,7 +19,7 @@
             "outline": null
         },
         { "layer.text": "Range 1 Attack",
-            "id": "range-front",
+            "id": "range",
             "font": "fonts/Optima-Medium.zip",
             "font-size": 34,
             "box": [67, 38, 94.25, 50],
@@ -27,7 +27,7 @@
             "outline": null
         },
         { "layer.text": "Interrogator-Chaplain Uriel is unyielding in his faith. The fires of his devotion help fuel the courage of his battle-brothers.",
-            "id": "description-front",
+            "id": "description",
             "font": "http://www.fontsner.com/download/66401-c40c7541781d3539d2b683b40290bc98.ttf",
             "font-size": 28,
             "box": [67, 50, 94.25, 85],
@@ -37,7 +37,7 @@
         { "layer.group":
             [
                 { "layer.image": "artwork/left_template.png", "fill": true },
-                { "image.hue": "darkviolet" }
+                { "image.hue": "darkviolet", "id": "team-color" }
             ]
         }
     ],
@@ -45,19 +45,19 @@
     "back": [
         { "layer.group":
             [
-                { "layer.image": "artwork/chaplain1.png",  "id":"image-back" },
-                { "image.backglow": "darkviolet" }
+                { "layer.image": "artwork/chaplain1.png",  "id":"image-B" },
+                { "layer.copy": "effect" }
             ],
           "box": [38.1, 0.0, 96, 88.15], "units": "PERCENT", "fill": true
         },
         { "layer.group":
             [
                 { "layer.image": "artwork/right_template.png", "fill": true },
-                { "image.hue": "darkviolet" }
+                { "layer.copy": "team-color" }
             ]
         },
-        { "layer.copy": "range-front", "reflect":"HORIZONTAL" },
-        { "layer.copy": "description-front", "reflect":"HORIZONTAL" },
-        { "layer.copy": "name-front", "reflect":"HORIZONTAL" }
+        { "layer.copy": "range", "reflect":"HORIZONTAL" },
+        { "layer.copy": "description", "reflect":"HORIZONTAL" },
+        { "layer.copy": "name", "reflect":"HORIZONTAL" }
     ]
 }

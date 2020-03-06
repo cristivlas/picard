@@ -1,0 +1,15 @@
+{
+    "recipe": "marine-1-1.json",
+    "front": [
+        { "layer.modify": "name", "text": "Brother Charon" },
+        { "layer.modify": "image-A", "image": "artwork/charon4.png" },
+        { "layer.modify": "range", "text": "Range 2 Attack" },
+        { "layer.modify": "description",
+            "text": "Brother Charon is a versatile member of his squad -- an efficient marksman and a potent close-combatant, thanks to his deadly chainfist."
+        }
+    ],
+
+    "back": [
+        { "layer.modify": "image-B", "image": "artwork/charon4.png" }
+    ]
+}

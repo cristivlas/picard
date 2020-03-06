@@ -160,7 +160,7 @@ class Layer:
                     self.__change(d, c, k, args)
                     continue
             self.__change(d, k, k, args)
-        assert d != target.d
+        assert d != target.d, d['id']
         del d['id']
         return (target, target.clone(d))
 

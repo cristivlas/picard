@@ -2,6 +2,7 @@ from layer import Layer
 from PIL import Image, ImageChops, ImageColor, ImageEnhance, ImageFilter, ImageOps
 from scipy import ndimage as ndi
 from skimage import filters, morphology
+from skimage.feature import peak_local_max, canny
 from matplotlib import colors
 import colorsys
 import numpy as np
@@ -18,18 +19,37 @@ def mean_to_alpha_threshold(im, level):
     np.place(a[3], w, 0)
     return Image.fromarray(a.T)
 
+def normalize_color(im, usr):
+    a = np.array(im)
+    a = a.T
+    for i in xrange(3):
+        q = usr[i]
+        r = [np.min(a[i]), np.max(a[i])]
+        a[i] = ((a[i]-r[0])*1.0*(q[1]-q[0])/(r[1]-r[0])+q[0]).astype(np.uint8)
+    return Image.fromarray(a.T)
+
 def background_mask(im, fuzzy=True):
     im = np.array(im.convert('L'))
-    light_spots = np.array((im > 245).nonzero()).T
-    dark_spots = np.array((im < 3).nonzero()).T
+    light_spots = np.array((im > 245).nonzero())
+    dark_spots = np.array((im < 20).nonzero())
+    
     bool_mask = np.zeros(im.shape, dtype=np.bool)
-    bool_mask[tuple(light_spots.T)] = True
-    bool_mask[tuple(dark_spots.T)] = True
+    bool_mask[tuple(light_spots)] = True
+    bool_mask[tuple(dark_spots)] = True
+
+    # used within peak_local_max function
+    #image_max = ndi.maximum_filter(im, size=20, mode='constant')
+    # Comparison between image_max and im to find the coordinates of local maxima
+    #local_max = peak_local_max(im, min_distance=20)
+    #bool_mask[tuple(local_max.T)] = True
+
     seed_mask, num_seeds = ndi.label(bool_mask)
+
     im = filters.sobel(im)
     im = filters.gaussian(im, sigma=2.0)
     im = morphology.watershed(im, seed_mask)
     im = Image.fromarray(im).convert('LA')
+    #im.show()
     if fuzzy:
         im = np.array(im).T
         im[1]=255-im[0]
@@ -224,11 +244,4 @@ class NormalizeColor(Layer):
         self.r = Layer.arg(d)
 
     def apply(self, ctxt, image):
-        a = np.array(image)
-        a = a.T
-        for i in xrange(3):
-            r = [np.min(a[i]), np.max(a[i])]
-            q = self.r[i]
-            a[i] = ((a[i]-r[0])*1.0*(q[1]-q[0])/(r[1]-r[0])+q[0]).astype(np.uint8)
-        return Image.fromarray(a.T)
-
+        return normalize_color(image, self.r)
