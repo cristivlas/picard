@@ -53,9 +53,6 @@ class Layer:
     def clone(self, d):
         return self.__class__(d)
 
-    def data(self):
-        return self.d
-
     def specialAttrs(self):
         return ['ctor', 'id', 'scope'] + [self.d['ctor']]
 
@@ -70,7 +67,6 @@ class Layer:
                 orig, mod = x.modify(recipe, args)
                 assert mod is not orig
                 d[orig] = mod
-                    
                 mod.d['id'] = orig.d['id']
                 mod.d['scope'] = ctxt.fname
                 mod.__toDict()
@@ -98,7 +94,7 @@ class Layer:
                 importlib.import_module(t[0])
                 d['ctor'] = k
                 return Layer.Factory[k](d)
-        raise RuntimeError('Layer not recognized: '+str(d))
+        raise RuntimeError('Constructor not found: ' + str(d))
 
     @staticmethod
     def arg(d, replace=None):
@@ -150,8 +146,9 @@ class Layer:
             assert str(target.__class__) == 'card.Card'
             target = Layer.Dict[Layer.id(target.fname, self.target)]
             self.target = target
-        d = dict(target.data())
+        d = dict(target.d)
         c = d['ctor']
+
         for k in self.d:
             if k in self.specialAttrs():
                 continue
@@ -212,23 +209,18 @@ class Copy(Layer):
             assert scope
             return Layer.Dict[Layer.id(scope, self.ref_id)]
 
-
     def apply(self, ctxt, image):
         ref = self.ref(ctxt)
-        reflect = self.attr('reflect')
-        if reflect:
-            assert ref.box
-            ref.box.reflect(reflect, self.d)
-            (ref, ref) = self.modify(ref, self)
+        for k in self.d:
+            if k not in Layer.specialAttrs(self):
+                reflect = self.attr('reflect')
+                if reflect:
+                    ref.box.reflect(reflect, self.d)
+                (ref, ref) = self.modify(ref, self)
+                break
         ref.dpi = self.dpi
         return ref.apply(ctxt, image)
   
-    def data(self):
-        return self.ref().data()
-
-    def clone(self, d):
-        return self.ref().clone(d)
-
 def scaleToFit(image, size, verbose):
     w, h = (float(x) for x in image.size)
     aspect =  w / h

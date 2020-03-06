@@ -2,7 +2,6 @@ from layer import Layer
 from PIL import Image, ImageChops, ImageColor, ImageEnhance, ImageFilter, ImageOps
 from scipy import ndimage as ndi
 from skimage import filters, morphology
-from skimage.feature import peak_local_max, canny
 from matplotlib import colors
 import colorsys
 import numpy as np
@@ -19,32 +18,25 @@ def mean_to_alpha_threshold(im, level):
     np.place(a[3], w, 0)
     return Image.fromarray(a.T)
 
-def normalize_color(im, usr):
+def normalize(im, usr):
     a = np.array(im)
     a = a.T
-    for i in xrange(3):
+    num_colors=1 if len(a.shape)==2 else min(a.shape[2], 3)
+    for i in xrange(num_colors):
         q = usr[i]
         r = [np.min(a[i]), np.max(a[i])]
         a[i] = ((a[i]-r[0])*1.0*(q[1]-q[0])/(r[1]-r[0])+q[0]).astype(np.uint8)
     return Image.fromarray(a.T)
 
-def background_mask(im, fuzzy=True):
+def background_mask(im, contrast=1, fuzzy=True):
+    im = ImageEnhance.Contrast(im).enhance(contrast)
     im = np.array(im.convert('L'))
     light_spots = np.array((im > 245).nonzero())
-    dark_spots = np.array((im < 20).nonzero())
-    
+    dark_spots = np.array((im < 3).nonzero())
     bool_mask = np.zeros(im.shape, dtype=np.bool)
     bool_mask[tuple(light_spots)] = True
     bool_mask[tuple(dark_spots)] = True
-
-    # used within peak_local_max function
-    #image_max = ndi.maximum_filter(im, size=20, mode='constant')
-    # Comparison between image_max and im to find the coordinates of local maxima
-    #local_max = peak_local_max(im, min_distance=20)
-    #bool_mask[tuple(local_max.T)] = True
-
     seed_mask, num_seeds = ndi.label(bool_mask)
-
     im = filters.sobel(im)
     im = filters.gaussian(im, sigma=2.0)
     im = morphology.watershed(im, seed_mask)
@@ -55,12 +47,11 @@ def background_mask(im, fuzzy=True):
         im[1]=255-im[0]
         im = Image.fromarray(im.T)
         return im.convert('RGBA')
-    im = mean_to_alpha_threshold(im.convert('RGBA'), 100)
-    return im
+    return mean_to_alpha_threshold(im.convert('RGBA'), 180)
 
 def change_hue(im, color, range=None):
     assert im.mode=='RGBA'
-    (r,g,b) = ImageColor.getrgb(color)
+    (r,g,b) = (x/255. for x in ImageColor.getrgb(color))
     (h,s,v) = colorsys.rgb_to_hsv(r,g,b)
     a = np.array(im)
     a = a.reshape(a.size/4,4)
@@ -68,11 +59,12 @@ def change_hue(im, color, range=None):
     a = a[:,:3]
     a = colors.rgb_to_hsv(a/255.)
     a = a.T
-   
     if range:
         np.place(a[0], np.logical_and(a[0]<range[1], a[0]>range[0]), h)
+        np.place(a[2], np.logical_and(a[0]<range[1], a[0]>range[0]), v)
     else: 
         a[0] = h
+        a[2] = v
 
     # back to RGBA
     a = a.T
@@ -204,23 +196,25 @@ class Rotate(Layer):
     def apply(self, ctxt, image):
         return image.rotate(self.angle, expand=True)
 
-class BackGlow(Layer):
-    ___ = Layer.Register('backglow', lambda d: BackGlow(d) )
+class BackHue(Layer):
+    ___ = Layer.Register('back-hue', lambda d: BackHue(d) )
     def __init__(self, d, verbose=False):
         Layer.__init__(self, d, verbose) 
         self.color = Layer.arg(d)
-        self.radius = self.attr('gauss-blur-radius', 40.0)
-        self.brighten = self.attr('brighten', 10.0)
-        self.blendRatio = self.attr('blend-ratio', 0.35, [0.0, 1.0])
+        self.radius = self.attr('gauss-blur-radius', 50.0)
+        self.brighten = self.attr('brighten', 1.5)
+        self.contrast = self.attr('contrast', 1.5)
+        self.blendRatio = self.attr('blend', 0.35, [0.0, 1.0])
+
     def apply(self, ctxt, image):
-        mask = background_mask(image)
+        mask = background_mask(image, self.contrast)
         inverted_mask = ImageChops.invert(mask)
         front = Image.new('RGBA', image.size)
         back = front.copy()
         back.paste(image, (0,0), mask)
         back = ImageEnhance.Brightness(back).enhance(self.brighten)
-        back = back.filter(ImageFilter.GaussianBlur(self.radius))
         back = change_hue(back, self.color)
+        back = back.filter(ImageFilter.GaussianBlur(self.radius))
         front.paste(image, (0,0), inverted_mask)
         im = Image.alpha_composite(back, front)
         im = Image.blend(image, im, self.blendRatio)
@@ -232,7 +226,7 @@ class ChangeHue(Layer):
     def __init__(self, d, verbose=False):
         Layer.__init__(self, d, verbose)
         self.color = Layer.arg(d)
-        self.range = self.attr('range', [.18, 5])
+        self.range = self.attr('range', [.2, .5])
 
     def apply(self, ctxt, image):
         return change_hue(image, self.color, self.range)
@@ -244,4 +238,4 @@ class NormalizeColor(Layer):
         self.r = Layer.arg(d)
 
     def apply(self, ctxt, image):
-        return normalize_color(image, self.r)
+        return normalize(image, self.r)

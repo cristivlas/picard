@@ -17,16 +17,16 @@ class Card:
         d.setdefault('back', [])
         self.frontLayers = [Layer.fromDict(dict(x, scope=fname)) for x in d['front'] if x] 
         self.backLayers = [Layer.fromDict(dict(x, scope=fname)) for x in d['back'] if x]
-        recipe = d.setdefault('recipe', None)
-        if recipe:
-            if not path.isabs(recipe):
-                recipe = path.join(cache.DataPath, recipe)
-            recipe = Card.load(recipe, dpi, args)
-            self.frontLayers = self.concat(recipe, 'frontLayers', args)
-            self.backLayers = self.concat(recipe, 'backLayers', args)
-            self.size = recipe.size
+        self.recipe = d.get('recipe')
+        if self.recipe:
+            if not path.isabs(self.recipe):
+                self.recipe = path.join(cache.DataPath, self.recipe)
+            self.recipe = Card.load(self.recipe, dpi, args)
+            self.frontLayers = self.concat('frontLayers', args)
+            self.backLayers = self.concat('backLayers', args)
+            self.size = self.recipe.size
             if not self.bg:
-                self.bg = recipe.bg
+                self.bg = self.recipe.bg
             assert not d.get('orientation')
         else:
             self.size = box.getsize(d['size'])
@@ -36,9 +36,9 @@ class Card:
             if orient != self.size.orientation():
                 self.size.rotate()
 
-    def concat(self, recipe, whichLayers, args):
-        layers = getattr(recipe, whichLayers, []) + getattr(self, whichLayers)
-        return Layer.resolveModifiers(self, layers, recipe, args)
+    def concat(self, whichLayers, args):
+        layers = getattr(self.recipe, whichLayers, []) + getattr(self, whichLayers)
+        return Layer.resolveModifiers(self, layers, self.recipe, args)
 
     @staticmethod
     def load(fname, dpi, args):

@@ -7,11 +7,12 @@
         { "layer.modify": "description",
             "text": "Librarian Menelauis wields his psychic powers with deadly accuracy, making him an honored member of the Deathwing."
         },
-        { "layer.modify": "team-color", "hue": "red" },
-        { "layer.modify": "effect", "backglow": "red" }
+        { "layer.modify": "team-color", "hue": "orangered" },
+        { "layer.modify": "effect", "back-hue": "orangered" }
     ],
 
     "back": [
-        { "layer.modify": "image-B", "image": "artwork/librarian2.png" }
+        { "layer.modify": "image-B", "image": "artwork/librarian2.png" },
+        { "layer.modify": "image-B-effect", "contrast": 1.5 }
     ]
 }

@@ -5,8 +5,8 @@
         { "layer.group":
             [
                 { "layer.image": "artwork/chaplain2.png", "id":"image-A" },
-                { "image.flip": "HORIZONTAL" },
-                { "image.backglow": "darkviolet", "id":"effect" }
+                { "image.back-hue": "violet", "id":"effect" },
+                { "image.flip": "HORIZONTAL" }
             ],
           "box": [2, 2.96, 57.5, 88.15], "units": "PERCENT", "fill": true
         },
@@ -37,7 +37,7 @@
         { "layer.group":
             [
                 { "layer.image": "artwork/left_template.png", "fill": true },
-                { "image.hue": "darkviolet", "id": "team-color" }
+                { "image.hue": "violet", "id": "team-color" }
             ]
         }
     ],
@@ -46,7 +46,7 @@
         { "layer.group":
             [
                 { "layer.image": "artwork/chaplain1.png",  "id":"image-B" },
-                { "layer.copy": "effect" }
+                { "layer.copy": "effect", "id":"image-B-effect", "contrast":1.85 }
             ],
           "box": [38.1, 0.0, 96, 88.15], "units": "PERCENT", "fill": true
         },
