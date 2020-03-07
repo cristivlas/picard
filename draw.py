@@ -1,3 +1,4 @@
+from __future__ import print_function
 from layer import Layer
 from PIL import Image, ImageDraw
 import numpy as np

@@ -1,3 +1,4 @@
+from __future__ import print_function
 from PIL import Image
 from layer import Layer, Group, ImageLayer, TextLayer
 from os import path
@@ -45,7 +46,7 @@ class Card:
         if fname in Card.Dict:
             return Card.Dict[fname]
         with open(fname, 'r') as f:
-            print 'Loading:', fname
+            print ('Loading:', fname)
             d = json.load(f)
         card = Card(d, fname, dpi, args)
         Card.Dict[fname] = card
@@ -60,13 +61,13 @@ class Card:
 
     def front(self, args):
         if args.verbose:
-            print 'Front:', self.fname
+            print ('Front:', self.fname)
         im = Layer.applyGroup(self, self.blank(), self.frontLayers, dpi=self.dpi, verbose=args.verbose)
         return self.applyOrientation(im, args)
  
     def back(self, args):
         if args.verbose:
-            print 'Back:', self.fname
+            print ('Back:', self.fname)
         im = Layer.applyGroup(self, self.blank(), self.backLayers, dpi=self.dpi, verbose=args.verbose)
         return self.applyOrientation(im, args)
 

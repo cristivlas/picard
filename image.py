@@ -1,3 +1,4 @@
+from __future__ import print_function
 from layer import Layer
 from PIL import Image, ImageChops, ImageColor, ImageEnhance, ImageFilter, ImageOps
 from scipy import ndimage as ndi
@@ -41,7 +42,6 @@ def background_mask(im, contrast=1, fuzzy=True):
     im = filters.gaussian(im, sigma=2.0)
     im = morphology.watershed(im, seed_mask)
     im = Image.fromarray(im).convert('LA')
-    #im.show()
     if fuzzy:
         im = np.array(im).T
         im[1]=255-im[0]
@@ -92,7 +92,7 @@ class Opacity(Layer):
 
     def apply(self, ctxt, image):
         if self.verbose:
-            print ' Opacity: ', self.opacity, '%'
+            print (' Opacity: ', self.opacity, '%')
         a = np.array(image)
         a = a.T
         a[3] = (a[3] * self.opacity)

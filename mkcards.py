@@ -1,3 +1,4 @@
+from __future__ import print_function
 from argparse import ArgumentParser
 from box import Box
 from card import Card
@@ -121,7 +122,7 @@ def renderSheets(sheets):
     return sheets
 
 def saveSheetsAsPDF(sheets, fname):
-    print fname + ':', len(sheets), 'pages'
+    print (fname + ':', len(sheets), 'pages')
     images = [x.image for x in sheets]
     images[0].save(fname, save_all=True, append_images=images[1:], resolution=dpi)
 
@@ -135,7 +136,7 @@ def adjustOrientation(args):
 def renderCards(cards, paperSize, dpi, args):
     adjustOrientation(args)
     Sheet.CardSize = [ bleed * s for s in Sheet.CutSize ]
-    print 'Rendering', len(cards), 'card definition' + ('s' if len(cards)>1 else '')
+    print ('Rendering', len(cards), 'card definition' + ('s' if len(cards)>1 else ''))
     sheets = makeSheets(cards, paperSize, dpi, args)
     return renderSheets(sheets)
 
@@ -183,7 +184,7 @@ if __name__ == '__main__':
             backup(c.fname)
             with open(str(c.fname), 'w+') as f:
                 f.write(c.toJSON())
-            print 'Formatted file:', c.fname
+            print ('Formatted file:', c.fname)
     elif cards:
         fname = args.pdf or pathlib.Path(args.dir).name + '.pdf'
         saveSheetsAsPDF(renderCards(cards, paper_size[args.paper], dpi, args), fname)

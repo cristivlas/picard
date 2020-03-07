@@ -1,16 +1,16 @@
+from __future__ import print_function
 import os
+import portable
 import re
-import urlparse
 import urllib
 import zipfile
 from PIL import Image, ImageFont
 
 DataPath = ''
-
 class CacheFile:
     Root = os.path.join(os.path.splitdrive(os.getcwd())[1], '.cache')
     def __init__(self, url):
-        parsedUrl = urlparse.urlparse(url)
+        parsedUrl = portable.urlparse(url)
         start = 1 if os.path.isabs(parsedUrl.path) else 0
         path = str(os.path.sep).join(parsedUrl.path.split('/')[start:])
         if not os.path.splitext(path)[1]:
@@ -23,13 +23,9 @@ class CacheFile:
             path = os.path.join(CacheImage.Root, path)
 
         path = CacheFile.getValidPathName(path)
-        try:
-            os.makedirs(os.path.split(path)[0])
-        except OSError as e:
-            if not 'already exists' in str(e):
-                raise e 
+        portable.makedirs(os.path.split(path)[0])
         if not os.path.exists(path):
-            print 'Downloading', url, '...'
+            print ('Downloading', url, '...')
             urllib.urlretrieve(url, path)
         self.path = path
 
@@ -54,7 +50,7 @@ class CacheImage(CacheFile):
             self.Cache[url] = self.image
         except Exception as e:
             self.image = e
-            print e
+            print (e)
 
     def resolvePath(self, url, path):
         return os.path.join(path, 'image.jpg')
@@ -70,7 +66,7 @@ class CacheFont(CacheFile):
                 self.font = self.Cache[(url, size)]
             except KeyError:
                 CacheFile.__init__(self, url)
-                print 'Loading font:', self.path
+                print ('Loading font:', self.path)
                 if os.path.splitext(self.path)[1] in ['.zip' ]:
                     zip = zipfile.ZipFile(self.path)
                     match = lambda x: os.path.splitext(x.lower())[1] in ['.ttf', '.otf']

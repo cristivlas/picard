@@ -1,3 +1,4 @@
+from __future__ import print_function
 import numpy as np
 import sys
 from PIL import Image
@@ -65,13 +66,13 @@ class AutoCrop(Layer):
         if len(self.imgs)==0:
             self.cut(image, self.threshold)
             if self.verbose:
-                print '  Cropped:', len(self.imgs), 'images'
+                print ('  Cropped:', len(self.imgs), 'images')
         if self.verbose:
-            print ' Indexing:', self.i, '/', len(self.imgs)
+            print (' Indexing:', self.i, '/', len(self.imgs))
         try:
             return self.imgs[self.i]
         except KeyError as e:
-            print e
+            print (e)
             return self.errorImage(e)
 
 class Crop(Layer):
@@ -94,7 +95,7 @@ class Crop(Layer):
         orig = Crop.GetOrigin[self.origin](image.size, box)
         box = [x+o for x,o in zip(box, orig+orig)]
         if self.verbose:
-            print '  Cropbox:', self.box, box, 'alignment=' + self.origin
+            print ('  Cropbox:', self.box, box, 'alignment=' + self.origin)
         return image.crop(box)
 
 if __name__ == '__main__':
@@ -113,5 +114,5 @@ if __name__ == '__main__':
 
     imgs = AutoCrop(name=imageFile).cut(im, 150)
     for k in imgs:
-        print k
+        print (k)
         imgs[k].show()

@@ -1,3 +1,4 @@
+from __future__ import print_function
 from box import Box, Units
 from PIL import Image, ImageDraw
 from cache import CacheFont, CacheImage
@@ -17,7 +18,7 @@ class Layer:
         def __init__(self, name, fun):
             fullname = inspect.getmodule(fun).__name__ + '.' + name
             Layer.Factory[fullname]=fun
-            print 'Registered:', fullname
+            print ('Registered:', fullname)
 
     @staticmethod
     def id(scope, id):
@@ -38,7 +39,7 @@ class Layer:
             if k in self.specialAttrs():
                 continue
             if not k in self.used:
-                print self, ' Unexpected attribute:', str(k)
+                print (self, ' Unexpected attribute:', str(k))
 
     def unique_id(self):
         scope = self.d.get('scope')
@@ -110,7 +111,7 @@ class Layer:
             x.dpi = dpi
             x.verbose = verbose
             if verbose:
-                print ' Applying:', x
+                print (' Applying:', x)
             image = x.apply(ctxt, image)
         return image
 
@@ -138,7 +139,7 @@ class Layer:
     
     def __change(self, d, k1, k2, args):
         if args.verbose:
-            print ' Modify:', k1, d.get(k1), '<--', self.d[k2]
+            print (' Modify:', k1, d.get(k1), '<--', self.d[k2])
         d[k1] = self.attr(k2)
 
     def modify(self, target, args):
@@ -233,7 +234,7 @@ def scaleToFit(image, size, verbose):
     else:
         assert False
     if verbose:
-        print ' scale-to-fit: keeping same %s, scale=%3.2f' % (keep, scale)
+        print (' scale-to-fit: keeping same %s, scale=%3.2f' % (keep, scale))
     image = image.resize([int(scale * x) for x in image.size], Image.LANCZOS)
     image2 = Image.new('RGBA', size, None)
     image2.paste(image, [(x-y)/2 for x,y in zip(size, image.size)], image)
