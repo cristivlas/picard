@@ -30,6 +30,10 @@ class Box:
             if Box.Verbose:
                 warnings.warn('Ignored ' + str(units))
 
+    def xy(self):
+        assert len(self.box)==4
+        return self.box[:2]
+
     def __repr__(self):
         return (self.box, self.units.name).__repr__()
 

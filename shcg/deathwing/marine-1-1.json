@@ -18,6 +18,12 @@
             "units": "PERCENT",
             "outline": null
         },
+        { "pattern.dots": "fuchsia",
+            "id": "dots", 
+            "box": [62, 35, 94.25, 85],
+            "units": "PERCENT",
+            "r1":4, "r2":6
+        },
         { "layer.text": "Range 1 Attack",
             "id": "range",
             "font": "fonts/Optima-Medium.zip",
