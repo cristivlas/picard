@@ -3,14 +3,19 @@ import os
 import sys
 
 if sys.version_info.major==3:
-    from urllib import parse as urlparse
+    from urllib.parse import urlparse
+    from urllib.request import urlretrieve
 else:
     assert sys.version_info.major==2
     from urlparse import urlparse
+    from urllib import urlretrieve
 
 def makedirs(p):
+    assert p
+    if sys.version_info.major==3:
+        return os.makedirs(p, exist_ok=True)
     try:
         os.makedirs(p)
     except OSError as e:
-        if not 'already exists' in str(e):
+        if not ' exists' in str(e):
             raise e 

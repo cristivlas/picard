@@ -86,7 +86,7 @@ class Sheet:
                 y += dim[1]
         if flip:
             image = ImageOps.mirror(image)
-        self.image.paste(image, [(ss-si)/2 for ss, si in zip(self.size, size)])
+        self.image.paste(image, [int((ss-si)/2) for ss, si in zip(self.size, size)])
 
 def finishSheet(sheets, s):
     if len(s.cards) == 0:
@@ -105,7 +105,7 @@ def makeSheets(cards, paperSize, dpi, args):
     front = Sheet(paperSize, dpi)
     back = Sheet(paperSize, dpi)
     for c in cards:
-        for _ in xrange(c.count):
+        for _ in range(c.count):
             front = appendImageToSheet(sheets, front, c.front(args))
             back = appendImageToSheet(sheets, back, c.back(args))
     finishSheet(sheets, front)

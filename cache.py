@@ -8,7 +8,8 @@ from PIL import Image, ImageFont
 
 DataPath = ''
 class CacheFile:
-    Root = os.path.join(os.path.splitdrive(os.getcwd())[1], '.cache')
+    CurrentWorkDir = os.path.splitdrive(os.getcwd())[1]
+    Root = os.path.join(CurrentWorkDir, '.cache')
     def __init__(self, url):
         parsedUrl = portable.urlparse(url)
         start = 1 if os.path.isabs(parsedUrl.path) else 0
@@ -24,25 +25,33 @@ class CacheFile:
 
         path = CacheFile.getValidPathName(path)
         portable.makedirs(os.path.split(path)[0])
+
         if not os.path.exists(path):
+            if not parsedUrl.scheme:
+                url = "file://" + CacheFile.CurrentWorkDir + '/' + url
             print ('Downloading', url, '...')
-            urllib.urlretrieve(url, path)
+            portable.urlretrieve(url, path)
         self.path = path
 
     @staticmethod
     def getValidPathName(s):
         s = str(s).strip().replace(' ', '_')
-        return re.sub(r'(?u)[^-\w.\\]', '', s)
+        return re.sub(r'(?u)[^-\w.\\\/]', '', s)
 
 class CacheImage(CacheFile):
     Cache = {}
     def __init__(self, url):
         assert url
-        try:
-            self.image = self.Cache[url]
-        except KeyError:
-            CacheFile.__init__(self, url)
-            self.load(url)
+        self.image = self.Cache.get(url)
+        if not self.image:
+            try:
+                CacheFile.__init__(self, url)
+                self.load(url)
+            except Exception as e:
+                self.image = e
+                print (e)
+
+        assert self.image
 
     def load(self, url):
         try:
@@ -72,7 +81,7 @@ class CacheFont(CacheFile):
                     match = lambda x: os.path.splitext(x.lower())[1] in ['.ttf', '.otf']
                     fname = next((x for x in zip.namelist() if match(x)), None)
                     self.path = zip.extract(fname, os.path.split(self.path)[0])
-                self.font = ImageFont.truetype(self.path, size)
+                self.font = ImageFont.truetype(self.path, int(size))
                 self.Cache[(url, size)] = self.font
 
     def resolvePath(self, url, path):

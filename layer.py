@@ -3,7 +3,6 @@ from box import Box, Units
 from PIL import Image, ImageDraw
 from cache import CacheFont, CacheImage
 from os import path
-import exceptions
 import importlib
 import inspect
 import math
@@ -144,7 +143,6 @@ class Layer:
 
     def modify(self, target, args):
         if not isinstance(target, Layer):
-            assert str(target.__class__) == 'card.Card'
             target = Layer.Dict[Layer.id(target.fname, self.target)]
             self.target = target
         d = dict(target.d)
@@ -237,7 +235,7 @@ def scaleToFit(image, size, verbose):
         print (' scale-to-fit: keeping same %s, scale=%3.2f' % (keep, scale))
     image = image.resize([int(scale * x) for x in image.size], Image.LANCZOS)
     image2 = Image.new('RGBA', size, None)
-    image2.paste(image, [(x-y)/2 for x,y in zip(size, image.size)], image)
+    image2.paste(image, [int((x-y)/2) for x,y in zip(size, image.size)], image)
     return image2
 
 def drawText(draw, xy, text, fill, font):
@@ -293,7 +291,7 @@ class ImageLayer(Layer):
         self.image = CacheImage(Layer.arg(d)).image
 
     def apply(self, ctxt, image):
-        if isinstance(self.image, exceptions.Exception):
+        if isinstance(self.image, Exception):
             return self.errorImage(ctxt, self.image)
         return self.applyImage(image, self.image, self.box, self.fill, self.verbose)
 

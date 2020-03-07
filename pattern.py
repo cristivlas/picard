@@ -8,9 +8,9 @@ def dots(im, box, radius1=2, radius2=5, color='black', grad=False):
     rgb = ImageColor.getrgb(color)
     draw = ImageDraw.Draw(im)
     count = int(min(box.size()) / radius2)
-    for x in xrange(count):
-        color = tuple(min(255, i + 255 * x / count) for i in rgb) if grad else rgb
-        for y in xrange(count):
+    for x in range(count):
+        color = tuple(min(255, int(i + 255 * x / count)) for i in rgb) if grad else rgb
+        for y in range(count):
             xy = [2*radius2 * i + radius2 - radius1 + j for i,j in zip([x,y], box.xy())]
             draw.ellipse(xy + [i+2*radius1 for i in xy], fill=color, outline=color)
 
