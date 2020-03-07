@@ -6,7 +6,7 @@ import numpy as np
 def makeShape(shape, im):
     shape = shape[1],shape[0],shape[2]
     a = np.array(im)
-    d = [i/2 - j for i, j in zip(shape, a.shape)]
+    d = [int(i/2 - j) for i, j in zip(shape, a.shape)]
     a = np.pad(a, ((0,d[0]),(0,d[1]),(0,0)), 'edge')
     a = np.pad(a, ((0,shape[0]-a.shape[0]),(0,0),(0,0)), 'symmetric')
     a = np.pad(a, ((0,0), (0, shape[1]-a.shape[1]),(0,0)), 'symmetric')
@@ -26,7 +26,7 @@ class Rectangle(Layer):
 
     def apply(self, ctxt, image):
         box = self.box.convert(image.size)
-        r = self.radius or min(box.size())/2
+        r = self.radius or int(min(box.size())/2)
         size = [r,r]
         if self.radius:
             scale = 2 

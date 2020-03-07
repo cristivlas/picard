@@ -23,7 +23,7 @@ def normalize(im, usr):
     a = np.array(im)
     a = a.T
     num_colors=1 if len(a.shape)==2 else min(a.shape[2], 3)
-    for i in xrange(num_colors):
+    for i in range(num_colors):
         q = usr[i]
         r = [np.min(a[i]), np.max(a[i])]
         a[i] = ((a[i]-r[0])*1.0*(q[1]-q[0])/(r[1]-r[0])+q[0]).astype(np.uint8)
@@ -54,7 +54,7 @@ def change_hue(im, color, range=None):
     (r,g,b) = (x/255. for x in ImageColor.getrgb(color))
     (h,s,v) = colorsys.rgb_to_hsv(r,g,b)
     a = np.array(im)
-    a = a.reshape(a.size/4,4)
+    a = a.reshape(int(a.size/4),4)
     alpha = a[:,3:]
     a = a[:,:3]
     a = colors.rgb_to_hsv(a/255.)
