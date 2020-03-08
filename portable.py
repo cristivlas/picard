@@ -19,3 +19,8 @@ def makedirs(p):
     except OSError as e:
         if not ' exists' in str(e):
             raise e 
+
+def rethrow(e, msg):
+    e = type(e)(msg)
+    e.__traceback__ = sys.exc_info()[2]
+    raise e

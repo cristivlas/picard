@@ -6,6 +6,7 @@ from os import path
 import importlib
 import inspect
 import math
+import portable
 import textwrap
 
 class Layer:
@@ -22,6 +23,13 @@ class Layer:
     @staticmethod
     def id(scope, id):
         return id if (id is None or ':' in id) else (path.splitext(scope)[0] + ':' + id)
+
+    def get(self, scope, id):
+        try:
+            return Layer.Dict[Layer.id(scope, id)]
+        except KeyError as e:
+            msg='Layer not found: %s in %s (looked up from %s)' % (id, scope, self.d['scope'])
+            portable.rethrow(e, msg)
 
     def __init__(self, d, verbose):
         self.d=d
@@ -93,8 +101,12 @@ class Layer:
             if len(t) > 1:
                 importlib.import_module(t[0])
                 d['ctor'] = k
-                return Layer.Factory[k](d)
-        raise RuntimeError('Constructor not found: ' + str(d))
+                ctor = Layer.Factory.get(k)
+                if ctor:
+                    return ctor(d)
+                else:
+                    raise RuntimeError('Constructor not found: ' + k + ' in ' + d['scope'])
+        raise RuntimeError('No constructor not found in: ' + str(d))
 
     @staticmethod
     def arg(d, replace=None):
@@ -143,7 +155,7 @@ class Layer:
 
     def modify(self, target, args):
         if not isinstance(target, Layer):
-            target = Layer.Dict[Layer.id(target.fname, self.target)]
+            target = self.get(target.fname, self.target)
             self.target = target
         d = dict(target.d)
         c = d['ctor']
@@ -202,11 +214,11 @@ class Copy(Layer):
 
     def ref(self, ctxt):
         try:
-            return Layer.Dict[Layer.id(ctxt.fname, self.ref_id)]
-        except KeyError:
+            return self.get(ctxt.fname, self.ref_id)
+        except KeyError as e:
             scope = self.d.get('scope')
             assert scope
-            return Layer.Dict[Layer.id(scope, self.ref_id)]
+            return self.get(scope, self.ref_id)
 
     def apply(self, ctxt, image):
         ref = self.ref(ctxt)
@@ -233,7 +245,8 @@ def scaleToFit(image, size, verbose):
         assert False
     if verbose:
         print (' scale-to-fit: keeping same %s, scale=%3.2f' % (keep, scale))
-    image = image.resize([int(scale * x) for x in image.size], Image.LANCZOS)
+    #image = image.resize([int(scale * x) for x in image.size], Image.LANCZOS)
+    image = image.resize([int(scale * x) for x in image.size])
     image2 = Image.new('RGBA', size, None)
     image2.paste(image, [int((x-y)/2) for x,y in zip(size, image.size)], image)
     return image2

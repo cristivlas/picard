@@ -19,8 +19,8 @@ class Dots(Layer):
     def __init__(self, d, verbose=False):
         Layer.__init__(self, d, verbose)
         self.color = Layer.arg(d)
-        self.r1 = self.attr('r1', 2)
-        self.r2 = self.attr('r2', 5)
+        self.r1 = self.attr('radius', 2)
+        self.r2 = self.attr('distance', 5)
         self.grad = self.attr('grad', True)
         assert self.attr('box')
         self.attr('units')

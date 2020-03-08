@@ -1,8 +1,8 @@
 from __future__ import print_function
 from layer import Layer
 from PIL import Image, ImageChops, ImageColor, ImageEnhance, ImageFilter, ImageOps
-from scipy import ndimage as ndi
-from skimage import filters, morphology
+#from scipy import ndimage as ndi
+#from skimage import filters, morphology
 from matplotlib import colors
 import colorsys
 import numpy as np
@@ -28,26 +28,6 @@ def normalize(im, usr):
         r = [np.min(a[i]), np.max(a[i])]
         a[i] = ((a[i]-r[0])*1.0*(q[1]-q[0])/(r[1]-r[0])+q[0]).astype(np.uint8)
     return Image.fromarray(a.T)
-
-def background_mask(im, contrast=1, fuzzy=True):
-    im = ImageEnhance.Contrast(im).enhance(contrast)
-    im = np.array(im.convert('L'))
-    light_spots = np.array((im > 245).nonzero())
-    dark_spots = np.array((im < 3).nonzero())
-    bool_mask = np.zeros(im.shape, dtype=np.bool)
-    bool_mask[tuple(light_spots)] = True
-    bool_mask[tuple(dark_spots)] = True
-    seed_mask, num_seeds = ndi.label(bool_mask)
-    im = filters.sobel(im)
-    im = filters.gaussian(im, sigma=2.0)
-    im = morphology.watershed(im, seed_mask)
-    im = Image.fromarray(im).convert('LA')
-    if fuzzy:
-        im = np.array(im).T
-        im[1]=255-im[0]
-        im = Image.fromarray(im.T)
-        return im.convert('RGBA')
-    return mean_to_alpha_threshold(im.convert('RGBA'), 180)
 
 def change_hue(im, color, range=None):
     assert im.mode=='RGBA'
@@ -195,31 +175,6 @@ class Rotate(Layer):
         self.angle = float(Layer.arg(d))
     def apply(self, ctxt, image):
         return image.rotate(self.angle, expand=True)
-
-class BackHue(Layer):
-    ___ = Layer.Register('back-hue', lambda d: BackHue(d) )
-    def __init__(self, d, verbose=False):
-        Layer.__init__(self, d, verbose) 
-        self.color = Layer.arg(d)
-        self.radius = self.attr('gauss-blur-radius', 50.0)
-        self.brighten = self.attr('brighten', 1.5)
-        self.contrast = self.attr('contrast', 1.5)
-        self.blendRatio = self.attr('blend', 0.35, [0.0, 1.0])
-
-    def apply(self, ctxt, image):
-        mask = background_mask(image, self.contrast)
-        inverted_mask = ImageChops.invert(mask)
-        front = Image.new('RGBA', image.size)
-        back = front.copy()
-        back.paste(image, (0,0), mask)
-        back = ImageEnhance.Brightness(back).enhance(self.brighten)
-        back = change_hue(back, self.color)
-        back = back.filter(ImageFilter.GaussianBlur(self.radius))
-        front.paste(image, (0,0), inverted_mask)
-        im = Image.alpha_composite(back, front)
-        im = Image.blend(image, im, self.blendRatio)
-        im = im.filter(ImageFilter.Kernel((3, 3), bloomKernel, 1, 0))
-        return im
 
 class ChangeHue(Layer):
     ___ = Layer.Register('hue', lambda d: ChangeHue(d) )

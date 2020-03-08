@@ -2,10 +2,10 @@ from __future__ import print_function
 from argparse import ArgumentParser
 from box import Box
 from card import Card
+from itertools import count
 from layer import Layer
 from os import rename
 from PIL import Image, ImageOps, ImageDraw
-from itertools import count
 import math
 import cache
 import pathlib
@@ -171,23 +171,28 @@ if __name__ == '__main__':
     }
     Box.Verbose = args.verbose
     cards = []
-    for i in pathlib.Path(args.dir).iterdir():
-        if i.suffix == '.json':
-            c = Card.load(str(i), dpi, args)
-            cards.append(c)
-            size=c.size.convert(dpi=dpi).box[2:]
-            assert not Sheet.CutSize or Sheet.CutSize==size
-            Sheet.CutSize = size
 
-    if args.format:
-        for c in cards:
-            backup(c.fname)
-            with open(str(c.fname), 'w+') as f:
-                f.write(c.toJSON())
-            print ('Formatted file:', c.fname)
-    elif cards:
-        fname = args.pdf or pathlib.Path(args.dir).name + '.pdf'
-        saveSheetsAsPDF(renderCards(cards, paper_size[args.paper], dpi, args), fname)
+    try:
+        for i in pathlib.Path(args.dir).iterdir():
+            if i.suffix == '.json':
+                c = Card.load(str(i), dpi, args)
+                cards.append(c)
+                size=c.size.convert(dpi=dpi).box[2:]
+                assert not Sheet.CutSize or Sheet.CutSize==size
+                Sheet.CutSize = size
+
+        if args.format:
+            for c in cards:
+                backup(c.fname)
+                with open(str(c.fname), 'w+') as f:
+                    f.write(c.toJSON())
+                print ('Formatted file:', c.fname)
+        elif cards:
+            fname = args.pdf or pathlib.Path(args.dir).name + '.pdf'
+            saveSheetsAsPDF(renderCards(cards, paper_size[args.paper], dpi, args), fname)
+    except Exception as e:
+        print (e)
+        #raise
 
     Card.Dict = None
     Layer.Dict = None

@@ -5,7 +5,6 @@
         { "layer.group":
             [
                 { "layer.image": "artwork/chaplain2.png", "id":"image-A" },
-                { "image.back-hue": "violet", "id":"effect" },
                 { "image.flip": "HORIZONTAL" }
             ],
           "box": [2, 2.96, 57.5, 88.15], "units": "PERCENT", "fill": true
@@ -45,8 +44,7 @@
     "back": [
         { "layer.group":
             [
-                { "layer.image": "artwork/chaplain1.png",  "id":"image-B" },
-                { "layer.copy": "effect", "id":"image-B-effect", "contrast":1.85 }
+                { "layer.image": "artwork/chaplain1.png",  "id":"image-B" }
             ],
           "box": [38.1, 0.0, 96, 88.15], "units": "PERCENT", "fill": true
         },

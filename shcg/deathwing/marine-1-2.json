@@ -6,8 +6,7 @@
         { "layer.modify": "range", "text": "Range 2 Attack" },
         { "layer.modify": "description",
             "text": "Brother Charon is a versatile member of his squad -- an efficient marksman and a potent close-combatant, thanks to his deadly chainfist."
-        },
-        { "layer.modify": "effect", "contrast": 1.5 }
+        }
     ],
 
     "back": [
