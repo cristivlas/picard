@@ -8,14 +8,16 @@ def dots(im, box, radius1=2, radius2=5, color='black', grad=False, opacity=100.0
     rgb = ImageColor.getrgb(color)
     draw = ImageDraw.Draw(im)
     count = int(min(box.size()) / radius2)
-    color = list(rgb)
+    opacity = int(255 * opacity/100.0)
+    color = tuple(list(rgb) + [opacity])
+    r = radius1
     for x in range(count):
         if grad:
-            color = [min(255, int(i + 255.0 * x / count)) for i in rgb]
-        color = tuple(color + [opacity])
+            color = tuple([min(255, int(i + 255.0 * x / count)) for i in rgb] + [opacity])
+            r = int(radius1 * (count-x)/count) if grad else radius1
         for y in range(count):
-            xy = [2*radius2 * i + radius2 - radius1 + j for i,j in zip([x,y], box.xy())]
-            draw.ellipse(xy + [i+2*radius1 for i in xy], fill=color, outline=color)
+            xy = [2*radius2 * i + radius2 - r + j for i,j in zip([x,y], box.xy())]
+            draw.ellipse(xy + [i+2*r for i in xy], fill=color, outline=color)
 
 class Dots(Layer):
     ___ = Layer.Register('dots', lambda d: Dots(d))
