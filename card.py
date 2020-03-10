@@ -6,9 +6,11 @@ import box
 import cache
 import copy
 import json
+import sys
 
 class Card:
     Dict = {}
+    Verbose = sys.modules['__main__'].verbose
     def __init__(self, d, fname, dpi, args):
         self.d = d
         self.fname = fname
@@ -46,7 +48,8 @@ class Card:
         if fname in Card.Dict:
             return Card.Dict[fname]
         with open(fname, 'r') as f:
-            print ('Loading:', fname)
+            if Card.Verbose:
+                print ('Loading:', fname)
             d = json.load(f)
         card = Card(d, fname, dpi, args)
         Card.Dict[fname] = card

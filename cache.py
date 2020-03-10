@@ -2,6 +2,7 @@ from __future__ import print_function
 import os
 import portable
 import re
+import sys
 import urllib
 import zipfile
 from PIL import Image, ImageFont
@@ -10,17 +11,19 @@ DataPath = ''
 class CacheFile:
     CurrentWorkDir = os.path.splitdrive(os.getcwd())[1]
     Root = os.path.join(CurrentWorkDir, '.cache')
+    Verbose = sys.modules['__main__'].verbose
+
     def __init__(self, url):
         parsedUrl = portable.urlparse(url)
         start = 1 if os.path.isabs(parsedUrl.path) else 0
-        path = str(os.path.sep).join(parsedUrl.path.split('/')[start:])
+        path = os.path.sep.join(parsedUrl.path.split('/')[start:])
         if not os.path.splitext(path)[1]:
             path = self.resolvePath(parsedUrl, path)
         if len(parsedUrl.netloc):
             path = os.path.join(os.path.join(CacheImage.Root, parsedUrl.netloc), path)
         else:
             if not os.path.isabs(path):
-                url = os.path.normpath(os.path.join(DataPath, path))
+                url = os.path.normpath(os.path.sep.join([DataPath, path]))
             path = os.path.join(CacheImage.Root, path)
 
         path = CacheFile.getValidPathName(path)
@@ -28,7 +31,9 @@ class CacheFile:
 
         if not os.path.exists(path):
             if not parsedUrl.scheme:
-                url = "file://" + CacheFile.CurrentWorkDir + '/' + url
+                if not os.path.isabs(url):
+                    url = str('/').join([CacheFile.CurrentWorkDir, url])
+                url = "file://" + url
             print ('Downloading', url, '...')
             portable.urlretrieve(url, path)
         self.path = path
@@ -37,6 +42,11 @@ class CacheFile:
     def getValidPathName(s):
         s = str(s).strip().replace(' ', '_')
         return re.sub(r'(?u)[^-\w.\\\/]', '', s)
+
+    def resolvePath(self, url, path):
+        assert False
+        return path
+
 
 class CacheImage(CacheFile):
     Cache = {}
@@ -75,7 +85,8 @@ class CacheFont(CacheFile):
                 self.font = self.Cache[(url, size)]
             except KeyError:
                 CacheFile.__init__(self, url)
-                print ('Loading font:', self.path)
+                if CacheFile.Verbose:
+                    print ('Loading font:', self.path)
                 if os.path.splitext(self.path)[1] in ['.zip' ]:
                     zip = zipfile.ZipFile(self.path)
                     match = lambda x: os.path.splitext(x.lower())[1] in ['.ttf', '.otf']

@@ -8,17 +8,20 @@ import inspect
 import math
 import portable
 import textwrap
+import sys
 
 class Layer:
     Dict = {}
     Factory = {}
     Units = dict([(x.name, x.value) for x in list(Units)])
+    Verbose =     Verbose = sys.modules['__main__'].verbose
 
     class Register:
         def __init__(self, name, fun):
             fullname = inspect.getmodule(fun).__name__ + '.' + name
             Layer.Factory[fullname]=fun
-            print ('Registered:', fullname)
+            if Layer.Verbose:
+                print ('Registered:', fullname)
 
     @staticmethod
     def id(scope, id):
@@ -40,6 +43,8 @@ class Layer:
         units = Units[d.get('units', 'PIXEL')]
         box = d.get('box', None)
         self.box = Box(box, units) if box else None
+        self.dpi = None
+        self.target = None
 
     def __del__(self):
         for k in self.d:
@@ -59,7 +64,7 @@ class Layer:
             Layer.Dict[unique_id] = self
 
     def clone(self, d):
-        return self.__class__(d)
+        return self.__class__(d, self.verbose)
 
     def specialAttrs(self):
         return ['ctor', 'id', 'scope'] + [self.d['ctor']]
@@ -148,12 +153,12 @@ class Layer:
         self.used.add(a)
         return val
     
-    def __change(self, d, k1, k2, args):
-        if args.verbose:
+    def __change(self, d, k1, k2, args):        
+        if args and args.debug:
             print (' Modify:', k1, d.get(k1), '<--', self.d[k2])
         d[k1] = self.attr(k2)
 
-    def modify(self, target, args):
+    def modify(self, target, args=None):
         if not isinstance(target, Layer):
             target = self.get(target.fname, self.target)
             self.target = target
@@ -215,7 +220,7 @@ class Copy(Layer):
     def ref(self, ctxt):
         try:
             return self.get(ctxt.fname, self.ref_id)
-        except KeyError as e:
+        except KeyError:
             scope = self.d.get('scope')
             assert scope
             return self.get(scope, self.ref_id)
@@ -227,7 +232,7 @@ class Copy(Layer):
                 reflect = self.attr('reflect')
                 if reflect:
                     ref.box.reflect(reflect, self.d)
-                (ref, ref) = self.modify(ref, self)
+                (ref, ref) = self.modify(ref)
                 break
         ref.dpi = self.dpi
         return ref.apply(ctxt, image)
@@ -300,7 +305,7 @@ class ImageLayer(Layer):
     ___ = Layer.Register('image', lambda d: ImageLayer(d) )
     def __init__(self, d, verbose=False):
         Layer.__init__(self, d, verbose) 
-        box = self.attr('box', None)
+        self.attr('box', None)
         self.image = CacheImage(Layer.arg(d)).image
 
     def apply(self, ctxt, image):

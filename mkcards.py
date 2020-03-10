@@ -1,18 +1,14 @@
 from __future__ import print_function
 from argparse import ArgumentParser
-from box import Box
-from card import Card
 from itertools import count
-from layer import Layer
 from os import rename
 from PIL import Image, ImageOps, ImageDraw
 import math
-import cache
 import pathlib
 
 class Sheet:
-    CutSize = None
-    CardSize = None
+    CutSize = []
+    CardSize = []
 
     def __init__(self, size, dpi):
         self.paperSize = size
@@ -148,9 +144,10 @@ def parseArgs():
     ap.add_argument('--dpi', default=300)
     ap.add_argument('--paper', choices=['letter', 'A4'], default='letter')
     ap.add_argument('-v', '--verbose', action='store_true')
+    ap.add_argument('--debug', action='store_true')
     ap.add_argument('--header')
     ap.add_argument('--orientation', choices=['portrait', 'landscape'])
-    ap.add_argument('--format', action='store_true', help='pretty format the JSON files')
+    ap.add_argument('--format', action='store_true', help='pretty format the JSON files')    
     return ap.parse_args()
 
 def backup(path):
@@ -162,14 +159,21 @@ def backup(path):
 
 if __name__ == '__main__':
     args = parseArgs()
-    cache.DataPath = args.dir
     bleed = float(args.bleed)
     dpi = int(args.dpi)
+    
     paper_size = {
         'letter': [8.5, 11.0],
         'A4': [8.27, 11.69]
     }
-    Box.Verbose = args.verbose
+
+    import sys
+    sys.modules['__main__'].verbose = args.verbose
+    from card import Card
+    from layer import Layer
+    import cache
+    cache.DataPath = args.dir
+
     cards = []
 
     try:
@@ -192,7 +196,7 @@ if __name__ == '__main__':
             saveSheetsAsPDF(renderCards(cards, paper_size[args.paper], dpi, args), fname)
     except Exception as e:
         print (e)
-        #raise
+        raise
 
     Card.Dict = None
     Layer.Dict = None

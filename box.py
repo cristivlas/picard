@@ -1,6 +1,7 @@
 from __future__ import print_function
 from enum import Enum
 import warnings
+import sys
 
 class Units(Enum):
     PERCENT = 0
@@ -9,7 +10,7 @@ class Units(Enum):
     MILIMETER = 3
 
 class Box:
-    Verbose = False
+    Verbose = sys.modules['__main__'].verbose
     def __init__(self, box, units = Units.PIXEL):
         if box.__class__==Box:
             self.box = box.box
