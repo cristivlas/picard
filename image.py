@@ -65,7 +65,7 @@ class MeanToAlpha(Layer):
         return mean_to_alpha_threshold(image, self.level)
 
 class Opacity(Layer):
-    #___ = Layer.Register('opacity', lambda d: Opacity(d) )
+    ___ = Layer.Register('opacity', lambda d: Opacity(d) )
     def __init__(self, d, verbose=False):
         Layer.__init__(self, d, verbose)
         self.opacity=min(Layer.arg(d), 100.0)/100.0

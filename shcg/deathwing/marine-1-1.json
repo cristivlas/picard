@@ -17,6 +17,11 @@
             "units": "PERCENT",
             "outline": null
         },
+        { "pattern.dots": "violet", "radius": 3, "distance": 2, "grad": true, "id":"dots",
+            "opacity": 90,
+            "box": [62, 34, 96, 85],
+            "units": "PERCENT"
+        },
         { "layer.text": "Range 1 Attack",
             "id": "range",
             "font": "fonts/Optima-Medium.zip",
