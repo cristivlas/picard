@@ -1,0 +1,25 @@
+{
+    "size": "POKER",
+    "front": [
+        { "layer.image": "artwork/marcus.png", "box": [0, 10, 100, 100], "units":"PERCENT", "id": "picture" },
+        { "layer.image": "artwork/hero_template.png" },
+
+        { "layer.text": "Leader",
+            "id": "class",
+            "font": "font/wareaglec.ttf.zip",
+            "font-size": 85,
+            "units": "PERCENT",
+            "box": [1, 5, 99, 10]
+        },
+
+        { "layer.text": "Let's do this!",
+            "id": "tagline",
+            "font": "font/wareagleci.ttf.zip",
+            "font-size": 55,
+            "units": "PERCENT",
+            "box": [35, 80, 99, 97],
+            "outline": null
+        }
+    ]
+
+}

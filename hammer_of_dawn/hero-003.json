@@ -1,0 +1,9 @@
+{
+    "size": "POKER",
+    "recipe": "hero-001.json",
+    "front": [
+        { "layer.modify": "class", "text": "Improviser"},
+        { "layer.modify": "tagline", "text": "Great. Now what?"},
+        { "layer.modify": "picture", "image": "artwork/dom.png"}
+    ]
+}
