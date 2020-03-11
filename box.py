@@ -50,7 +50,6 @@ class Box:
             if size:
                 pc = [float('{0:0.2f}'.format(x*100.0/y)) for x,y in zip(self.box, size+size)]
                 print ('Consider relative coordinates:', pc, '("units": "PERCENT") instead of', self)
-
             return self
         elif self.units == Units.INCH:
             return Box([int(x*dpi) for x in self.box])

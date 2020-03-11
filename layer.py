@@ -249,7 +249,7 @@ def scaleToFit(image, size, verbose):
     else:
         assert False
     if verbose:
-        print (' scale-to-fit: keeping same %s, scale=%3.2f' % (keep, scale))
+        print (' scale-to-fit: keeping same %s (%dx%d), scale=%3.2f' % (keep, w, h, scale))
     #image = image.resize([int(scale * x) for x in image.size], Image.LANCZOS)
     image = image.resize([int(scale * x) for x in image.size])
     image2 = Image.new('RGBA', size, None)
@@ -305,7 +305,8 @@ class ImageLayer(Layer):
     ___ = Layer.Register('image', lambda d: ImageLayer(d) )
     def __init__(self, d, verbose=False):
         Layer.__init__(self, d, verbose) 
-        self.attr('box', None)
+        self.attr('box')
+        self.attr('units')
         self.image = CacheImage(Layer.arg(d)).image
 
     def apply(self, ctxt, image):

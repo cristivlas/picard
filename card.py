@@ -17,6 +17,7 @@ class Card:
         self.dpi = dpi
         self.bg = d.setdefault('bg', None)
         self.count = d.get('count', 1)
+        d.setdefault('front', [])
         d.setdefault('back', [])
         self.frontLayers = [Layer.fromDict(dict(x, scope=fname)) for x in d['front'] if x] 
         self.backLayers = [Layer.fromDict(dict(x, scope=fname)) for x in d['back'] if x]
