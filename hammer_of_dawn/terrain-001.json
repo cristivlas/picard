@@ -1,6 +1,17 @@
 {
     "size": "POKER",
     "front": [
-        { "layer.image": "artwork/dark-terrain.png"}
+        {
+            "layer.group": 
+            [
+                { "layer.image": "artwork/act5-emergencehole.jpg"},
+                { "cut.crop": "NW", "box": [20, 0, 70, 100], "units": "PERCENT" }
+            ],
+            "fill": false
+        },        
+        {
+            "layer.image": "artwork/terrain-white.png"
+        }
+
     ]
 }

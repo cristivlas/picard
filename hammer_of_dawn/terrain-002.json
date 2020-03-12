@@ -1,6 +1,17 @@
 {
     "size": "POKER",
     "front": [
-        { "layer.image": "artwork/light-terrain.png"}
+        {
+            "layer.group": 
+            [
+                { "layer.image": "https://staggerd.com/wp-content/uploads/2012/11/gears-of-war-judgment-rooftop-corpser.jpg"},
+                { "cut.crop": "NW", "box": [10, 0, 50, 100], "units": "PERCENT" }
+            ],
+            "fill": false
+        },        
+        {
+            "layer.image": "artwork/terrain-red.png"
+        }
+
     ]
 }
