@@ -177,7 +177,7 @@ if __name__ == '__main__':
     cards = []
 
     try:
-        for i in pathlib.Path(args.dir).iterdir():
+        for i in sorted(pathlib.Path(args.dir).iterdir()):
             if i.suffix == '.json':
                 c = Card.load(str(i), dpi, args)
                 cards.append(c)

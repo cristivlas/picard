@@ -1,0 +1,6 @@
+{
+    "size": "POKER",
+    "front": [
+        { "layer.image": "artwork/dark-terrain.png"}
+    ]
+}
