@@ -1,9 +1,9 @@
 {
     "size": "POKER",
     "front": [
+        { "draw.rectangle": "black", "box": [0, 0, 100, 100], "units": "PERCENT", "line-width": 2  },
         { "layer.image": "artwork/marcus.png", "box": [0, 10, 100, 100], "units":"PERCENT", "id": "picture" },
         { "layer.image": "artwork/hero_template.png" },
-
         { "layer.text": "Leader",
             "id": "class",
             "font": "font/wareaglec.ttf.zip",
