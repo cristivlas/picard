@@ -2,7 +2,7 @@
     "size": "POKER",
     "front": [
         { "draw.rectangle": "black", "box": [0, 0, 100, 100], "units": "PERCENT", "line-width": 2 },
-            
+
         { "layer.image": "artwork/lancer.png",
             "id": "picture",
             "box": [0, 20, 100, 80],

@@ -6,6 +6,7 @@ import box
 import cache
 import copy
 import json
+import portable
 import sys
 
 class Card:
@@ -51,7 +52,11 @@ class Card:
         with open(fname, 'r') as f:
             if Card.Verbose:
                 print ('Loading:', fname)
-            d = json.load(f)
+            try:
+                d = json.load(f)
+            except Exception as e:
+                portable.rethrow(e, '%s: %s' % (fname, str(e)))
+
         card = Card(d, fname, dpi, args)
         Card.Dict[fname] = card
         return card

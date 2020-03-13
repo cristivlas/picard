@@ -196,7 +196,9 @@ if __name__ == '__main__':
             saveSheetsAsPDF(renderCards(cards, paper_size[args.paper], dpi, args), fname)
     except Exception as e:
         print (e)
-        raise
+        if args.debug or not hasattr(e, 'handled'):
+            print (e.__dict__)
+            raise
 
     Card.Dict = None
     Layer.Dict = None

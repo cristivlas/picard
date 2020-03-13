@@ -2,16 +2,20 @@
     "size": "POKER",
     "front": [
         {
-            "layer.group": 
+            "layer.group":
             [
-                { "layer.image": "artwork/act5-emergencehole.jpg"},
-                { "cut.crop": "NW", "box": [20, 0, 70, 100], "units": "PERCENT" }
+                { "layer.image": "artwork/act5-emergencehole.jpg", "id": "picture"},
+                { "cut.crop": "NW", "box": [20, 0, 70, 60], "units": "PERCENT", "id": "cropbox" }
             ],
-            "fill": false
-        },        
-        {
-            "layer.image": "artwork/terrain-white.png"
-        }
+            "box": [0, 0, 100, 100],
+            "units": "PERCENT",
+            "fill": true
+        },
+        { "layer.image": "artwork/terrain-white.png", "id": "type" }
+    ],
 
+    "back": [
+        { "layer.image": "artwork/red-gears-skull.png", "fill": true }
     ]
+
 }

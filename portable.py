@@ -21,6 +21,7 @@ def makedirs(p):
             raise e 
 
 def rethrow(e, msg):
-    e = type(e)(msg)
+    e.handled = True
+    e.args = [ msg ]
     e.__traceback__ = sys.exc_info()[2]
     raise e
