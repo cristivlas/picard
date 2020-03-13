@@ -47,7 +47,7 @@ class Box:
                 size += size
             return Box([int(x*y/100.0) for x,y in zip(self.box, size)])
         elif self.units == Units.PIXEL:
-            if size:
+            if size and Box.Verbose:
                 pc = [float('{0:0.2f}'.format(x*100.0/y)) for x,y in zip(self.box, size+size)]
                 print ('Consider relative coordinates:', pc, '("units": "PERCENT") instead of', self)
             return self
