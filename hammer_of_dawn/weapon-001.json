@@ -24,6 +24,13 @@
         { "layer.text": "4", "font": "font/wareaglebi.ttf.zip", "font-size": 55, "box": [600, 920, 650, 970], "units": "PIXEL", "color": "red", "id": "reload" },
         { "layer.image": "artwork/two_red_dice.png", "box": [575, 830, 675, 930], "units": "PIXEL", "id": "accuracy" }
     ],
-    "back":[
+
+    "back": [
+        { "layer.image": "https://cdn11.bigcommerce.com/s-7va6f0fjxr/images/stencil/1280x1280/products/38867/55106/Fenix-Pheonix-Omen-Xbox-Jdm-Gears-Of-War-Vinyl-Decal-Sticker__62696.1506196555.jpg?c=2&imbypass=on",
+        "box": [-20, -25, 120, 115], "units": "PERCENT" },
+
+        { "draw.rectangle": "black", "box": [10, 5, 90, 95], "units": "PERCENT", "line-width": 3, "corner-radius": 25 },
+        { "draw.rectangle": "black", "box": [0, 0, 100, 100], "units": "PERCENT", "line-width": 2 }
+
     ]
 }

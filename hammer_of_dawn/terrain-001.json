@@ -15,7 +15,14 @@
     ],
 
     "back": [
-        { "layer.image": "artwork/red-gears-skull.png", "fill": true }
+        {
+          "layer.group":
+            [
+                { "layer.image": "https://mcdn.wallpapersafari.com/medium/76/76/DvS72u.jpg" },
+                { "cut.crop": "NW","box": [30, 0, 75, 100], "units": "PERCENT" }
+            ],
+            "fill": false
+        }
     ]
 
 }
