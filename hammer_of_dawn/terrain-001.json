@@ -4,8 +4,8 @@
         {
             "layer.group":
             [
-                { "layer.image": "artwork/act5-emergencehole.jpg", "id": "picture"},
-                { "cut.crop": "NW", "box": [20, 0, 70, 60], "units": "PERCENT", "id": "cropbox" }
+                { "layer.image": "https://vignette.wikia.nocookie.net/gearsofwar/images/e/e5/LocustWarDelta.png/revision/latest?cb=20190627052329", "id": "picture"},
+                { "cut.crop": "NW", "box": [0, 0, 50, 100], "units": "PERCENT", "id": "cropbox" }
             ],
             "box": [0, 0, 100, 100],
             "units": "PERCENT",
