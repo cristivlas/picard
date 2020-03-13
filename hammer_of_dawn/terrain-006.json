@@ -1,0 +1,7 @@
+{
+    "size": "POKER",
+    "recipe": "terrain-005.json",
+    "front": [
+        { "layer.modify": "picture", "image": "artwork/urban-terrain-02.png" }
+    ]
+}

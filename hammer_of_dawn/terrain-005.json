@@ -1,0 +1,11 @@
+{
+    "size": "POKER",
+    "front": [
+
+        { "layer.image": "artwork/urban-terrain-01.png", "id": "picture" }
+    ],
+    "back": [
+        { "layer.image": "artwork/red-gears-skull.png", "fill": true }
+    ]
+
+}

@@ -1,0 +1,13 @@
+{
+    "size": "POKER",
+    "recipe": "weapon-001.json",
+    "front": [
+        { "layer.modify": "name", "text": "Hammerburst" },
+        { "layer.modify": "picture", "image": "artwork/hammerburst.png" },
+        { "layer.modify": "range", "text": "2" },
+        { "layer.modify": "reload", "text": "3" },
+        { "layer.modify": "accuracy", "image": "artwork/one_red_die.png" }
+    ],
+    "back":[
+    ]
+}
