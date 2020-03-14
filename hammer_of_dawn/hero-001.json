@@ -1,37 +1,52 @@
 {
     "size": "POKER",
     "front": [
-        { "draw.rectangle": "black", "box": [0, 0, 100, 100], "units": "PERCENT", "line-width": 2  },
-
-        { "pattern.dots": "black", "box": [0, 0, 100, 75], "units": "PERCENT", "radius": 3, "distance": 6 },
-
-        { "layer.image": "artwork/marcus.png", "box": [0, 10, 100, 100], "units":"PERCENT", "id": "picture" },
-        { "layer.image": "artwork/hero_template.png" },
-
-        { "layer.text": "Leader",
+        {
+            "draw.rectangle": "black", "box": [0, 0, 100, 100], "units": "PERCENT", "line-width": 2 
+        },
+        {
+            "pattern.dots": "black", "box": [0, 0, 100, 75], "units": "PERCENT", "radius": 3, "distance": 6
+        },
+        {
+            "layer.image": "artwork/marcus.png", "box": [0, 10, 100, 100], "units":"PERCENT", "id": "picture"
+        },
+        {
+            "layer.image": "artwork/hero_template.png"
+        },
+        {
+            "layer.text": "Leader",
             "id": "class",
             "font": "font/wareaglec.ttf.zip",
             "font-size": 90,
             "units": "PERCENT",
             "box": [1, 7, 99, 10]
         },
-
-        { "layer.text": "Let's do this!",
+        {
+            "layer.text": "Let's do this!",
             "id": "tagline",
             "font": "font/wareagleci.ttf.zip",
-            "font-size": 55,
+            "font-size": 68,
             "units": "PERCENT",
-            "box": [35, 80, 99, 97],
+            "box": [35.5, 83, 99, 97],
             "outline": null
         }
     ],
 
     "back": [
-        { "layer.image": "https://cdn11.bigcommerce.com/s-7va6f0fjxr/images/stencil/1280x1280/products/38867/55106/Fenix-Pheonix-Omen-Xbox-Jdm-Gears-Of-War-Vinyl-Decal-Sticker__62696.1506196555.jpg?c=2&imbypass=on",
-        "box": [-20, -25, 120, 115], "units": "PERCENT" },
-
-        { "draw.rectangle": "black", "box": [0, 0, 100, 100], "units": "PERCENT", "line-width": 2  },
-        { "draw.rectangle": "black", "box": [10, 5, 90, 95], "units": "PERCENT", "line-width": 3, "corner-radius": 25 }
+        {
+            "layer.group":
+            [
+                {
+                    "layer.image": "https://cdn11.bigcommerce.com/s-7va6f0fjxr/images/stencil/1280x1280/products/38867/55106/Fenix-Pheonix-Omen-Xbox-Jdm-Gears-Of-War-Vinyl-Decal-Sticker__62696.1506196555.jpg?c=2&imbypass=on"
+                },
+                { "image.mean-to-alpha": 240},
+                { "image.mask": "black"}
+            ],
+            "box": [0, -5, 100, 100],
+            "units": "PERCENT"
+        },
+        { "draw.rectangle": "black", "box": [0, 0, 100, 100], "units": "PERCENT", "line-width": 1  },
+        { "draw.rectangle": "black", "box": [7.5, 5, 92.5, 95], "units": "PERCENT", "line-width": 4, "corner-radius": 25 }
 
     ]
 

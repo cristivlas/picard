@@ -3,7 +3,7 @@
     "recipe": "hero-001.json",
     "front": [
         { "layer.modify": "class", "text": "Improviser"},
-        { "layer.modify": "tagline", "text": "Great. Now what?"},
+        { "layer.modify": "tagline", "text": "Great. Now what?", "box": [35, 80, 99, 97]},
         { "layer.modify": "picture", "image": "artwork/dom.png"}
     ]
 }

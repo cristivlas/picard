@@ -2,8 +2,8 @@
     "size": "POKER",
     "recipe": "terrain-001.json",
     "front": [
-        {"layer.modify": "picture", "image": "https://staggerd.com/wp-content/uploads/2012/11/gears-of-war-judgment-rooftop-corpser.jpg"},
-        {"layer.modify": "cropbox", "box": [0, 0, 65, 100] },
-        {"layer.modify": "type", "image": "artwork/terrain-red.png" }
+        {"layer.modify": "picture", "image": "https://staggerd.com/wp-content/uploads/2012/11/gears-of-war-judgment-rooftop-corpser.jpg" },
+        {"layer.modify": "cropbox", "box": [0, 0, 52.5, 100] },
+        {"layer.modify": "terrain", "fill-color": "white" }
     ]
 }

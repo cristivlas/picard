@@ -2,7 +2,22 @@
     "size": "POKER",
     "front": [
 
-        { "layer.image": "artwork/urban-terrain-01.png", "id": "picture" }
+        { "layer.image": "artwork/urban-terrain-01.png", "id": "picture" },
+
+        { "draw.rectangle": "black",
+            "fill-color": "white",
+            "line-width": 40,
+            "box": [0, 72.5, 100, 100],
+            "units": "PERCENT",
+            "id": "terrain"
+        },
+        { "layer.text": "Urban environment",
+            "font": "font/Coalition-rDV9.ttf",
+            "font-size": 62,
+            "box": [1, 80, 99, 100],
+            "units": "PERCENT",
+            "id": "terrain-type"
+        }
     ],
 
     "back": [

@@ -3,7 +3,7 @@
     "recipe": "hero-001.json",
     "front": [
         { "layer.modify": "class", "text": "Lucky"},
-        { "layer.modify": "tagline", "text": "In the flesh, baby!"},
+        { "layer.modify": "tagline", "text": "In the flesh, baby!", "box": [35, 80, 99, 97]},
         { "layer.modify": "picture", "image": "artwork/cole.png"}
     ]
 }

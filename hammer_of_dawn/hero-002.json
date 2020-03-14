@@ -3,7 +3,7 @@
     "recipe": "hero-001.json",
     "front": [
         { "layer.modify": "class", "text": "Engineer"},
-        { "layer.modify": "tagline", "text": "Regular or extra-strength?"},
+        { "layer.modify": "tagline", "text": "Regular or extra-strength?", "box": [35, 76.5, 99, 97] },
         { "layer.modify": "picture", "image": "artwork/baird.png"}
     ]
 }

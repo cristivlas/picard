@@ -307,9 +307,12 @@ class ImageLayer(Layer):
         Layer.__init__(self, d, verbose) 
         self.attr('box')
         self.attr('units')
-        self.image = CacheImage(Layer.arg(d)).image
+        arg = Layer.arg(d)
+        self.image = CacheImage(Layer.arg(d)).image if arg else None
 
     def apply(self, ctxt, image):
+        if not self.image:
+            return image
         if isinstance(self.image, Exception):
             return self.errorImage(ctxt, self.image)
         return self.applyImage(image, self.image, self.box, self.fill, self.verbose)

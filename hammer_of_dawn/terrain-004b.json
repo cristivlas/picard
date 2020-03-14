@@ -1,9 +1,4 @@
 {
     "size": "POKER",
-    "recipe": "terrain-001.json",
-    "front": [
-        {"layer.modify": "picture", "image": "artwork/ehole.png"},
-        {"layer.modify": "cropbox", "box": [0, 0, 100, 100] },
-        {"layer.modify": "type", "image": "artwork/terrain-red.png" }
-    ]
+    "recipe": "terrain-004.json"
 }
