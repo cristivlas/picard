@@ -1,0 +1,9 @@
+{
+    "recipe": "enemy-001.json",
+    "front": [
+        { "layer.modify": "picture",
+            "image": "https://vignette.wikia.nocookie.net/gearsofwar/images/a/a8/Locustdrone.png/revision/latest?cb=20200129220351",
+            "box": [0, 10, 100, 100]
+        }
+    ]
+}

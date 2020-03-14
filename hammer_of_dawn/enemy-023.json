@@ -1,0 +1,18 @@
+{
+    "recipe": "enemy-001.json",
+    "front": [
+        { "layer.modify": "picture",
+            "image": "artwork/PngItem_3449788.png",
+            "box": [0, 15, 100, 100]
+        },
+        {
+            "layer.modify": "background", "fill-color": "white"
+        },
+        {
+            "layer.modify": "class", "text": "Grinder", "color": "black"
+        },
+        {
+            "layer.modify": "tagline", "text": "GRRRIND!"
+        }
+    ]
+}

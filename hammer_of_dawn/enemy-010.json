@@ -1,0 +1,11 @@
+{
+    "recipe": "enemy-001.json",
+    "front": [
+        { "layer.modify": "picture",
+            "image": "https://vignette.wikia.nocookie.net/gearsofwar/images/2/2d/Wretch.png/revision/latest?cb=20110925202839&path-prefix=es",
+            "box": [0, 8, 100, 90]
+        },
+        { "layer.modify": "class", "text": "Wretch" },
+        { "layer.modify": "tagline", "text": "@$#%^&!!" }
+    ]
+}

@@ -1,0 +1,18 @@
+{
+    "recipe": "enemy-001.json",
+    "front": [
+        {
+            "layer.modify": "picture",
+            "image": "https://i.pinimg.com/originals/bd/18/ee/bd18eeee261e1ffa1fdee9035062e13c.png", "box": [0, 15, 100, 100]
+        },
+        {
+            "layer.modify": "background", "fill-color": "white"
+        },
+        {
+            "layer.modify": "class", "text": "Theron Guard", "color": "black"
+        },
+        {
+            "layer.modify": "tagline", "text": "Groundwalker..."
+        }
+    ]
+}

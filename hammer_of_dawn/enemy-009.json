@@ -1,0 +1,11 @@
+{
+    "recipe": "enemy-001.json",
+    "front": [
+        {
+            "layer.modify": "background", "fill-color": "orange"
+        },
+        {
+            "layer.modify": "class", "color": "black"
+        }
+    ]
+}

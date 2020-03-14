@@ -1,0 +1,18 @@
+{
+    "recipe": "enemy-001.json",
+    "front": [
+        { "layer.modify": "picture",
+            "image": "https://vignette.wikia.nocookie.net/gearsofwar/images/a/af/Boomer_Incendiario.png/revision/latest?cb=20160530195913&path-prefix=es",
+            "box": [0, 15, 100, 100]
+        },
+        {
+            "layer.modify": "background", "fill-color": "orange"
+        },
+        {
+            "layer.modify": "class", "text": "Boomer", "color": "black"
+        },
+        {
+            "layer.modify": "tagline", "text": "Burn!"
+        }
+    ]
+}

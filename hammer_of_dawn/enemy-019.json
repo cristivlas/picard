@@ -1,0 +1,12 @@
+{
+    "recipe": "enemy-001.json",
+    "front": [
+        {
+            "layer.modify": "picture",
+            "image": "https://t3.rbxcdn.com/0a6def9d8651fb936fce8120c756a72c", "box": [0, 0, 100, 100]
+        },
+        {
+            "layer.modify": "class", "text": "Grenadier", "color": "black"
+        }
+    ]
+}

@@ -1,0 +1,16 @@
+{
+    "recipe": "enemy-001.json",
+    "front": [
+        {
+            "layer.modify": "picture",
+            "image": "https://vignette.wikia.nocookie.net/monster/images/1/1e/Kantus.png/revision/latest?cb=20170606194410",
+            "box": [0, 15, 100, 100]
+        },
+        {
+            "layer.modify": "class", "text": "Kantus", "color": "black"
+        },
+        {
+            "layer.modify": "tagline", "text": "Humans!"
+        }
+    ]
+}

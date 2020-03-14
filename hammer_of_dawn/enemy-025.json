@@ -1,0 +1,8 @@
+{
+    "recipe": "enemy-020.json",
+    "front": [
+        {
+            "layer.modify": "background", "fill-color": "white"
+        }
+    ]
+}

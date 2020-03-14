@@ -1,0 +1,19 @@
+{
+    "recipe": "enemy-001.json",
+    "front": [
+        {
+            "layer.modify": "picture",
+            "image": "artwork/boomer-png-6.png",
+            "box": [12.5, 15, 87.5, 120]
+        },
+        {
+            "layer.modify": "background", "fill-color": "orange"
+        },
+        {
+            "layer.modify": "class", "text": "Boomer", "color": "black"
+        },
+        {
+            "layer.modify": "tagline", "text": "Boom!"
+        }
+    ]
+}
