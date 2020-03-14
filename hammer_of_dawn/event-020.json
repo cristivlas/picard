@@ -3,7 +3,10 @@
     "front": [
         {
             "layer.modify": "action-text",
-            "text": "Spawn one enemy at each active white emergence hole; two at each active orange hole."
-        }
+            "text": "Spawn one enemy at each active white emergence hole and two more at each active orange hole."
+        },
+        { "layer.modify": "spawn-text", "text": "" },
+        { "layer.modify": "orange-spawn", "text": "2" },
+        { "layer.modify": "white-spawn", "text": "1" }
     ]
 }

@@ -6,7 +6,7 @@
         },
         {
             "layer.modify": "action-text",
-            "text": "A slain gear may be revived and returned to the formation."
+            "text": "A slain gear may be revived and returned to the formation. Your character is invulnerable this turn."
         }
     ],
     "back": [

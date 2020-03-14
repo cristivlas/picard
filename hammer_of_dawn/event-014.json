@@ -3,7 +3,10 @@
     "front": [
         {
             "layer.modify": "action-text",
-            "text": "All orange emergence holes that are inactive (sealed shut) reactivate."
-        }
+            "text": "All orange emergence holes that have been sealed shut reopen."
+        },
+        { "layer.modify": "spawn-text", "text": "" },
+        { "layer.modify": "orange-spawn", "text": "+" },
+        { "layer.modify": "white-spawn", "text": "" }
     ]
 }

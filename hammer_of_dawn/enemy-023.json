@@ -2,7 +2,7 @@
     "recipe": "enemy-001.json",
     "front": [
         { "layer.modify": "picture",
-            "image": "artwork/PngItem_3449788.png",
+            "image": "artwork/grinder.png",
             "box": [0, 15, 100, 100]
         },
         {

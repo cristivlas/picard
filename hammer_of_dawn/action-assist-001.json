@@ -14,16 +14,16 @@
             "units": "PERCENT",
             "radius": 10,
             "distance": 6,
-            "opacity": 10
+            "opacity": 12
         },
         {
             "layer.image": "artwork/hero_template.png"
         },
         {
-            "layer.text": "Place a support token on any of your gears. You may also play any number of class-specific actions.",
+            "layer.text": "Place a support token on any of your gears. You may also play a class-specific action.",
             "id": "action-text",
             "units": "PERCENT",
-            "box": [10, 10, 90, 70],
+            "box": [10, 12.5, 90, 70],
             "font": "font/fenix.zip",
             "font-size": 65
         },
@@ -34,7 +34,7 @@
             "font": "font/wareaglec.ttf.zip",
             "font-size": 60,
             "units": "PERCENT",
-            "box": [28, 82, 95, 95]
+            "box": [28, 83, 95, 95]
         }
     ],
 

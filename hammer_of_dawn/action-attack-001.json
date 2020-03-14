@@ -4,7 +4,7 @@
         { "layer.modify": "action-name", "text": "Attack" },
         {
             "layer.modify": "action-text",
-            "text": "Roll a number of dice equal to your weapon's firepower; odd results count as hits. Then, you may try to fast-reload. If successful, keep this card in your hand; otherwise the weapon is jammed: turn it face down."
+            "text": "Roll a number of dice equal to your active weapon's firepower. Odd results count as hits. After firing you may fast-reload."
         }
     ]
 }

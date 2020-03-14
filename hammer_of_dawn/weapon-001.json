@@ -6,7 +6,7 @@
 
         {   "layer.image": "artwork/lancer.png",
             "id": "picture",
-            "box": [0, 20, 100, 80],
+            "box": [5, 20, 95, 80],
             "units": "PERCENT",
             "fill": false
         },
@@ -16,11 +16,12 @@
         {   "layer.text": "Lancer",
             "id": "name",
             "font": "font/wareagleb.ttf.zip",
-            "font-size": 80, "box": [0, 10, 100, 20],
+            "font-size": 80,
+            "box": [0, 10, 100, 20],
             "units": "PERCENT",
             "color": "black",
-            "outline": null},
-
+            "outline": null
+        },
         { "layer.text": "1", "font": "font/wareaglebi.ttf.zip", "font-size": 55, "box": [600, 790, 650, 840], "units": "PIXEL", "color": "red", "id": "range" },
         { "layer.text": "4", "font": "font/wareaglebi.ttf.zip", "font-size": 55, "box": [600, 920, 650, 970], "units": "PIXEL", "color": "red", "id": "reload" },
         { "layer.image": "artwork/two_red_dice.png", "box": [575, 830, 675, 930], "units": "PIXEL", "id": "accuracy" }

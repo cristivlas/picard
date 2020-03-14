@@ -1,0 +1,10 @@
+{
+    "recipe": "action-improviser-001.json",
+    "front": [
+        { "layer.modify": "action-name", "text": "Never thought it would end like this", "box": [37, 78, 95, 95] },
+        {
+            "layer.modify": "action-text",
+            "text": "Blow up your character and kill all locusts within a range of 1. Emergence holes are not affected."
+        }
+    ]
+}

@@ -3,7 +3,10 @@
     "front": [
         {
             "layer.modify": "action-text",
-            "text": "All drones move one position towards the nearest location of the same color they are currently on."
-        }
+            "text": "All drones move one position towards the nearest location of the same color they are currently on. Spawn one enemy on each orange emergence hole."
+        },
+        { "layer.modify": "spawn-text", "text": "" },
+        { "layer.modify": "orange-spawn", "text": "1" },
+        { "layer.modify": "white-spawn", "text": "" }
     ]
 }

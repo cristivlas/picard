@@ -6,7 +6,7 @@
         },
         {
             "layer.modify": "action-text",
-            "text": "A gear of your choice (including the owner of this card) gets to reroll for free this turn, both on attack and defense."
+            "text": "A gear of your choice, including the owner of this card, gets to reroll for free this turn, both on attack and defense."
         }
     ]
 }

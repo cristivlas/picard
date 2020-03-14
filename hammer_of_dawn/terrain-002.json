@@ -1,5 +1,4 @@
 {
-    "size": "POKER",
     "recipe": "terrain-001.json",
     "front": [
         {"layer.modify": "picture", "image": "https://staggerd.com/wp-content/uploads/2012/11/gears-of-war-judgment-rooftop-corpser.jpg" },

@@ -1,10 +1,10 @@
 {
     "recipe": "action-assist-001.json",
     "front": [
-        { "layer.modify": "action-name", "text": "Control, this is Delta", "box": [33, 78, 95, 95] },
+        { "layer.modify": "action-name", "text": "Control, this is Delta", "box": [37, 81, 95, 95] },
         {
             "layer.modify": "action-text",
-            "text": "Control is sending King Ravens to extract the squad to the next location. Any remaining locusts at the current location are reshuffled back into the enemy deck."
+            "text": "Control sends King Ravens to extract the squad to the next location. Any remaining locusts at the current location are reshuffled back into the enemy deck."
         }
     ],
     "back": [

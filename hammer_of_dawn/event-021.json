@@ -3,7 +3,10 @@
     "front": [
         {
             "layer.modify": "action-text",
-            "text": "Wretches and grenadiers move towards the nearest location of the same color they are currently one. Spawn one enemy at each (active) green emergence hole."
-        }
+            "text": "Wretches and grenadiers move towards the nearest location of the same color they are currently on. Spawn one enemy at each green emergence hole."
+        },
+        { "layer.modify": "spawn-text", "text": "1" },
+        { "layer.modify": "orange-spawn", "text": "" },
+        { "layer.modify": "white-spawn", "text": "" }
     ]
 }

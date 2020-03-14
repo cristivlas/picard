@@ -3,7 +3,10 @@
     "front": [
         {
             "layer.modify": "action-text",
-            "text": "All wretches at color-matching locations flank; Kantuses at color-matching locations move up. Spawn two enemies at each active orange emergence hole."
-        }
+            "text": "All wretches at color-matching locations flank. Spawn two enemies at each active orange emergence hole."
+        },
+        { "layer.modify": "spawn-text", "text": "" },
+        { "layer.modify": "orange-spawn", "text": "2" },
+        { "layer.modify": "white-spawn", "text": "" }
     ]
 }

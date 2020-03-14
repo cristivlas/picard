@@ -4,6 +4,9 @@
         {
             "layer.modify": "action-text",
             "text": "Grenadiers at color-matching locations move towards the nearest color-matching location. Spawn two enemies at each active orange emergence hole."
-        }
+        },
+        { "layer.modify": "spawn-text", "text": "" },
+        { "layer.modify": "orange-spawn", "text": "2" },
+        { "layer.modify": "white-spawn", "text": "" }
     ]
 }

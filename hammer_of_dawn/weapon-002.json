@@ -1,5 +1,4 @@
 {
-    "size": "POKER",
     "recipe": "weapon-001.json",
     "front": [
         { "layer.modify": "name", "text": "Hammerburst" },

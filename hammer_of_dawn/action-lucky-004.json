@@ -1,0 +1,12 @@
+{
+    "recipe": "action-lucky-003.json",
+    "front": [
+        {
+            "layer.modify": "action-name", "text": "Down But Not Out"
+        },
+        {
+            "layer.modify": "action-text",
+            "text": "You may revive one adjacent squad mate during the locust attack phase."
+        }
+    ]
+}

@@ -68,6 +68,8 @@ class CacheImage(CacheFile):
                 CacheFile.__init__(self, url)
                 self.load(url)
             except Exception as e:
+                if CacheFile.Verbose:                    
+                    portable.rethrow(e, url)
                 self.image = e
                 print (e)
 

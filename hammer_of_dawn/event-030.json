@@ -4,6 +4,9 @@
         {
             "layer.modify": "action-text",
             "text": "Spawn two enemies at each active orange emergence hole, one at each active white hole. Wretches at color-matching locations flank."
-        }
+        },
+        { "layer.modify": "spawn-text", "text": "" },
+        { "layer.modify": "orange-spawn", "text": "2" },
+        { "layer.modify": "white-spawn", "text": "1" }
     ]
 }

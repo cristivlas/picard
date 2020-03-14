@@ -4,6 +4,9 @@
         {
             "layer.modify": "action-text",
             "text": "All Theron Guards at color-matching locations flank. Spawn one enemy at each active emergence hole."
-        }
+        },
+        { "layer.modify": "spawn-text", "text": "1" },
+        { "layer.modify": "orange-spawn", "text": "1" },
+        { "layer.modify": "white-spawn", "text": "1" }
     ]
 }

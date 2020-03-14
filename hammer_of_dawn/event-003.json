@@ -3,7 +3,10 @@
     "front": [
         {
             "layer.modify": "action-text",
-            "text": "All locusts at all color-matching locations flank. Spawn one enemy at each active white emergence hole."
-        }
+            "text": "All locusts at color-matching locations flank. Spawn one enemy at each active white emergence hole."
+        },
+        { "layer.modify": "spawn-text", "text": "" },
+        { "layer.modify": "orange-spawn", "text": "" },
+        { "layer.modify": "white-spawn", "text": "1" }
     ]
 }

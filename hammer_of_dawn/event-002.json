@@ -3,7 +3,11 @@
     "front": [
         {
             "layer.modify": "action-text",
-            "text": "All locusts at all color-matching locations move one position down in the formation. Spawn one enemy at each active orange emergence hole."
-        }
+            "text": "All locusts at color-matching locations move one position down in the formation. Spawn two enemies at each active orange emergence hole."
+
+        },
+        { "layer.modify": "spawn-text", "text": "" },
+        { "layer.modify": "orange-spawn", "text": "2" },
+        { "layer.modify": "white-spawn", "text": "" }
     ]
 }

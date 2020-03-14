@@ -1,0 +1,12 @@
+{
+    "recipe": "weapon-001.json",
+    "front": [
+        { "layer.modify": "name", "text": "Gnasher" },
+        { "layer.modify": "picture", "image": "artwork/gnasher.png", "box": [-3, -3, 103, 103] },
+        { "layer.modify": "range", "text": "0" },
+        { "layer.modify": "reload", "text": "4" },
+        { "layer.modify": "accuracy", "image": "artwork/three_red_dice.png" }
+    ],
+    "back":[
+    ]
+}

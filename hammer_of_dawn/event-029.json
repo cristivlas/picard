@@ -4,6 +4,9 @@
         {
             "layer.modify": "action-text",
             "text": "Spawn two enemies at each active green emergence hole, two at each active orange hole."
-        }
+        },
+        { "layer.modify": "spawn-text", "text": "2" },
+        { "layer.modify": "orange-spawn", "text": "2" },
+        { "layer.modify": "white-spawn", "text": "" }
     ]
 }

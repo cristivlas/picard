@@ -1,10 +1,10 @@
 {
     "recipe": "action-improviser-001.json",
     "front": [
-        { "layer.modify": "action-name", "text": "Bolo Grenade", "box": [32, 78, 95, 95] },
+        { "layer.modify": "action-name", "text": "Bolo Grenade", "box": [37, 82, 95, 95] },
         {
             "layer.modify": "action-text",
-            "text": "Roll a die to toss a grenade into the nearest swarm. On an odd outcome, all locusts at the location are killed and emergence holes are shut."
+            "text": "Roll a die to toss a grenade into the nearest swarm. On an odd outcome, the swarm is killed and and any emergence hole at their position is sealed shut."
         }
     ]
 }

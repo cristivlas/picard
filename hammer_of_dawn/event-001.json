@@ -7,24 +7,57 @@
             "corner-radius": 40,
             "box": [5, 5, 95, 95],
             "units": "PERCENT",
-            "fill-color": "lightgrey",
+            "fill-color": "lightgray",
             "id": "background"
         },
         {
-            "pattern.dots": "black",
-            "box": [7, 7, 94, 94],
-            "units": "PERCENT",
-            "radius": 10,
-            "distance": 6,
-            "opacity": 10
-        },
-        {
-            "layer.text": "All locusts at all color-matching locations move one position up in the formation. Spawn one enemy at each active green emergence hole.",
+            "layer.text": "All locusts at color-matching locations move one position up in the formation. Spawn one enemy at each active green emergence hole.",
             "id": "action-text",
             "units": "PERCENT",
-            "box": [10, 20, 90, 80],
+            "box": [10, 15, 90, 80],
             "font": "font/fenix.zip",
             "font-size": 65
+        },
+        {
+            "layer.group":[
+                { "layer.image": "https://t5.rbxcdn.com/4986e889cd0dd1b0ef31b762e0f7c677" },
+                { "image.mean-to-alpha": 200 },
+                { "image.mask": "olive"}
+            ],
+            "units": "PERCENT",
+            "box": [0, 70, 40, 90],
+            "id": "spawn-icon"
+        },
+        {
+            "layer.text": "1",
+            "font": "font/Coalition-rDV9.ttf",
+            "font-size": 100,
+            "units": "PERCENT",
+            "box": [0.5, 76, 39, 90],
+            "outline": null,
+            "id": "spawn-text"
+        },
+        {
+            "layer.group":[
+                { "layer.copy": "spawn-icon" },
+                { "image.mask": "orange"}
+            ],
+            "box": [30, 70, 70, 90],
+            "units": "PERCENT"
+        },
+        {
+            "layer.copy": "spawn-text", "text": "", "box": [30.5, 76, 70, 90], "id": "orange-spawn"
+        },
+        {
+            "layer.group":[
+                { "layer.copy": "spawn-icon" },
+                { "image.mask": "white"}
+            ],
+            "box": [60, 70, 100, 90],
+            "units": "PERCENT"
+        },
+        {
+            "layer.copy": "spawn-text", "text": "", "box": [65.5, 76, 95, 90], "id": "white-spawn"
         }
     ],
 

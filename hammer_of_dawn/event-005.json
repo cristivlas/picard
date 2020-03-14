@@ -4,6 +4,9 @@
         {
             "layer.modify": "action-text",
             "text": "All drones at color-matching locations move one position towards the nearest location of the same color they are currently on."
-        }
+        },
+        { "layer.modify": "spawn-text", "text": "" },
+        { "layer.modify": "orange-spawn", "text": "" },
+        { "layer.modify": "white-spawn", "text": "" }
     ]
 }

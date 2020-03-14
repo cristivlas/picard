@@ -2,7 +2,7 @@
     "recipe": "enemy-001.json",
     "front": [
         { "layer.modify": "picture",
-            "image": "artwork/11556_gears-of-war-3.png",
+            "image": "artwork/pilot.png",
             "box": [0, 8, 100, 90]
         }
     ]

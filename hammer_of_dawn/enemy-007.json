@@ -2,7 +2,7 @@
     "recipe": "enemy-001.json",
     "front": [
         { "layer.modify": "picture",
-            "image": "artwork/ClipartKey_1540610.png",
+            "image": "artwork/drone.png",
             "box": [0, 20, 100, 100]
         },
         {

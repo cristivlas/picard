@@ -1,9 +1,5 @@
 {
-    "recipe": "event-001.json",
+    "recipe": "event-017.json",
     "front": [
-        {
-            "layer.modify": "action-text",
-            "text": "Spawn two enemies at each active, orange and green emergence hole."
-        }
     ]
 }

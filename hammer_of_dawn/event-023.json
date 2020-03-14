@@ -3,7 +3,10 @@
     "front": [
         {
             "layer.modify": "action-text",
-            "text": "Bommers at color-matching locations move one position towards the closes color-matching location. Spawn one enemy at each active emergence hole."
-        }
+            "text": "Boomers at color-matching locations move one position towards the closest color-matching location. Spawn one enemy at each active emergence hole."
+        },
+        { "layer.modify": "spawn-text", "text": "1" },
+        { "layer.modify": "orange-spawn", "text": "1" },
+        { "layer.modify": "white-spawn", "text": "1" }
     ]
 }

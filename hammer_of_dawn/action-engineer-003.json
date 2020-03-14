@@ -2,7 +2,7 @@
     "recipe": "action-engineer-001.json",
     "front": [
         {
-            "layer.modify": "action-name", "text": "Scavenge for spare parts"
+            "layer.modify": "action-name", "text": "Scavenge for spare parts", "box": [30, 80, 95, 95]
         },
         {
             "layer.modify": "action-text",
