@@ -1,0 +1,9 @@
+{
+    "recipe": "event-001.json",
+    "front": [
+        {
+            "layer.modify": "action-text",
+            "text": "Grenadiers at color-matching locations move towards the nearest color-matching location. Spawn two enemies at each active orange emergence hole."
+        }
+    ]
+}

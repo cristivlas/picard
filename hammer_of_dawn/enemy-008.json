@@ -6,7 +6,7 @@
             "box": [0, 20, 100, 100]
         },
         {
-            "layer.modify": "background", "fill-color": "orange"
+            "layer.modify": "background", "fill-color": "white"
         },
         {
             "layer.modify": "class", "color": "black"

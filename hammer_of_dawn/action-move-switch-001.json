@@ -1,0 +1,12 @@
+{
+    "recipe": "action-assist-001.json",
+    "front": [
+        {
+            "layer.modify": "action-name", "text": "Move & Switch Weapons", "box": [30, 78, 95, 95]
+        },
+        {
+            "layer.modify": "action-text",
+            "text": "Move up or down the formation, switch and unjam weapons, get in or out of cover."
+        }
+    ]
+}

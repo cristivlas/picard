@@ -1,0 +1,50 @@
+{
+    "size": "POKER",
+    "front": [
+        { "draw.rectangle":
+            "black",
+            "box": [0, 0, 100, 100],
+            "units": "PERCENT",
+            "fill-color": "lightgrey",
+            "id": "background"
+        },
+        {
+            "pattern.dots": "black",
+            "box": [0, 0, 100, 75],
+            "units": "PERCENT",
+            "radius": 10,
+            "distance": 6,
+            "opacity": 10
+        },
+        {
+            "layer.image": "artwork/hero_template.png"
+        },
+        {
+            "layer.text": "Place a support token on any of your gears. You may also play any number of class-specific actions.",
+            "id": "action-text",
+            "units": "PERCENT",
+            "box": [10, 10, 90, 70],
+            "font": "font/fenix.zip",
+            "font-size": 65
+        },
+        {
+            "layer.text": "Assist",
+            "id": "action-name",
+            "color": "black",
+            "font": "font/wareaglec.ttf.zip",
+            "font-size": 60,
+            "units": "PERCENT",
+            "box": [28, 82, 95, 95]
+        }
+    ],
+
+    "back": [
+        {
+            "layer.image": "artwork/gears.png",
+            "box": [20, 20, 80, 80],
+            "units": "PERCENT"
+        },
+        { "draw.rectangle": "black", "box": [0, 0, 100, 100], "units": "PERCENT", "line-width": 1  },
+        { "draw.rectangle": "black", "box": [7.5, 5, 92.5, 95], "units": "PERCENT", "line-width": 4, "corner-radius": 25 }
+    ]
+}

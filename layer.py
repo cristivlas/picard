@@ -1,6 +1,6 @@
 from __future__ import print_function
 from box import Box, Units
-from PIL import Image, ImageDraw
+from PIL import Image, ImageOps, ImageDraw
 from cache import CacheFont, CacheImage
 from os import path
 import importlib
@@ -173,7 +173,8 @@ class Layer:
                     self.__change(d, c, k, args)
                     continue
             self.__change(d, k, k, args)
-        assert d != target.d, d['id']
+        if self.verbose and d==target.d:
+            print (self.d['scope'] + ': nothing changed.')
         del d['id']
         return (target, target.clone(d))
 
@@ -309,6 +310,8 @@ class ImageLayer(Layer):
         self.attr('units')
         arg = Layer.arg(d)
         self.image = CacheImage(Layer.arg(d)).image if arg else None
+        if self.attr('invert'):
+            self.image = ImageOps.invert(self.image.convert('L')).convert('RGBA')
 
     def apply(self, ctxt, image):
         if not self.image:

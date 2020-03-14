@@ -1,0 +1,12 @@
+{
+    "recipe": "action-engineer-001.json",
+    "front": [
+        {
+            "layer.modify": "action-name", "text": "Scavenge for spare parts"
+        },
+        {
+            "layer.modify": "action-text",
+            "text": "Take the Hammer of Dawn card from the Leader's discard into your hand. You may use it as your own, on a subsequent turn."
+        }
+    ]
+}

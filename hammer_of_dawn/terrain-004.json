@@ -3,7 +3,7 @@
     "recipe": "terrain-001.json",
     "front": [
         {"layer.modify": "picture", "image": "artwork/ehole.png"},
-        {"layer.modify": "cropbox", "box": [0, 0, 100, 80] },
+        {"layer.modify": "cropbox", "box": [0, 20, 100, 100] },
         {"layer.modify": "terrain", "fill-color": "olive" }
     ]
 }

@@ -1,0 +1,9 @@
+{
+    "recipe": "event-001.json",
+    "front": [
+        {
+            "layer.modify": "action-text",
+            "text": "Bommers at color-matching locations move one position towards the closes color-matching location. Spawn one enemy at each active emergence hole."
+        }
+    ]
+}

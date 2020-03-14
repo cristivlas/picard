@@ -1,0 +1,11 @@
+{
+    "recipe": "action-leader-001.json",
+    "front": [
+        { "layer.modify": "action-name", "text": "Form up, people!" },
+        {
+            "layer.modify": "action-text",
+            "text": "Rearrange the gear formation, optionally switching weapons."
+        }
+
+    ]
+}

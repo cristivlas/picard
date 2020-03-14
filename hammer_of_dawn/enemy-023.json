@@ -6,9 +6,6 @@
             "box": [0, 15, 100, 100]
         },
         {
-            "layer.modify": "background", "fill-color": "white"
-        },
-        {
             "layer.modify": "class", "text": "Grinder", "color": "black"
         },
         {

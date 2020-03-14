@@ -1,0 +1,12 @@
+{
+    "recipe": "action-lucky-001.json",
+    "front": [
+        {
+            "layer.modify": "action-name", "text": "Chainsaw Spree"
+        },
+        {
+            "layer.modify": "action-text",
+            "text": "On a successful roll (or reroll) this turn, the owner of this card may continue to attack."
+        }
+    ]
+}

@@ -108,7 +108,6 @@ class Contrast(Layer):
         
     def apply(self, ctxt, image):
         return ImageEnhance.Contrast(image).enhance(self.amount)
-        return ImageEnhance.Color(image).enhance(self.amount)
 
 class Sharpen(Layer):
     ___ = Layer.Register('sharpen', lambda d: Sharpen(d) )

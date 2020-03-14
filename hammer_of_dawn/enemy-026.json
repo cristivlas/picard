@@ -11,6 +11,9 @@
         },
         {
             "layer.modify": "tagline", "text": "Hungry..."
+        },
+        {
+            "layer.modify": "background", "fill-color": "white"
         }
     ]
 }

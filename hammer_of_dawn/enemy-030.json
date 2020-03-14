@@ -1,0 +1,19 @@
+{
+    "recipe": "enemy-001.json",
+    "front": [
+        {
+            "layer.modify": "picture",
+            "image": "https://vignette.wikia.nocookie.net/gearsofwar/images/0/01/Locustkantus.png/revision/latest?cb=20200129220144",
+            "box": [0, 0, 100, 100]
+        },
+        {
+            "layer.modify": "class", "text": "Kantus", "color": "black"
+        },
+        {
+            "layer.modify": "tagline", "text": "Humans!"
+        },
+        {
+            "layer.modify": "background", "fill-color": "olive"
+        }
+    ]
+}

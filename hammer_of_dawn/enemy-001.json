@@ -6,13 +6,13 @@
             "box": [0, 0, 100, 100],
             "units": "PERCENT",
             "fill-color": "olive",
-            "id": "background"            
+            "id": "background"
         },
 
         { "layer.image": "https://vignette.wikia.nocookie.net/gearsofwar/images/5/5e/Drone_Ultimate_Edition.png/revision/latest?cb=20160604031337&path-prefix=es",
             "box": [0, 20, 100, 100],
             "units":"PERCENT",
-            "id": "picture" 
+            "id": "picture"
         },
 
         { "layer.image": "artwork/enemy-template.png" },
@@ -37,7 +37,7 @@
     ],
 
     "back":[
-        { "layer.image": "https://vignette.wikia.nocookie.net/gearsofwar/images/d/df/Locust_symbol.png/revision/latest?cb=20090602124446",                
+        { "layer.image": "https://vignette.wikia.nocookie.net/gearsofwar/images/d/df/Locust_symbol.png/revision/latest?cb=20090602124446",
             "box": [20, 20, 80, 80],
             "units": "PERCENT"
         },

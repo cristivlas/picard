@@ -6,7 +6,7 @@
             "image": "https://www.jing.fm/clipimg/full/89-890495_gears-of-war-transparent-png-gears-of-war.png", "box": [0, 15, 100, 100]
         },
         {
-            "layer.modify": "background", "fill-color": "orange"
+            "layer.modify": "background", "fill-color": "white"
         },
         {
             "layer.modify": "class", "text": "Grenadier", "color": "black"

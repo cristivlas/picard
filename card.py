@@ -34,6 +34,8 @@ class Card:
                 self.bg = self.recipe.bg
             assert not d.get('orientation')
         else:
+            if not 'size' in d:
+                raise RuntimeError(fname + ': either size or recipe must be specified')
             self.size = box.getsize(d['size'])
             self.frontLayers = Layer.resolveModifiers(self, self.frontLayers, self, args)
             self.backLayers = Layer.resolveModifiers(self, self.backLayers, self, args)

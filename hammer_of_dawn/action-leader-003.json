@@ -1,0 +1,10 @@
+{
+    "recipe": "action-leader-001.json",
+    "front": [
+        { "layer.modify": "action-name", "text": "Hammer of Dawn", "box": [33, 78, 95, 95] },
+        {
+            "layer.modify": "action-text",
+            "text": "The Hammer of Dawn is active: pick any location. All locusts are killed at that location, on both sides of the formation. Emergence holes (if any) are sealed shut."
+        }
+    ]
+}

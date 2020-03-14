@@ -1,0 +1,9 @@
+{
+    "recipe": "event-001.json",
+    "front": [
+        {
+            "layer.modify": "action-text",
+            "text": "Spawn two enemies at each active orange emergence hole, one at each active white hole. Wretches at color-matching locations flank."
+        }
+    ]
+}

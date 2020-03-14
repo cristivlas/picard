@@ -7,13 +7,13 @@
             "box": [12.5, 15, 87.5, 120]
         },
         {
-            "layer.modify": "background", "fill-color": "orange"
-        },
-        {
             "layer.modify": "class", "text": "Boomer", "color": "black"
         },
         {
             "layer.modify": "tagline", "text": "Boom!"
+        },
+        {
+            "layer.modify": "background", "fill-color": "olive"
         }
     ]
 }

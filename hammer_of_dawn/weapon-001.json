@@ -1,9 +1,10 @@
 {
     "size": "POKER",
     "front": [
-        { "draw.rectangle": "black", "box": [0, 0, 100, 100], "units": "PERCENT", "line-width": 2 },
+        {
+            "draw.rectangle": "black", "box": [0, 0, 100, 100], "units": "PERCENT", "line-width": 4, "corner-radius": 30 },
 
-        { "layer.image": "artwork/lancer.png",
+        {   "layer.image": "artwork/lancer.png",
             "id": "picture",
             "box": [0, 20, 100, 80],
             "units": "PERCENT",
@@ -12,7 +13,7 @@
 
         { "layer.image": "artwork/weapon-template.png" },
 
-        { "layer.text": "Lancer",
+        {   "layer.text": "Lancer",
             "id": "name",
             "font": "font/wareagleb.ttf.zip",
             "font-size": 80, "box": [0, 10, 100, 20],
@@ -26,15 +27,15 @@
     ],
 
     "back": [
-        { "layer.group":
+        {
+            "layer.group" :
             [
-                { "layer.image": "https://cdn11.bigcommerce.com/s-7va6f0fjxr/images/stencil/1280x1280/products/38867/55106/Fenix-Pheonix-Omen-Xbox-Jdm-Gears-Of-War-Vinyl-Decal-Sticker__62696.1506196555.jpg?c=2&imbypass=on"
+                {
+                    "layer.image": "https://vignette.wikia.nocookie.net/gearsofwar/images/7/77/Phoenix_Omen.png/revision/latest?cb=20190816091325",
+                    "invert": true
                 },
-                { "image.mean-to-alpha": 240},
-                { "image.mask": "black"}
-            ],
-            "box": [0, -5, 100, 100],
-            "units": "PERCENT"
+                { "image.mean-to-alpha": 100 }
+            ]
         },
         { "draw.rectangle": "black", "box": [0, 0, 100, 100], "units": "PERCENT", "line-width": 1 },
         { "draw.rectangle": "black", "box": [7.5, 5, 92.5, 95], "units": "PERCENT", "line-width": 4, "corner-radius": 25 }

@@ -40,6 +40,9 @@ class CacheFile:
             if not parsedUrl.scheme:
                 if not os.path.isabs(url):
                     url = join([CacheFile.CurrentWorkDir, url])
+                    if not os.path.exists(url):
+                        url += '.zip'
+                        path += '.zip'
                 url = "file://" + url
             print ('Downloading', url, '...')
             portable.urlretrieve(url, path)

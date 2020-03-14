@@ -1,0 +1,17 @@
+{
+    "recipe": "action-leader-001.json",
+    "front": [
+        {
+            "layer.modify": "action-name", "text": "Unique Charisma"
+        },
+        {
+            "layer.modify": "action-text",
+            "text": "Detonate explosive charges at your location, on either side of the formation. All locusts in that swarm are eliminated, and any emergence holes sealed shut."
+        }
+    ],
+    "back": [
+        {
+            "layer.modify": "action-class", "text": "Engineer"
+        }
+    ]
+}

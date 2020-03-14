@@ -1,0 +1,10 @@
+{
+    "recipe": "action-improviser-001.json",
+    "front": [
+        { "layer.modify": "action-name", "text": "Jack, rip that door!", "box": [32, 78, 95, 95] },
+        {
+            "layer.modify": "action-text",
+            "text": "With Jack's help, you kill up to three locusts within your current weapon's range (regardless of facing)."
+        }
+    ]
+}

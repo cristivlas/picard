@@ -1,0 +1,12 @@
+{
+    "recipe": "action-engineer-001.json",
+    "front": [
+        {
+            "layer.modify": "action-name", "text": "Intelligent use of resources"
+        },
+        {
+            "layer.modify": "action-text",
+            "text": "Place a support token on each squad member (including the Engineer)."
+        }
+    ]
+}

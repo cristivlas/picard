@@ -1,0 +1,9 @@
+{
+    "recipe": "event-001.json",
+    "front": [
+        {
+            "layer.modify": "action-text",
+            "text": "All drones at color-matching locations flank. Spawn one enemy at each active emergence hole (all colors)."
+        }
+    ]
+}

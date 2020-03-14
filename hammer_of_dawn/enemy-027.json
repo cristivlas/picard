@@ -11,6 +11,9 @@
         },
         {
             "layer.modify": "tagline", "text": "Humans!"
+        },
+        {
+            "layer.modify": "background", "fill-color": "white"
         }
     ]
 }
